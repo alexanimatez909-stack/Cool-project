@@ -12,6 +12,7 @@ SCRIPTS = [
     ("StarterPlayerScripts/StaminaBar.client.lua", "StarterPlayer.StarterPlayerScripts", "StaminaBar", "LocalScript"),
     ("StarterPlayerScripts/BreathingSound.client.lua", "StarterPlayer.StarterPlayerScripts", "Breathing_Sound", "LocalScript"),
     ("StarterPlayerScripts/FirstPersonBody.client.lua", "StarterPlayer.StarterPlayerScripts", "FirstPersonBody", "LocalScript"),
+    ("StarterPlayerScripts/NightFog.client.lua", "StarterPlayer.StarterPlayerScripts", "NightFog", "LocalScript"),
     ("ServerScriptService/AvatarRules.server.lua", "ServerScriptService", "AvatarRules", "Script"),
     ("ServerScriptService/NightCycle.server.lua", "ServerScriptService", "NightCycle", "Script"),
 ]

@@ -26,6 +26,11 @@ Config.BELL_FADE_TIME = 3            -- each toll fades out over its last few se
 Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
 Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 
+-- Fog (0 = clear, 1 = very thick). Each stage's amount rolls in gradually.
+Config.FOG = { Day = 0.25, Dusk = 0.35, DeepNight = 0.5, LastHour = 0.5, Dawn = 0.38 }
+Config.FOG_LIFT_START = 0.6          -- in the last hour, fog only starts lifting after 60% of the stage has passed
+Config.FOG_CHANGE_SPEED = 0.3        -- how fast the fog rolls in between stages (lower = slower)
+
 ---------------------------------------------------------------------
 -- DAY (debate + vote in the Courthouse)
 ---------------------------------------------------------------------

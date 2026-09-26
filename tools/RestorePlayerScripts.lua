@@ -37,6 +37,11 @@ Config.BELL_FADE_TIME = 3            -- each toll fades out over its last few se
 Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
 Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 
+-- Fog (0 = clear, 1 = very thick). Each stage's amount rolls in gradually.
+Config.FOG = { Day = 0.25, Dusk = 0.35, DeepNight = 0.5, LastHour = 0.5, Dawn = 0.38 }
+Config.FOG_LIFT_START = 0.6          -- in the last hour, fog only starts lifting after 60% of the stage has passed
+Config.FOG_CHANGE_SPEED = 0.3        -- how fast the fog rolls in between stages (lower = slower)
+
 ---------------------------------------------------------------------
 -- DAY (debate + vote in the Courthouse)
 ---------------------------------------------------------------------
@@ -807,6 +812,63 @@ end)
 ]=]
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.FirstPersonBody")
+end
+do
+	local parent = game
+	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("NightFog")
+	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	s = s or Instance.new("LocalScript")
+	s.Name = "NightFog"
+	s.Source = [=[
+-- NightFog (LocalScript in StarterPlayer > StarterPlayerScripts)
+-- Fog that follows the night: light at dusk, thicker in deep night, and in the last hour it
+-- slowly starts lifting as dawn gets close. Changes roll in gradually, never instantly.
+-- It reads the time from the NightCycle clock (attributes on workspace); all amounts are in
+-- ReplicatedStorage.Config. It runs on each player's computer so that later some districts
+-- (like the Docks) can be foggier than others depending on where you are.
+local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+
+-- Roblox's Atmosphere object draws the fog. Use the one in Lighting, or make one.
+local atmosphere = Lighting:FindFirstChildOfClass("Atmosphere")
+if not atmosphere then
+	atmosphere = Instance.new("Atmosphere")
+	atmosphere.Color = Color3.fromRGB(170, 170, 165)
+	atmosphere.Decay = Color3.fromRGB(110, 110, 105)
+	atmosphere.Parent = Lighting
+end
+
+local function smoothstep(t) return t * t * (3 - 2 * t) end -- eases in and out
+
+-- how thick the fog should be right now
+local function targetFog()
+	local stageName = workspace:GetAttribute("StageName") or "Day"
+	local fog = Config.FOG[stageName] or Config.FOG.Day
+	if stageName == "LastHour" then
+		-- how far through the last hour we are: 0 = just started, 1 = dawn
+		local length = Config.NIGHT_STAGES[3].length / Config.NIGHT_TEST_SPEED
+		local left = (workspace:GetAttribute("StageEndsAt") or 0) - workspace:GetServerTimeNow()
+		local progress = math.clamp(1 - left / length, 0, 1)
+		if progress > Config.FOG_LIFT_START then
+			local lift = (progress - Config.FOG_LIFT_START) / (1 - Config.FOG_LIFT_START)
+			fog += (Config.FOG.Dawn - fog) * smoothstep(lift)
+		end
+	end
+	return fog
+end
+
+atmosphere.Density = targetFog()
+RunService.Heartbeat:Connect(function(dt)
+	local target = targetFog()
+	atmosphere.Density += (target - atmosphere.Density) * (1 - math.exp(-Config.FOG_CHANGE_SPEED * dt))
+end)
+]=]
+	s.Parent = parent
+	table.insert(done, "StarterPlayer.StarterPlayerScripts.NightFog")
 end
 do
 	local parent = game
