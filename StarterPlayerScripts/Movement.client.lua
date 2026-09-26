@@ -1,7 +1,7 @@
 -- Movement (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- The one script that decides how fast you move: walk, sprint while Shift is held, or crouch.
 -- Sprinting uses stamina; all the numbers are in ReplicatedStorage.Config.
--- Crouching only slows you and sets State.crouching; CameraFeel lowers the view.
+-- Crouching also lowers your view (Humanoid.CameraOffset), eased so it sinks smoothly.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -15,11 +15,13 @@ local humanoid = nil
 local shiftHeld = false
 local crouchWanted = false -- toggle mode: flipped by the crouch key; hold mode: true while it's held
 local lastSprintTime = -math.huge -- when you last sprinted (for the refill delay)
+local crouchMix = 0 -- 0 standing .. 1 crouched (eased, so the view sinks smoothly)
 
 local function onCharacter(character)
 	humanoid = character:WaitForChild("Humanoid")
 	State.stamina, State.sprinting, State.exhausted, State.crouching = 1, false, false, false
 	crouchWanted = false
+	crouchMix = 0
 	humanoid.WalkSpeed = Config.WALK_SPEED
 end
 player.CharacterAdded:Connect(onCharacter)
@@ -84,4 +86,9 @@ RunService.Heartbeat:Connect(function(dt)
 	if humanoid.WalkSpeed ~= speed then
 		humanoid.WalkSpeed = speed
 	end
+
+	-- crouching lowers your eyes. CameraOffset moves the view without moving the body.
+	local target = State.crouching and 1 or 0
+	crouchMix += (target - crouchMix) * (1 - math.exp(-Config.CROUCH_CAMERA_SMOOTHING * dt))
+	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, 0)
 end)
