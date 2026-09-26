@@ -85,6 +85,14 @@ Config.BREATH_HEIGHT_TIRED = 0.15
 Config.BREATH_NOD_CALM = 0.15       -- how far the view tilts up per breath (degrees)
 Config.BREATH_NOD_TIRED = 1.2
 
+-- Breathing sound (only you hear it). Louder and faster the less stamina you have.
+Config.BREATH_SOUND_ID = 0          -- the sound's ID number from the Creator Store (0 = no sound)
+Config.BREATH_VOLUME_CALM = 0       -- volume when rested (0 = silent)
+Config.BREATH_VOLUME_TIRED = 0.8    -- volume when out of stamina
+Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slower and deeper)
+Config.BREATH_SPEED_TIRED = 1.15    -- playback speed when out of breath (faster panting)
+Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamina (higher = quicker)
+
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu

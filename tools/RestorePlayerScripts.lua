@@ -96,6 +96,14 @@ Config.BREATH_HEIGHT_TIRED = 0.15
 Config.BREATH_NOD_CALM = 0.15       -- how far the view tilts up per breath (degrees)
 Config.BREATH_NOD_TIRED = 1.2
 
+-- Breathing sound (only you hear it). Louder and faster the less stamina you have.
+Config.BREATH_SOUND_ID = 0          -- the sound's ID number from the Creator Store (0 = no sound)
+Config.BREATH_VOLUME_CALM = 0       -- volume when rested (0 = silent)
+Config.BREATH_VOLUME_TIRED = 0.8    -- volume when out of stamina
+Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slower and deeper)
+Config.BREATH_SPEED_TIRED = 1.15    -- playback speed when out of breath (faster panting)
+Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamina (higher = quicker)
+
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu
@@ -608,5 +616,50 @@ end)
 ]=]
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.StaminaBar")
+end
+do
+	local parent = game
+	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("BreathingSound")
+	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	s = s or Instance.new("LocalScript")
+	s.Name = "BreathingSound"
+	s.Source = [=[
+-- BreathingSound (LocalScript in StarterPlayer > StarterPlayerScripts)
+-- Your own breathing: quiet when rested, louder and faster the lower your stamina is.
+-- Only you hear it (it plays on your own computer, not out in the world).
+-- The sound and all the numbers are in ReplicatedStorage.Config.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local SoundService = game:GetService("SoundService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local State = require(script.Parent:WaitForChild("MovementState"))
+
+if not Config.BREATH_SOUND_ID or Config.BREATH_SOUND_ID == 0 then
+	warn("[BreathingSound] No sound yet: put a sound ID number in Config.BREATH_SOUND_ID")
+	return
+end
+
+local sound = Instance.new("Sound")
+sound.Name = "Breathing"
+sound.SoundId = "rbxassetid://" .. Config.BREATH_SOUND_ID
+sound.Looped = true
+sound.Volume = 0
+sound.Parent = SoundService
+sound:Play()
+
+local function lerp(a, b, t) return a + (b - a) * t end
+local level = 0 -- 0 rested .. 1 out of breath (eased, so the sound swells and fades smoothly)
+
+RunService.Heartbeat:Connect(function(dt)
+	local tired = State.exhausted and 1 or (1 - State.stamina)
+	level = lerp(level, tired, 1 - math.exp(-Config.BREATH_SOUND_SMOOTHING * dt))
+	sound.Volume = lerp(Config.BREATH_VOLUME_CALM, Config.BREATH_VOLUME_TIRED, level)
+	sound.PlaybackSpeed = lerp(Config.BREATH_SPEED_CALM, Config.BREATH_SPEED_TIRED, level)
+end)
+]=]
+	s.Parent = parent
+	table.insert(done, "StarterPlayer.StarterPlayerScripts.BreathingSound")
 end
 print("INSTALL" .. "ED: " .. table.concat(done, ", "))
