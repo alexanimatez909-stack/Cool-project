@@ -23,6 +23,7 @@ Milestones, in order:
 - Stages instead of equal bells: Dusk (bell 1: lamps on, light fog, spread out), Deep night (bell 2: some districts go dark, main hunting time), Last hour (bell 3: short tense push), then dawn.
 - Darkness by district, not the whole city: 2–3 districts go dark each night, chosen at random so killers can't camp one spot. Courthouse Square is always lit. Lit = safe to search but full of witnesses; dark = killer opportunities, but clues there are valuable.
 - Lanterns are a trade-off: on = you see clues nearby but everyone sees you from afar; off = hidden but can't search well. Walking a dark district with the lantern off is suspicious (a social clue).
+- Built: ServerScriptService.NightCycle runs the clock. It publishes the time as workspace attributes (Night, Phase "Night"/"Day", Stage 0–3, StageName, StageEndsAt, DarkDistricts e.g. "Soho,Docks"). Fog, street lamps, lanterns and on-screen clocks should react to those attributes (GetAttributeChangedSignal) rather than keep their own timers. District names match Config.DISTRICT_HEIGHTS keys.
 - Balance comes from playtesting with every lever in Config. Aim for the smallest playable loop early (night clock, dark districts, lantern, one kill, one clue, vote) rather than waiting for all systems; test with friends using simple placeholder rules.
 
 ## Engineering rules
