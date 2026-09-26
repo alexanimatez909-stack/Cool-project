@@ -118,7 +118,18 @@ Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a sett
 -- AVATARS: everyone the same size with standard animations (fair hiding, same camera height)
 ---------------------------------------------------------------------
 Config.AVATAR_SCALE = { Height = 1, Width = 1, Depth = 1, Head = 1, BodyType = 0, Proportion = 0 }
-Config.FORCE_STANDARD_ANIMATIONS = true -- ignore animation packs (Ninja, Zombie...) and use Roblox's standard ones
+-- Everyone uses these animations, whatever pack they own. Catalog IDs of Roblox animations; 0 = Roblox's standard one.
+-- Currently the Rthro pack (Roblox's most natural-looking one).
+Config.AVATAR_ANIMATIONS = {
+	Walk = 2510202577,
+	Run = 2510198475,
+	Idle = 2510197257,
+	Jump = 2510197830,
+	Fall = 2510195892,
+	Climb = 2510192778,
+	Swim = 2510199791,
+	Mood = 0,
+}
 Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
 
 ---------------------------------------------------------------------
@@ -748,8 +759,8 @@ do
 	s.Name = "AvatarRules"
 	s.Source = [=[
 -- AvatarRules (Script in ServerScriptService)
--- Makes every player's avatar the same size and gives everyone the standard Roblox animations,
--- whatever animation pack or body they own. Fair hiding (no tiny avatars) and the same
+-- Makes every player's avatar the same size and gives everyone the same animations
+-- (Config.AVATAR_ANIMATIONS), whatever animation pack or body they own. Fair hiding (no tiny avatars) and the same
 -- first-person camera height for everyone. The rules are in ReplicatedStorage.Config.
 -- Runs on the server because only the server can change what an avatar looks like for everyone.
 local Players = game:GetService("Players")
@@ -757,8 +768,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
-local ANIMATIONS = { "ClimbAnimation", "FallAnimation", "IdleAnimation", "JumpAnimation",
-	"RunAnimation", "SwimAnimation", "WalkAnimation", "MoodAnimation" }
 local BODY_PARTS = { "Head", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg" }
 
 local function applyRules(character)
@@ -773,10 +782,9 @@ local function applyRules(character)
 	description.BodyTypeScale = scale.BodyType
 	description.ProportionScale = scale.Proportion
 
-	if Config.FORCE_STANDARD_ANIMATIONS then
-		for _, name in ANIMATIONS do
-			description[name] = 0 -- 0 = Roblox's standard animation
-		end
+	-- everyone moves the same way (0 = Roblox's standard animation)
+	for name, id in Config.AVATAR_ANIMATIONS do
+		description[name .. "Animation"] = id
 	end
 	if Config.FORCE_DEFAULT_BODY_PARTS then
 		for _, name in BODY_PARTS do

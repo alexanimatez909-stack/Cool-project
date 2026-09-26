@@ -1,6 +1,6 @@
 -- AvatarRules (Script in ServerScriptService)
--- Makes every player's avatar the same size and gives everyone the standard Roblox animations,
--- whatever animation pack or body they own. Fair hiding (no tiny avatars) and the same
+-- Makes every player's avatar the same size and gives everyone the same animations
+-- (Config.AVATAR_ANIMATIONS), whatever animation pack or body they own. Fair hiding (no tiny avatars) and the same
 -- first-person camera height for everyone. The rules are in ReplicatedStorage.Config.
 -- Runs on the server because only the server can change what an avatar looks like for everyone.
 local Players = game:GetService("Players")
@@ -8,8 +8,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 
-local ANIMATIONS = { "ClimbAnimation", "FallAnimation", "IdleAnimation", "JumpAnimation",
-	"RunAnimation", "SwimAnimation", "WalkAnimation", "MoodAnimation" }
 local BODY_PARTS = { "Head", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg" }
 
 local function applyRules(character)
@@ -24,10 +22,9 @@ local function applyRules(character)
 	description.BodyTypeScale = scale.BodyType
 	description.ProportionScale = scale.Proportion
 
-	if Config.FORCE_STANDARD_ANIMATIONS then
-		for _, name in ANIMATIONS do
-			description[name] = 0 -- 0 = Roblox's standard animation
-		end
+	-- everyone moves the same way (0 = Roblox's standard animation)
+	for name, id in Config.AVATAR_ANIMATIONS do
+		description[name .. "Animation"] = id
 	end
 	if Config.FORCE_DEFAULT_BODY_PARTS then
 		for _, name in BODY_PARTS do
