@@ -73,7 +73,7 @@ Config.BOB_ROLL_SPRINT = 0.2
 -- Camera weight: the view follows the mouse with a tiny smooth delay instead of snapping.
 -- Higher = snappier (lighter), lower = heavier. 0 switches it off. Not turned off by reduce motion (it calms the view).
 Config.CAMERA_TURN_SMOOTHING = 10
-Config.CAMERA_MAX_LAG = 30          -- the heavy view never trails more than this many degrees behind the mouse
+Config.CAMERA_MAX_LAG = 180         -- the heavy view never trails more than this many degrees behind the mouse
 
 -- Tilt: gentle and smooth, like DOORS
 Config.STRAFE_TILT = 1              -- lean into a sidestep (A/D) at full walking speed
@@ -85,8 +85,16 @@ Config.TILT_SPRING_STIFFNESS = 60   -- how hard it pulls towards the lean (highe
 Config.TILT_SPRING_DAMPING = 8      -- how quickly the swinging dies down (lower = more wobble, higher = no overshoot)
 
 -- Out of breath (while the stamina bar is red)
-Config.EXHAUSTED_SHAKE = 0.6        -- wobble size
-Config.EXHAUSTED_SHAKE_SPEED = 1.8  -- wobble speed
+Config.EXHAUSTED_SHAKE = 2          -- wobble size
+Config.EXHAUSTED_SHAKE_SPEED = 2.5  -- wobble speed
+
+-- Breathing: the view gently rises and falls. Faint when rested, deep and quick when out of breath.
+Config.BREATH_RATE_CALM = 0.25      -- breaths per second when rested
+Config.BREATH_RATE_TIRED = 0.9      -- breaths per second when out of breath
+Config.BREATH_HEIGHT_CALM = 0.03    -- how far the view rises per breath (studs)
+Config.BREATH_HEIGHT_TIRED = 0.15
+Config.BREATH_NOD_CALM = 0.15       -- how far the view tilts up per breath (degrees)
+Config.BREATH_NOD_TIRED = 1.2
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
@@ -295,7 +303,8 @@ do
 	s.Source = [=[
 -- CameraFeel (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- DOORS-style reactive first-person camera: head bob on every footstep, a lean when you
--- turn or sidestep, a wider view while sprinting, and a wobble when you're out of breath.
+-- turn or sidestep, a wider view while sprinting, breathing (faint when rested, heavy when
+-- tired) and a wobble when you're out of breath.
 -- Every frame, Roblox's own camera script places the camera; this runs straight after it
 -- and nudges that position, so the effects never build up or fight the mouse.
 -- All numbers are in ReplicatedStorage.Config. "Reduce motion" (Z for now) turns the effects off.
@@ -321,6 +330,8 @@ local roll = 0           -- current lean
 local rollVelocity = 0   -- how fast the lean is changing (the spring's momentum)
 local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
+local breathAmount = 0   -- 0 rested .. 1 out of breath (eased)
+local breathPhase = 0    -- one full breath per turn (2*pi)
 local fov = Config.CAMERA_FOV
 local lagPitch, lagYaw = nil, nil                        -- where the "heavy" view is actually looking
 local mouseYaw, lastBaseYaw = nil, nil                   -- total turning so far (keeps counting past a full circle)
@@ -387,6 +398,15 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	shakeAmount = lerp(shakeAmount, State.exhausted and 1 or 0, smooth(3, dt))
 	shakeTime += dt * Config.EXHAUSTED_SHAKE_SPEED
 
+	-- breathing: the view slowly rises and falls. Faint and slow when rested,
+	-- deep and quick the more stamina you've used, heaviest when you've run out.
+	local tired = State.exhausted and 1 or (1 - State.stamina)
+	breathAmount = lerp(breathAmount, tired, smooth(1.5, dt))
+	breathPhase += dt * lerp(Config.BREATH_RATE_CALM, Config.BREATH_RATE_TIRED, breathAmount) * 2 * math.pi
+	local breath = math.sin(breathPhase)
+	local breathY = breath * lerp(Config.BREATH_HEIGHT_CALM, Config.BREATH_HEIGHT_TIRED, breathAmount)
+	local breathPitch = breath * lerp(Config.BREATH_NOD_CALM, Config.BREATH_NOD_TIRED, breathAmount)
+
 	-- camera weight: ease the view towards where the mouse points instead of snapping to it
 	local basePitch, baseYaw = camera.CFrame:ToOrientation()
 	-- Add up how far the mouse turned this frame. Comparing against the running total (instead of
@@ -430,11 +450,11 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	local bobY = -land * height * bobAmount                      -- head drops as the foot lands
 	local bobX = math.sin(phase) * sway * bobAmount              -- left foot, right foot
 	local shake = Config.EXHAUSTED_SHAKE * shakeAmount
-	local pitch = math.noise(shakeTime, 0.3) * shake - land * nod * bobAmount -- and nods down with it
+	local pitch = math.noise(shakeTime, 0.3) * shake - land * nod * bobAmount + breathPitch -- and nods down with it
 	local turn = math.noise(0.7, shakeTime) * shake
 
 	applied = lag
-		* CFrame.new(bobX, bobY, 0)
+		* CFrame.new(bobX, bobY + breathY, 0)
 		* CFrame.Angles(math.rad(pitch), math.rad(turn), math.rad(roll + math.sin(phase) * bobRoll * bobAmount))
 	camera.CFrame = camera.CFrame * applied
 end)

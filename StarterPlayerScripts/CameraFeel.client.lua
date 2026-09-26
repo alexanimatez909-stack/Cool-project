@@ -1,6 +1,7 @@
 -- CameraFeel (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- DOORS-style reactive first-person camera: head bob on every footstep, a lean when you
--- turn or sidestep, a wider view while sprinting, and a wobble when you're out of breath.
+-- turn or sidestep, a wider view while sprinting, breathing (faint when rested, heavy when
+-- tired) and a wobble when you're out of breath.
 -- Every frame, Roblox's own camera script places the camera; this runs straight after it
 -- and nudges that position, so the effects never build up or fight the mouse.
 -- All numbers are in ReplicatedStorage.Config. "Reduce motion" (Z for now) turns the effects off.
@@ -26,6 +27,8 @@ local roll = 0           -- current lean
 local rollVelocity = 0   -- how fast the lean is changing (the spring's momentum)
 local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
+local breathAmount = 0   -- 0 rested .. 1 out of breath (eased)
+local breathPhase = 0    -- one full breath per turn (2*pi)
 local fov = Config.CAMERA_FOV
 local lagPitch, lagYaw = nil, nil                        -- where the "heavy" view is actually looking
 local mouseYaw, lastBaseYaw = nil, nil                   -- total turning so far (keeps counting past a full circle)
@@ -92,6 +95,15 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	shakeAmount = lerp(shakeAmount, State.exhausted and 1 or 0, smooth(3, dt))
 	shakeTime += dt * Config.EXHAUSTED_SHAKE_SPEED
 
+	-- breathing: the view slowly rises and falls. Faint and slow when rested,
+	-- deep and quick the more stamina you've used, heaviest when you've run out.
+	local tired = State.exhausted and 1 or (1 - State.stamina)
+	breathAmount = lerp(breathAmount, tired, smooth(1.5, dt))
+	breathPhase += dt * lerp(Config.BREATH_RATE_CALM, Config.BREATH_RATE_TIRED, breathAmount) * 2 * math.pi
+	local breath = math.sin(breathPhase)
+	local breathY = breath * lerp(Config.BREATH_HEIGHT_CALM, Config.BREATH_HEIGHT_TIRED, breathAmount)
+	local breathPitch = breath * lerp(Config.BREATH_NOD_CALM, Config.BREATH_NOD_TIRED, breathAmount)
+
 	-- camera weight: ease the view towards where the mouse points instead of snapping to it
 	local basePitch, baseYaw = camera.CFrame:ToOrientation()
 	-- Add up how far the mouse turned this frame. Comparing against the running total (instead of
@@ -135,11 +147,11 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	local bobY = -land * height * bobAmount                      -- head drops as the foot lands
 	local bobX = math.sin(phase) * sway * bobAmount              -- left foot, right foot
 	local shake = Config.EXHAUSTED_SHAKE * shakeAmount
-	local pitch = math.noise(shakeTime, 0.3) * shake - land * nod * bobAmount -- and nods down with it
+	local pitch = math.noise(shakeTime, 0.3) * shake - land * nod * bobAmount + breathPitch -- and nods down with it
 	local turn = math.noise(0.7, shakeTime) * shake
 
 	applied = lag
-		* CFrame.new(bobX, bobY, 0)
+		* CFrame.new(bobX, bobY + breathY, 0)
 		* CFrame.Angles(math.rad(pitch), math.rad(turn), math.rad(roll + math.sin(phase) * bobRoll * bobAmount))
 	camera.CFrame = camera.CFrame * applied
 end)

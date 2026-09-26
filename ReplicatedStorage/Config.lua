@@ -62,7 +62,7 @@ Config.BOB_ROLL_SPRINT = 0.2
 -- Camera weight: the view follows the mouse with a tiny smooth delay instead of snapping.
 -- Higher = snappier (lighter), lower = heavier. 0 switches it off. Not turned off by reduce motion (it calms the view).
 Config.CAMERA_TURN_SMOOTHING = 10
-Config.CAMERA_MAX_LAG = 30          -- the heavy view never trails more than this many degrees behind the mouse
+Config.CAMERA_MAX_LAG = 180         -- the heavy view never trails more than this many degrees behind the mouse
 
 -- Tilt: gentle and smooth, like DOORS
 Config.STRAFE_TILT = 1              -- lean into a sidestep (A/D) at full walking speed
@@ -74,8 +74,16 @@ Config.TILT_SPRING_STIFFNESS = 60   -- how hard it pulls towards the lean (highe
 Config.TILT_SPRING_DAMPING = 8      -- how quickly the swinging dies down (lower = more wobble, higher = no overshoot)
 
 -- Out of breath (while the stamina bar is red)
-Config.EXHAUSTED_SHAKE = 0.6        -- wobble size
-Config.EXHAUSTED_SHAKE_SPEED = 1.8  -- wobble speed
+Config.EXHAUSTED_SHAKE = 2          -- wobble size
+Config.EXHAUSTED_SHAKE_SPEED = 2.5  -- wobble speed
+
+-- Breathing: the view gently rises and falls. Faint when rested, deep and quick when out of breath.
+Config.BREATH_RATE_CALM = 0.25      -- breaths per second when rested
+Config.BREATH_RATE_TIRED = 0.9      -- breaths per second when out of breath
+Config.BREATH_HEIGHT_CALM = 0.03    -- how far the view rises per breath (studs)
+Config.BREATH_HEIGHT_TIRED = 0.15
+Config.BREATH_NOD_CALM = 0.15       -- how far the view tilts up per breath (degrees)
+Config.BREATH_NOD_TIRED = 1.2
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
