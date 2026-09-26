@@ -126,10 +126,10 @@ Config.AVATAR_ANIMATIONS = {
 	Walk = 2510202577,
 	Run = 2510198475,
 	Idle = 0,          -- TODO: Rthro Idle catalog ID (2510197257 was wrong)
-	Jump = 2510197830,
+	Jump = 0,          -- TODO: Rthro Jump catalog ID (2510197830 was wrong)
 	Fall = 2510195892,
 	Climb = 0,         -- TODO: Rthro Climb catalog ID (2510192778 was wrong)
-	Swim = 2510199791,
+	Swim = 0,          -- TODO: Rthro Swim catalog ID (2510199791 was wrong)
 	Mood = 0,
 }
 Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
