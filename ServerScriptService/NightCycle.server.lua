@@ -40,7 +40,10 @@ local function toll(times)
 		for _ = 1, times do
 			local bell = bellTemplate:Clone()
 			bell.Parent = workspace -- not inside a part, so everyone hears it everywhere
-			bell.Ended:Once(function() bell:Destroy() end)
+			-- remove it only after the echo has faded too (removing it earlier cuts the echo off)
+			bell.Ended:Once(function()
+				task.delay(Config.BELL_ECHO_TIME, function() bell:Destroy() end)
+			end)
 			bell:Play()
 			task.wait(Config.BELL_TOLL_GAP)
 		end
