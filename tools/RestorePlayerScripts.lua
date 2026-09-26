@@ -98,6 +98,7 @@ Config.BREATH_NOD_TIRED = 1.2
 
 -- Breathing sound (only you hear it). Louder and faster the less stamina you have.
 Config.BREATH_SOUND_ID = 0          -- the sound's ID number from the Creator Store (0 = no sound)
+Config.BREATH_SOUND_START_AT = 0.35 -- breathing starts when stamina drops below 35%, loudest at 0%
 Config.BREATH_VOLUME_CALM = 0       -- volume when rested (0 = silent)
 Config.BREATH_VOLUME_TIRED = 0.8    -- volume when out of stamina
 Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slower and deeper)
@@ -626,7 +627,7 @@ do
 	s.Name = "BreathingSound"
 	s.Source = [=[
 -- BreathingSound (LocalScript in StarterPlayer > StarterPlayerScripts)
--- Your own breathing: quiet when rested, louder and faster the lower your stamina is.
+-- Your own breathing: silent until stamina is low, then louder and faster as it runs out.
 -- Only you hear it (it plays on your own computer, not out in the world).
 -- The sound and all the numbers are in ReplicatedStorage.Config.
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -653,7 +654,11 @@ local function lerp(a, b, t) return a + (b - a) * t end
 local level = 0 -- 0 rested .. 1 out of breath (eased, so the sound swells and fades smoothly)
 
 RunService.Heartbeat:Connect(function(dt)
-	local tired = State.exhausted and 1 or (1 - State.stamina)
+	-- silent above BREATH_SOUND_START_AT; from there it builds up to full at empty stamina,
+	-- and stays full while you're out of breath (red bar)
+	local start = Config.BREATH_SOUND_START_AT
+	local tired = math.clamp((start - State.stamina) / start, 0, 1)
+	if State.exhausted then tired = 1 end
 	level = lerp(level, tired, 1 - math.exp(-Config.BREATH_SOUND_SMOOTHING * dt))
 	sound.Volume = lerp(Config.BREATH_VOLUME_CALM, Config.BREATH_VOLUME_TIRED, level)
 	sound.PlaybackSpeed = lerp(Config.BREATH_SPEED_CALM, Config.BREATH_SPEED_TIRED, level)

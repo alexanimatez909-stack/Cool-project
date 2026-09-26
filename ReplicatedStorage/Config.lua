@@ -87,6 +87,7 @@ Config.BREATH_NOD_TIRED = 1.2
 
 -- Breathing sound (only you hear it). Louder and faster the less stamina you have.
 Config.BREATH_SOUND_ID = 0          -- the sound's ID number from the Creator Store (0 = no sound)
+Config.BREATH_SOUND_START_AT = 0.35 -- breathing starts when stamina drops below 35%, loudest at 0%
 Config.BREATH_VOLUME_CALM = 0       -- volume when rested (0 = silent)
 Config.BREATH_VOLUME_TIRED = 0.8    -- volume when out of stamina
 Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slower and deeper)
