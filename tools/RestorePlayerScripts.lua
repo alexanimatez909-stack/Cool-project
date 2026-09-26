@@ -115,6 +115,13 @@ Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu
 
 ---------------------------------------------------------------------
+-- AVATARS: everyone the same size with standard animations (fair hiding, same camera height)
+---------------------------------------------------------------------
+Config.AVATAR_SCALE = { Height = 1, Width = 1, Depth = 1, Head = 1, BodyType = 0, Proportion = 0 }
+Config.FORCE_STANDARD_ANIMATIONS = true -- ignore animation packs (Ninja, Zombie...) and use Roblox's standard ones
+Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
+
+---------------------------------------------------------------------
 -- TEAMS: how many Good / Evil / Informants for each lobby size
 ---------------------------------------------------------------------
 Config.LOBBY_SPLITS = {
@@ -731,5 +738,72 @@ end)
 ]=]
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.FirstPersonBody")
+end
+do
+	local parent = game
+	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("AvatarRules")
+	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	s = s or Instance.new("Script")
+	s.Name = "AvatarRules"
+	s.Source = [=[
+-- AvatarRules (Script in ServerScriptService)
+-- Makes every player's avatar the same size and gives everyone the standard Roblox animations,
+-- whatever animation pack or body they own. Fair hiding (no tiny avatars) and the same
+-- first-person camera height for everyone. The rules are in ReplicatedStorage.Config.
+-- Runs on the server because only the server can change what an avatar looks like for everyone.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+
+local ANIMATIONS = { "ClimbAnimation", "FallAnimation", "IdleAnimation", "JumpAnimation",
+	"RunAnimation", "SwimAnimation", "WalkAnimation", "MoodAnimation" }
+local BODY_PARTS = { "Head", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg" }
+
+local function applyRules(character)
+	local humanoid = character:WaitForChild("Humanoid")
+	local description = humanoid:GetAppliedDescription()
+
+	local scale = Config.AVATAR_SCALE
+	description.HeightScale = scale.Height
+	description.WidthScale = scale.Width
+	description.DepthScale = scale.Depth
+	description.HeadScale = scale.Head
+	description.BodyTypeScale = scale.BodyType
+	description.ProportionScale = scale.Proportion
+
+	if Config.FORCE_STANDARD_ANIMATIONS then
+		for _, name in ANIMATIONS do
+			description[name] = 0 -- 0 = Roblox's standard animation
+		end
+	end
+	if Config.FORCE_DEFAULT_BODY_PARTS then
+		for _, name in BODY_PARTS do
+			description[name] = 0 -- 0 = the standard body part
+		end
+	end
+
+	local ok, err = pcall(function()
+		humanoid:ApplyDescription(description)
+	end)
+	if not ok then
+		warn("[AvatarRules] Couldn't apply avatar rules: " .. tostring(err))
+	end
+end
+
+local function onPlayer(player)
+	player.CharacterAppearanceLoaded:Connect(applyRules)
+end
+Players.PlayerAdded:Connect(onPlayer)
+for _, player in Players:GetPlayers() do -- anyone who joined before this script started
+	onPlayer(player)
+	if player.Character and player:HasAppearanceLoaded() then
+		task.spawn(applyRules, player.Character)
+	end
+end
+]=]
+	s.Parent = parent
+	table.insert(done, "ServerScriptService.AvatarRules")
 end
 print("INSTALL" .. "ED: " .. table.concat(done, ", "))

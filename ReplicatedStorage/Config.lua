@@ -104,6 +104,13 @@ Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu
 
 ---------------------------------------------------------------------
+-- AVATARS: everyone the same size with standard animations (fair hiding, same camera height)
+---------------------------------------------------------------------
+Config.AVATAR_SCALE = { Height = 1, Width = 1, Depth = 1, Head = 1, BodyType = 0, Proportion = 0 }
+Config.FORCE_STANDARD_ANIMATIONS = true -- ignore animation packs (Ninja, Zombie...) and use Roblox's standard ones
+Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
+
+---------------------------------------------------------------------
 -- TEAMS: how many Good / Evil / Informants for each lobby size
 ---------------------------------------------------------------------
 Config.LOBBY_SPLITS = {
