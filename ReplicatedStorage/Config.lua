@@ -96,6 +96,7 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 
 -- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
 Config.SHOW_BODY_IN_FIRST_PERSON = true
+Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false } -- which parts you see when you look down
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- how much your arms swing in first person (0 = still at your sides, 1 = full animation)
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)

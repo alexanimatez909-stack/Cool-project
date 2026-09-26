@@ -107,6 +107,7 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 
 -- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
 Config.SHOW_BODY_IN_FIRST_PERSON = true
+Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false } -- which parts you see when you look down
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- how much your arms swing in first person (0 = still at your sides, 1 = full animation)
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)
@@ -701,10 +702,10 @@ do
 	s.Name = "FirstPersonBody"
 	s.Source = [=[
 -- FirstPersonBody (LocalScript in StarterPlayer > StarterPlayerScripts)
--- Lets you see your own body (torso, arms, legs) when you look down in first person.
+-- Lets you see your own body when you look down in first person.
 -- Every frame Roblox hides your whole character in first person; straight after that, this shows
--- it again, except your head and anything worn on it (hats, hair), because the camera sits
--- inside your head.
+-- the body parts chosen in Config.FIRST_PERSON_BODY (legs / torso / arms) and anything worn on
+-- them. The head always stays hidden, because the camera sits inside it.
 -- Your arms also swing less in first person (Config.FIRST_PERSON_ARM_SWING) so they stay low and
 -- close to your body instead of swinging into view. Only you see that; others see the full animation.
 -- Until there's a crouch animation (Config.CROUCH_ANIMATION_ID), the body hides while you crouch,
@@ -718,15 +719,36 @@ local State = require(script.Parent:WaitForChild("MovementState"))
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
--- true for the head itself and for accessories worn on it (hats, hair, glasses).
--- An accessory is worn on the head if its attachment point (e.g. HatAttachment,
--- HairAttachment) is one of the head's attachment points.
-local function isOnHead(part, head)
-	if part == head then return true end
+local BODY_GROUPS = {
+	Legs = { "LowerTorso", "LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot" },
+	Torso = { "UpperTorso" },
+	Arms = { "LeftUpperArm", "LeftLowerArm", "LeftHand", "RightUpperArm", "RightLowerArm", "RightHand" },
+}
+
+-- the body parts to show right now, as a set: shown[part] = true
+local function shownParts(character)
+	local shown = {}
+	for group, names in BODY_GROUPS do
+		if Config.FIRST_PERSON_BODY[group] then
+			for _, name in names do
+				local part = character:FindFirstChild(name)
+				if part then shown[part] = true end
+			end
+		end
+	end
+	return shown
+end
+
+-- a body part is visible if it's in the shown set; an accessory (belt, jacket, hat...) is visible
+-- if the body part it hangs from is shown. Anything on the head is therefore always hidden.
+local function isVisible(part, shown)
+	if shown[part] then return true end
 	if not part:FindFirstAncestorOfClass("Accessory") then return false end
 	for _, attachment in part:GetChildren() do
-		if attachment:IsA("Attachment") and head:FindFirstChild(attachment.Name) then
-			return true
+		if attachment:IsA("Attachment") then
+			for bodyPart in shown do
+				if bodyPart:FindFirstChild(attachment.Name) then return true end
+			end
 		end
 	end
 	return false
@@ -745,9 +767,10 @@ RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value 
 	if not head or not isFirstPerson(head) then return end
 
 	local hideBody = State.crouching and Config.CROUCH_ANIMATION_ID == 0
+	local shown = shownParts(character)
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then
-			part.LocalTransparencyModifier = (hideBody or isOnHead(part, head)) and 1 or 0
+			part.LocalTransparencyModifier = (not hideBody and isVisible(part, shown)) and 0 or 1
 		end
 	end
 end)
