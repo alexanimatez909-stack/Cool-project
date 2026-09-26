@@ -13,6 +13,8 @@
 --   StageEndsAt    when this stage ends, in workspace:GetServerTimeNow() seconds (for countdowns)
 --   DarkDistricts  districts without lamps right now, e.g. "Soho,Docks" ("" = none)
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local speed = Config.NIGHT_TEST_SPEED -- 1 = normal; higher runs the whole cycle faster for testing
@@ -21,16 +23,36 @@ local random = Random.new()
 -- the bell: each toll is a fresh copy, so one toll can ring out while the next starts
 local bellTemplate = nil
 if Config.BELL_SOUND_ID ~= 0 then
+	-- The echo sits on a sound group (like a channel on a mixing desk) rather than on the sound:
+	-- an echo on the sound itself stops dead the moment the recording ends.
+	local group = Instance.new("SoundGroup")
+	group.Name = "ChurchBell"
+	local echo = Instance.new("ReverbSoundEffect")
+	echo.DecayTime = Config.BELL_ECHO_TIME
+	echo.WetLevel = Config.BELL_ECHO_LEVEL
+	echo.Parent = group
+	group.Parent = SoundService
+
 	bellTemplate = Instance.new("Sound")
 	bellTemplate.Name = "ChurchBell"
 	bellTemplate.SoundId = "rbxassetid://" .. Config.BELL_SOUND_ID
 	bellTemplate.Volume = 1
 	bellTemplate.PlaybackSpeed = Config.BELL_SPEED -- below 1 = slower, deeper and longer
-	-- echo: a long fading tail after each toll, like the sound rolling round the streets
-	local echo = Instance.new("ReverbSoundEffect")
-	echo.DecayTime = Config.BELL_ECHO_TIME
-	echo.WetLevel = Config.BELL_ECHO_LEVEL
-	echo.Parent = bellTemplate
+	bellTemplate.SoundGroup = group
+end
+
+local function playToll()
+	local bell = bellTemplate:Clone()
+	bell.Parent = workspace -- not inside a part, so everyone hears it everywhere
+	bell:Play()
+	if not bell.IsLoaded then bell.Loaded:Wait() end
+	-- fade the recording out over its last few seconds, so it never ends with a sudden cut
+	local length = bell.TimeLength / bell.PlaybackSpeed
+	local fade = math.min(Config.BELL_FADE_TIME, length)
+	task.delay(length - fade, function()
+		TweenService:Create(bell, TweenInfo.new(fade), { Volume = 0 }):Play()
+	end)
+	task.delay(length + Config.BELL_ECHO_TIME, function() bell:Destroy() end)
 end
 
 local function toll(times)
@@ -38,13 +60,7 @@ local function toll(times)
 	if not bellTemplate then return end
 	task.spawn(function()
 		for _ = 1, times do
-			local bell = bellTemplate:Clone()
-			bell.Parent = workspace -- not inside a part, so everyone hears it everywhere
-			-- remove it only after the echo has faded too (removing it earlier cuts the echo off)
-			bell.Ended:Once(function()
-				task.delay(Config.BELL_ECHO_TIME, function() bell:Destroy() end)
-			end)
-			bell:Play()
+			task.spawn(playToll)
 			task.wait(Config.BELL_TOLL_GAP)
 		end
 	end)
