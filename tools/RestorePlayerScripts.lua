@@ -105,6 +105,10 @@ Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slowe
 Config.BREATH_SPEED_TIRED = 1.15    -- playback speed when out of breath (faster panting)
 Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamina (higher = quicker)
 
+-- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
+Config.SHOW_BODY_IN_FIRST_PERSON = true
+Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)
+
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu
@@ -666,5 +670,58 @@ end)
 ]=]
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.BreathingSound")
+end
+do
+	local parent = game
+	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("FirstPersonBody")
+	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	s = s or Instance.new("LocalScript")
+	s.Name = "FirstPersonBody"
+	s.Source = [=[
+-- FirstPersonBody (LocalScript in StarterPlayer > StarterPlayerScripts)
+-- Lets you see your own body (torso, arms, legs) when you look down in first person.
+-- Every frame Roblox hides your whole character in first person; straight after that, this shows
+-- it again, except your head and anything worn on it (hats, hair), because the camera sits
+-- inside your head.
+-- Until there's a crouch animation (Config.CROUCH_ANIMATION_ID), the body hides while you crouch,
+-- because the lowered camera would otherwise end up inside your chest.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local State = require(script.Parent:WaitForChild("MovementState"))
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- true for the head itself and for accessories (hats, hair) attached to it
+local function isOnHead(part, head)
+	if part == head then return true end
+	if not part:FindFirstAncestorOfClass("Accessory") then return false end
+	local weld = part:FindFirstChild("AccessoryWeld")
+	return weld ~= nil and (weld.Part0 == head or weld.Part1 == head)
+end
+
+RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value + 2, function()
+	if not Config.SHOW_BODY_IN_FIRST_PERSON then return end
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	if not head then return end
+	-- only in first person (in third person Roblox shows everything anyway)
+	local firstPerson = player.CameraMode == Enum.CameraMode.LockFirstPerson
+		or (camera.CFrame.Position - head.Position).Magnitude < 3
+	if not firstPerson then return end
+
+	local hideBody = State.crouching and Config.CROUCH_ANIMATION_ID == 0
+	for _, part in character:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.LocalTransparencyModifier = (hideBody or isOnHead(part, head)) and 1 or 0
+		end
+	end
+end)
+]=]
+	s.Parent = parent
+	table.insert(done, "StarterPlayer.StarterPlayerScripts.FirstPersonBody")
 end
 print("INSTALL" .. "ED: " .. table.concat(done, ", "))

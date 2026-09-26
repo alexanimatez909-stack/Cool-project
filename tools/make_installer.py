@@ -11,6 +11,7 @@ SCRIPTS = [
     ("StarterPlayerScripts/FirstPerson.client.lua", "StarterPlayer.StarterPlayerScripts", "FirstPerson", "LocalScript"),
     ("StarterPlayerScripts/StaminaBar.client.lua", "StarterPlayer.StarterPlayerScripts", "StaminaBar", "LocalScript"),
     ("StarterPlayerScripts/BreathingSound.client.lua", "StarterPlayer.StarterPlayerScripts", "BreathingSound", "LocalScript"),
+    ("StarterPlayerScripts/FirstPersonBody.client.lua", "StarterPlayer.StarterPlayerScripts", "FirstPersonBody", "LocalScript"),
 ]
 
 out = ["-- Paste into Studio's Command Bar (View > Command Bar) and press Enter.",

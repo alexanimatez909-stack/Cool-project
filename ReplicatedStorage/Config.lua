@@ -94,6 +94,10 @@ Config.BREATH_SPEED_CALM = 0.9      -- playback speed when rested (lower = slowe
 Config.BREATH_SPEED_TIRED = 1.15    -- playback speed when out of breath (faster panting)
 Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamina (higher = quicker)
 
+-- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
+Config.SHOW_BODY_IN_FIRST_PERSON = true
+Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)
+
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
 Config.REDUCE_MOTION_KEY = "Z"      -- temporary toggle key until there's a settings menu
