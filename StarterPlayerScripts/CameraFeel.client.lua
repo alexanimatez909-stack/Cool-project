@@ -1,0 +1,172 @@
+-- CameraFeel (LocalScript in StarterPlayer > StarterPlayerScripts)
+-- DOORS-style reactive first-person camera: head bob on every footstep, a lean when you
+-- turn or sidestep, a wider view while sprinting, and a wobble when you're out of breath.
+-- Every frame, Roblox's own camera script places the camera; this runs straight after it
+-- and nudges that position, so the effects never build up or fight the mouse.
+-- All numbers are in ReplicatedStorage.Config. "Reduce motion" (Z for now) turns the effects off.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local State = require(script.Parent:WaitForChild("MovementState"))
+local player = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+State.reduceMotion = Config.REDUCE_MOTION_DEFAULT
+
+local function lerp(a, b, t) return a + (b - a) * t end
+local function smooth(rate, dt) return 1 - math.exp(-rate * dt) end -- frame-rate independent easing
+
+local phase = 0          -- walking cycle: one footstep every half turn (pi)
+local bobAmount = 0      -- 0 standing still .. 1 walking
+local sprintMix = 0      -- 0 walking .. 1 sprinting (eased, so bob size changes smoothly)
+local roll = 0           -- current lean
+local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
+local shakeTime = 0
+local fov = Config.CAMERA_FOV
+local baseFov = Config.CAMERA_FOV                        -- the test key can change these two
+local turnSmoothing = Config.CAMERA_TURN_SMOOTHING
+local lagPitch, lagYaw = nil, nil                        -- where the "heavy" view is actually looking
+local lastYaw = nil
+local applied = CFrame.identity -- the effect added last frame
+
+-- Roblox's camera script starts each frame from wherever the camera was left, so an effect
+-- left in place would pile up frame after frame (the view creeps down or sideways).
+-- Just before it runs, take last frame's effect back off; it's added fresh afterwards.
+RunService:BindToRenderStep("CameraFeelUndo", Enum.RenderPriority.Camera.Value - 1, function()
+	camera.CFrame = camera.CFrame * applied:Inverse()
+	applied = CFrame.identity
+end)
+
+RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, function(dt)
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not humanoid or not root or humanoid.Health <= 0 then return end
+	local reduce = State.reduceMotion
+
+	-- wider view while sprinting
+	local targetFov = baseFov + ((State.sprinting and not reduce) and (Config.SPRINT_FOV - Config.CAMERA_FOV) or 0)
+	fov = lerp(fov, targetFov, smooth(Config.FOV_SMOOTHING, dt))
+	camera.FieldOfView = fov
+
+	local velocity = root.AssemblyLinearVelocity
+	local flat = Vector3.new(velocity.X, 0, velocity.Z)
+	local speed = flat.Magnitude
+	local grounded = humanoid.FloorMaterial ~= Enum.Material.Air
+
+	-- head bob, tied to distance walked so every dip is a footstep
+	sprintMix = lerp(sprintMix, State.sprinting and 1 or 0, smooth(6, dt))
+	local stepLength = lerp(Config.BOB_STEP_LENGTH_WALK, Config.BOB_STEP_LENGTH_SPRINT, sprintMix)
+	if grounded and speed > 0.5 then
+		local before = math.floor(phase / math.pi)
+		phase += speed * dt / stepLength * math.pi
+		if math.floor(phase / math.pi) > before then
+			State.footsteps += 1
+		end
+	end
+	local moving = grounded and speed > 0.5
+	bobAmount = lerp(bobAmount, moving and math.min(speed / Config.WALK_SPEED, 1.3) or 0, smooth(8, dt))
+
+	-- turning and sidestepping lean
+	local look = camera.CFrame.LookVector
+	local yaw = math.deg(math.atan2(-look.X, -look.Z))
+	local yawRate = 0
+	if lastYaw then
+		yawRate = (yaw - lastYaw + 180) % 360 - 180 -- shortest way round
+		yawRate /= math.max(dt, 1e-3)
+	end
+	lastYaw = yaw
+	local strafe = camera.CFrame.RightVector:Dot(flat) / Config.WALK_SPEED
+	local targetRoll = -strafe * Config.STRAFE_TILT + yawRate * Config.TURN_TILT
+	targetRoll = math.clamp(targetRoll, -Config.TILT_MAX, Config.TILT_MAX)
+	roll = lerp(roll, targetRoll, smooth(Config.TILT_SMOOTHING, dt))
+
+	-- out-of-breath wobble
+	shakeAmount = lerp(shakeAmount, State.exhausted and 1 or 0, smooth(3, dt))
+	shakeTime += dt * Config.EXHAUSTED_SHAKE_SPEED
+
+	-- camera weight: ease the view towards where the mouse points instead of snapping to it
+	local basePitch, baseYaw = camera.CFrame:ToOrientation()
+	if turnSmoothing > 0 and lagYaw then
+		local a = smooth(turnSmoothing, dt)
+		lagPitch = lerp(lagPitch, basePitch, a)
+		lagYaw += ((baseYaw - lagYaw + math.pi) % (2 * math.pi) - math.pi) * a -- shortest way round
+	else
+		lagPitch, lagYaw = basePitch, baseYaw
+	end
+	local lag = CFrame.fromOrientation(basePitch, baseYaw, 0):Inverse() * CFrame.fromOrientation(lagPitch, lagYaw, 0)
+
+	if reduce then
+		applied = lag
+		camera.CFrame = camera.CFrame * applied
+		return
+	end
+
+	local height = lerp(Config.BOB_HEIGHT_WALK, Config.BOB_HEIGHT_SPRINT, sprintMix)
+	local sway = lerp(Config.BOB_SWAY_WALK, Config.BOB_SWAY_SPRINT, sprintMix)
+	local bobRoll = lerp(Config.BOB_ROLL_WALK, Config.BOB_ROLL_SPRINT, sprintMix)
+	local nod = lerp(Config.BOB_NOD_WALK, Config.BOB_NOD_SPRINT, sprintMix)
+	-- 'land' peaks sharply each time a foot lands (every half turn of the cycle, when a footstep is counted)
+	local land = 1 - math.abs(math.sin(phase))
+	local bobY = -land * height * bobAmount                      -- head drops as the foot lands
+	local bobX = math.sin(phase) * sway * bobAmount              -- left foot, right foot
+	local shake = Config.EXHAUSTED_SHAKE * shakeAmount
+	local pitch = math.noise(shakeTime, 0.3) * shake - land * nod * bobAmount -- and nods down with it
+	local turn = math.noise(0.7, shakeTime) * shake
+
+	applied = lag
+		* CFrame.new(bobX, bobY, 0)
+		* CFrame.Angles(math.rad(pitch), math.rad(turn), math.rad(roll + math.sin(phase) * bobRoll * bobAmount))
+	camera.CFrame = camera.CFrame * applied
+end)
+
+-- "Reduce motion" toggle, with a short message so you know it changed
+local toast = Instance.new("ScreenGui")
+toast.Name = "ReduceMotionMessage"
+toast.ResetOnSpawn = false
+local text = Instance.new("TextLabel")
+text.AnchorPoint = Vector2.new(0.5, 0)
+text.Position = UDim2.new(0.5, 0, 0, 80)
+text.Size = UDim2.fromOffset(300, 28)
+text.BackgroundTransparency = 1
+text.TextColor3 = Color3.fromRGB(215, 210, 200)
+text.TextStrokeTransparency = 0.5
+text.TextSize = 18
+text.Font = Enum.Font.Gotham
+text.Visible = false
+text.Parent = toast
+toast.Parent = player:WaitForChild("PlayerGui")
+
+local shown = 0
+local function message(s)
+	text.Text = s
+	text.Visible = true
+	shown += 1
+	local mine = shown
+	task.delay(2, function()
+		if shown == mine then text.Visible = false end
+	end)
+end
+
+local WEIGHT_NAMES = { [0] = "off" }
+local function cycle(list, current)
+	local i = table.find(list, current) or 0
+	return list[i % #list + 1]
+end
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if gameProcessed then return end
+	if input.KeyCode == Enum.KeyCode[Config.REDUCE_MOTION_KEY] then
+		State.reduceMotion = not State.reduceMotion
+		message("Reduce motion: " .. (State.reduceMotion and "ON" or "OFF"))
+	elseif Config.CAMERA_TEST_KEYS and input.KeyCode == Enum.KeyCode[Config.TEST_WEIGHT_KEY] then
+		turnSmoothing = cycle(Config.TEST_WEIGHT_STEPS, turnSmoothing)
+		message("Camera weight: " .. (WEIGHT_NAMES[turnSmoothing] or tostring(turnSmoothing)) .. "  (lower = heavier)")
+	elseif Config.CAMERA_TEST_KEYS and input.KeyCode == Enum.KeyCode[Config.TEST_FOV_KEY] then
+		baseFov = cycle(Config.TEST_FOV_STEPS, baseFov)
+		message("Field of view: " .. baseFov)
+	end
+end)
