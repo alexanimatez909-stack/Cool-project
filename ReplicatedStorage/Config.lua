@@ -23,6 +23,8 @@ Config.BELL_SPEED = 0.85             -- 1 = as recorded; lower = slower, deeper 
 Config.BELL_ECHO_TIME = 6            -- seconds the echo takes to fade away (higher = slower fade)
 Config.BELL_ECHO_LEVEL = 0           -- how loud the echo is (0 = as loud as the bell, -10 = quieter)
 Config.BELL_FADE_TIME = 3            -- each toll fades out over its last few seconds (hides a sudden cut)
+Config.NIGHT_START_DELAY = 5        -- seconds between being gathered in the Courthouse Square and the first bell
+Config.NIGHT_SPAWN_RADIUS = 15       -- players are spread in a circle this wide (studs) round the NightSpawn marker
 Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
 Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 

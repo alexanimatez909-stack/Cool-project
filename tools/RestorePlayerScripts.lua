@@ -34,6 +34,8 @@ Config.BELL_SPEED = 0.85             -- 1 = as recorded; lower = slower, deeper 
 Config.BELL_ECHO_TIME = 6            -- seconds the echo takes to fade away (higher = slower fade)
 Config.BELL_ECHO_LEVEL = 0           -- how loud the echo is (0 = as loud as the bell, -10 = quieter)
 Config.BELL_FADE_TIME = 3            -- each toll fades out over its last few seconds (hides a sudden cut)
+Config.NIGHT_START_DELAY = 5        -- seconds between being gathered in the Courthouse Square and the first bell
+Config.NIGHT_SPAWN_RADIUS = 15       -- players are spread in a circle this wide (studs) round the NightSpawn marker
 Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
 Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 
@@ -943,7 +945,8 @@ do
 	s.Name = "NightCycle"
 	s.Source = [=[
 -- NightCycle (Script in ServerScriptService)
--- The game's clock. The church bell starts each stage of the night (Dusk, Deep night,
+-- The game's clock. Each night everyone is gathered in the Courthouse Square (at the part named
+-- "NightSpawn"), then the church bell starts each stage of the night (Dusk, Deep night,
 -- Last hour); at Deep night a few random districts go dark; then day; then the next night.
 -- Runs on the server so every player hears the same bell at the same moment.
 -- All lengths and choices are in ReplicatedStorage.Config.
@@ -959,6 +962,8 @@ do
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+
+local Players = game:GetService("Players")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local speed = Config.NIGHT_TEST_SPEED -- 1 = normal; higher runs the whole cycle faster for testing
@@ -1039,6 +1044,26 @@ local function pickDarkDistricts()
 	return picked
 end
 
+-- Put everyone in the Courthouse Square, spread evenly round the NightSpawn marker, facing outward
+local function gatherPlayers()
+	local marker = workspace:FindFirstChild("NightSpawn", true)
+	if not marker then
+		warn("[NightCycle] No part named NightSpawn in workspace, so players weren't gathered")
+		return
+	end
+	local players = Players:GetPlayers()
+	for i, player in players do
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if humanoid and humanoid.Health > 0 then
+			local angle = (i / #players) * 2 * math.pi
+			local offset = Vector3.new(math.cos(angle), 0, math.sin(angle)) * Config.NIGHT_SPAWN_RADIUS
+			local position = marker.Position + offset + Vector3.new(0, 4, 0)
+			character:PivotTo(CFrame.lookAt(position, position + offset))
+		end
+	end
+end
+
 local function setStage(stage, name, seconds)
 	workspace:SetAttribute("Stage", stage)
 	workspace:SetAttribute("StageName", name)
@@ -1052,6 +1077,9 @@ while true do
 	workspace:SetAttribute("Phase", "Night")
 	workspace:SetAttribute("DarkDistricts", "")
 	print(("[NightCycle] ===== Night %d ====="):format(night))
+	gatherPlayers()
+	setStage(0, "Gathering", Config.NIGHT_START_DELAY / speed)
+	task.wait(Config.NIGHT_START_DELAY / speed)
 
 	for i, stage in Config.NIGHT_STAGES do
 		if i == Config.DARK_FROM_STAGE then

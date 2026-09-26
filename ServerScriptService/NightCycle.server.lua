@@ -1,5 +1,6 @@
 -- NightCycle (Script in ServerScriptService)
--- The game's clock. The church bell starts each stage of the night (Dusk, Deep night,
+-- The game's clock. Each night everyone is gathered in the Courthouse Square (at the part named
+-- "NightSpawn"), then the church bell starts each stage of the night (Dusk, Deep night,
 -- Last hour); at Deep night a few random districts go dark; then day; then the next night.
 -- Runs on the server so every player hears the same bell at the same moment.
 -- All lengths and choices are in ReplicatedStorage.Config.
@@ -15,6 +16,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
+
+local Players = game:GetService("Players")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local speed = Config.NIGHT_TEST_SPEED -- 1 = normal; higher runs the whole cycle faster for testing
@@ -95,6 +98,26 @@ local function pickDarkDistricts()
 	return picked
 end
 
+-- Put everyone in the Courthouse Square, spread evenly round the NightSpawn marker, facing outward
+local function gatherPlayers()
+	local marker = workspace:FindFirstChild("NightSpawn", true)
+	if not marker then
+		warn("[NightCycle] No part named NightSpawn in workspace, so players weren't gathered")
+		return
+	end
+	local players = Players:GetPlayers()
+	for i, player in players do
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if humanoid and humanoid.Health > 0 then
+			local angle = (i / #players) * 2 * math.pi
+			local offset = Vector3.new(math.cos(angle), 0, math.sin(angle)) * Config.NIGHT_SPAWN_RADIUS
+			local position = marker.Position + offset + Vector3.new(0, 4, 0)
+			character:PivotTo(CFrame.lookAt(position, position + offset))
+		end
+	end
+end
+
 local function setStage(stage, name, seconds)
 	workspace:SetAttribute("Stage", stage)
 	workspace:SetAttribute("StageName", name)
@@ -108,6 +131,9 @@ while true do
 	workspace:SetAttribute("Phase", "Night")
 	workspace:SetAttribute("DarkDistricts", "")
 	print(("[NightCycle] ===== Night %d ====="):format(night))
+	gatherPlayers()
+	setStage(0, "Gathering", Config.NIGHT_START_DELAY / speed)
+	task.wait(Config.NIGHT_START_DELAY / speed)
 
 	for i, stage in Config.NIGHT_STAGES do
 		if i == Config.DARK_FROM_STAGE then
