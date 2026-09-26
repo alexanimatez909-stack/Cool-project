@@ -23,6 +23,7 @@ local phase = 0          -- walking cycle: one footstep every half turn (pi)
 local bobAmount = 0      -- 0 standing still .. 1 walking
 local sprintMix = 0      -- 0 walking .. 1 sprinting (eased, so bob size changes smoothly)
 local roll = 0           -- current lean
+local rollVelocity = 0   -- how fast the lean is changing (the spring's momentum)
 local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
 local fov = Config.CAMERA_FOV
@@ -80,7 +81,11 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	local strafe = camera.CFrame.RightVector:Dot(flat) / Config.WALK_SPEED
 	local targetRoll = -strafe * Config.STRAFE_TILT + yawRate * Config.TURN_TILT
 	targetRoll = math.clamp(targetRoll, -Config.TILT_MAX, Config.TILT_MAX)
-	roll = lerp(roll, targetRoll, smooth(Config.TILT_SMOOTHING, dt))
+	-- the lean is a spring: it swings towards the target, overshoots a little, then settles,
+	-- so stopping a fast turn makes the view swing past centre and spring back
+	local step = math.min(dt, 1 / 30) -- a very slow frame can't make the spring fly off
+	rollVelocity += ((targetRoll - roll) * Config.TILT_SPRING_STIFFNESS - rollVelocity * Config.TILT_SPRING_DAMPING) * step
+	roll += rollVelocity * step
 
 	-- out-of-breath wobble
 	shakeAmount = lerp(shakeAmount, State.exhausted and 1 or 0, smooth(3, dt))

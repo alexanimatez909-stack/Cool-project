@@ -65,9 +65,11 @@ Config.CAMERA_TURN_SMOOTHING = 10
 
 -- Tilt: gentle and smooth, like DOORS
 Config.STRAFE_TILT = 1              -- lean into a sidestep (A/D) at full walking speed
-Config.TURN_TILT = 0.004            -- lean per degree-per-second of turning the camera
-Config.TILT_MAX = 1.5
-Config.TILT_SMOOTHING = 3           -- lower = the lean eases in and out more slowly
+Config.TURN_TILT = 0.012            -- lean per degree-per-second of turning the camera
+Config.TILT_MAX = 4
+-- The lean moves like a spring, so it overshoots a little and swings back when you stop turning.
+Config.TILT_SPRING_STIFFNESS = 60   -- how hard it pulls towards the lean (higher = quicker)
+Config.TILT_SPRING_DAMPING = 8      -- how quickly the swinging dies down (lower = more wobble, higher = no overshoot)
 
 -- Out of breath (while the stamina bar is red)
 Config.EXHAUSTED_SHAKE = 0.6        -- wobble size
