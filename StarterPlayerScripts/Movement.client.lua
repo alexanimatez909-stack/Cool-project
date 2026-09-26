@@ -1,6 +1,7 @@
 -- Movement (LocalScript in StarterPlayer > StarterPlayerScripts)
--- The one script that decides how fast you move: walk, or sprint while Shift is held.
+-- The one script that decides how fast you move: walk, sprint while Shift is held, or crouch.
 -- Sprinting uses stamina; all the numbers are in ReplicatedStorage.Config.
+-- Crouching only slows you and sets State.crouching; CameraFeel lowers the view.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -12,11 +13,13 @@ local player = Players.LocalPlayer
 
 local humanoid = nil
 local shiftHeld = false
+local crouchWanted = false -- toggle mode: flipped by the crouch key; hold mode: true while it's held
 local lastSprintTime = -math.huge -- when you last sprinted (for the refill delay)
 
 local function onCharacter(character)
 	humanoid = character:WaitForChild("Humanoid")
-	State.stamina, State.sprinting, State.exhausted = 1, false, false
+	State.stamina, State.sprinting, State.exhausted, State.crouching = 1, false, false, false
+	crouchWanted = false
 	humanoid.WalkSpeed = Config.WALK_SPEED
 end
 player.CharacterAdded:Connect(onCharacter)
@@ -25,12 +28,25 @@ if player.Character then
 end
 
 local SPRINT_KEYS = { [Enum.KeyCode.LeftShift] = true, [Enum.KeyCode.RightShift] = true }
+local CROUCH_KEY = Enum.KeyCode[Config.CROUCH_KEY]
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end -- typing in chat, etc.
-	if SPRINT_KEYS[input.KeyCode] then shiftHeld = true end
+	if SPRINT_KEYS[input.KeyCode] then
+		shiftHeld = true
+	elseif input.KeyCode == CROUCH_KEY then
+		if Config.CROUCH_TOGGLE then
+			crouchWanted = not crouchWanted
+		else
+			crouchWanted = true
+		end
+	end
 end)
 UserInputService.InputEnded:Connect(function(input)
-	if SPRINT_KEYS[input.KeyCode] then shiftHeld = false end
+	if SPRINT_KEYS[input.KeyCode] then
+		shiftHeld = false
+	elseif input.KeyCode == CROUCH_KEY and not Config.CROUCH_TOGGLE then
+		crouchWanted = false
+	end
 end)
 
 RunService.Heartbeat:Connect(function(dt)
@@ -53,7 +69,18 @@ RunService.Heartbeat:Connect(function(dt)
 		State.exhausted = false
 	end
 
-	local speed = State.sprinting and Config.SPRINT_SPEED or Config.WALK_SPEED
+	-- sprinting stands you up; in toggle mode you stay standing afterwards
+	if State.sprinting and Config.CROUCH_TOGGLE then
+		crouchWanted = false
+	end
+	State.crouching = crouchWanted and not State.sprinting
+
+	local speed = Config.WALK_SPEED
+	if State.sprinting then
+		speed = Config.SPRINT_SPEED
+	elseif State.crouching then
+		speed = Config.CROUCH_SPEED
+	end
 	if humanoid.WalkSpeed ~= speed then
 		humanoid.WalkSpeed = speed
 	end

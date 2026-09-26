@@ -1,6 +1,7 @@
 -- CameraFeel (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- DOORS-style reactive first-person camera: head bob on every footstep, a lean when you
--- turn or sidestep, a wider view while sprinting, and a wobble when you're out of breath.
+-- turn or sidestep, a wider view while sprinting, a wobble when you're out of breath,
+-- and a lower view while crouching.
 -- Every frame, Roblox's own camera script places the camera; this runs straight after it
 -- and nudges that position, so the effects never build up or fight the mouse.
 -- All numbers are in ReplicatedStorage.Config. "Reduce motion" (Z for now) turns the effects off.
@@ -25,6 +26,7 @@ local sprintMix = 0      -- 0 walking .. 1 sprinting (eased, so bob size changes
 local roll = 0           -- current lean
 local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
+local crouchMix = 0      -- 0 standing .. 1 crouched (eased, so the view sinks smoothly)
 local fov = Config.CAMERA_FOV
 local baseFov = Config.CAMERA_FOV                        -- the test key can change these two
 local turnSmoothing = Config.CAMERA_TURN_SMOOTHING
@@ -46,6 +48,12 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	local root = character and character:FindFirstChild("HumanoidRootPart")
 	if not humanoid or not root or humanoid.Health <= 0 then return end
 	local reduce = State.reduceMotion
+
+	-- crouching lowers your eyes. CameraOffset is Roblox's own "move the view, not the body"
+	-- setting, so it doesn't pile up like the effects below. Stays on with reduce motion,
+	-- because it shows where your head really is.
+	crouchMix = lerp(crouchMix, State.crouching and 1 or 0, smooth(Config.CROUCH_CAMERA_SMOOTHING, dt))
+	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, 0)
 
 	-- wider view while sprinting
 	local targetFov = baseFov + ((State.sprinting and not reduce) and (Config.SPRINT_FOV - Config.CAMERA_FOV) or 0)
