@@ -17,7 +17,7 @@ Config.DARK_FROM_STAGE = 2           -- districts go dark when this bell rings
 Config.DARK_DISTRICT_CHOICES = { "Market", "Terraces", "Soho", "CathedralQtr", "Docks" } -- Courthouse Square never goes dark
 Config.DARK_DISTRICTS_MIN = 2        -- how many districts go dark each night (picked at random)
 Config.DARK_DISTRICTS_MAX = 3
-Config.BELL_SOUND_ID = 0             -- church bell sound ID number (0 = silent for now)
+Config.BELL_SOUND_ID = 6891548543            -- church bell sound ID number (0 = silent for now)
 Config.BELL_TOLL_GAP = 2.5           -- seconds between tolls (bell 2 tolls twice, bell 3 three times)
 Config.BELL_SPEED = 0.85             -- 1 = as recorded; lower = slower, deeper and longer
 Config.BELL_ECHO_TIME = 6            -- seconds the echo takes to fade away (higher = slower fade)
