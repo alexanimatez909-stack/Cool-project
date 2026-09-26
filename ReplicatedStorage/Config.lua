@@ -59,17 +59,6 @@ Config.BOB_SWAY_SPRINT = 0.04
 Config.BOB_ROLL_WALK = 0.1          -- slight roll with each step
 Config.BOB_ROLL_SPRINT = 0.2
 
--- Camera weight: the view follows the mouse with a tiny smooth delay instead of snapping.
--- Higher = snappier (lighter). 0 switches it off. Not turned off by reduce motion (it calms the view).
-Config.CAMERA_TURN_SMOOTHING = 18
-
--- Temporary test keys while tuning the camera (switch off before release)
-Config.CAMERA_TEST_KEYS = true
-Config.TEST_WEIGHT_KEY = "X"        -- cycles camera weight: off / light / medium / heavy
-Config.TEST_WEIGHT_STEPS = { 0, 30, 18, 10 }
-Config.TEST_FOV_KEY = "V"           -- cycles the normal field of view (sprinting adds the same amount on top)
-Config.TEST_FOV_STEPS = { 60, 65, 70, 75 }
-
 -- Tilt: gentle and smooth, like DOORS
 Config.STRAFE_TILT = 1              -- lean into a sidestep (A/D) at full walking speed
 Config.TURN_TILT = 0.004            -- lean per degree-per-second of turning the camera
