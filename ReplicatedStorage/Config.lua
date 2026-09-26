@@ -86,7 +86,7 @@ Config.BREATH_NOD_CALM = 0.15       -- how far the view tilts up per breath (deg
 Config.BREATH_NOD_TIRED = 1.2
 
 -- Breathing sound (only you hear it). Louder and faster the less stamina you have.
-Config.BREATH_SOUND_ID = 0          -- the sound's ID number from the Creator Store (0 = no sound)
+Config.BREATH_SOUND_ID = 8258601662         -- the sound's ID number from the Creator Store (0 = no sound)
 Config.BREATH_SOUND_START_AT = 0.35 -- breathing starts when stamina drops below 35%, loudest at 0%
 Config.BREATH_VOLUME_CALM = 0       -- volume when rested (0 = silent)
 Config.BREATH_VOLUME_TIRED = 0.8    -- volume when out of stamina
