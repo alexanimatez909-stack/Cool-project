@@ -909,6 +909,7 @@ if Config.BELL_SOUND_ID ~= 0 then
 	-- an echo on the sound itself stops dead the moment the recording ends.
 	local group = Instance.new("SoundGroup")
 	group.Name = "ChurchBell"
+	group.Volume = 1 -- a sound group starts at half volume otherwise
 	local echo = Instance.new("ReverbSoundEffect")
 	echo.DecayTime = Config.BELL_ECHO_TIME
 	echo.WetLevel = Config.BELL_ECHO_LEVEL
@@ -923,13 +924,31 @@ if Config.BELL_SOUND_ID ~= 0 then
 	bellTemplate.SoundGroup = group
 end
 
+-- how long one toll lasts, in seconds. Measured once and remembered: a fresh copy can briefly
+-- report a length of 0, which would make it fade out instantly.
+local bellLength = nil
+local function measureLength(bell)
+	if bellLength then return bellLength end
+	local started = os.clock()
+	while bell.TimeLength == 0 and os.clock() - started < 5 do
+		task.wait()
+	end
+	if bell.TimeLength > 0 then
+		bellLength = bell.TimeLength / bell.PlaybackSpeed
+	end
+	return bellLength
+end
+
 local function playToll()
 	local bell = bellTemplate:Clone()
 	bell.Parent = workspace -- not inside a part, so everyone hears it everywhere
 	bell:Play()
-	if not bell.IsLoaded then bell.Loaded:Wait() end
+	local length = measureLength(bell)
+	if not length then -- couldn't find out how long it is: no fade, just clean up later
+		task.delay(30, function() bell:Destroy() end)
+		return
+	end
 	-- fade the recording out over its last few seconds, so it never ends with a sudden cut
-	local length = bell.TimeLength / bell.PlaybackSpeed
 	local fade = math.min(Config.BELL_FADE_TIME, length)
 	task.delay(length - fade, function()
 		TweenService:Create(bell, TweenInfo.new(fade), { Volume = 0 }):Play()
