@@ -25,6 +25,12 @@ if Config.BELL_SOUND_ID ~= 0 then
 	bellTemplate.Name = "ChurchBell"
 	bellTemplate.SoundId = "rbxassetid://" .. Config.BELL_SOUND_ID
 	bellTemplate.Volume = 1
+	bellTemplate.PlaybackSpeed = Config.BELL_SPEED -- below 1 = slower, deeper and longer
+	-- echo: a long fading tail after each toll, like the sound rolling round the streets
+	local echo = Instance.new("ReverbSoundEffect")
+	echo.DecayTime = Config.BELL_ECHO_TIME
+	echo.WetLevel = Config.BELL_ECHO_LEVEL
+	echo.Parent = bellTemplate
 end
 
 local function toll(times)
