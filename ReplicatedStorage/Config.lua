@@ -113,10 +113,10 @@ Config.AVATAR_SCALE = { Height = 1, Width = 1, Depth = 1, Head = 1, BodyType = 0
 Config.AVATAR_ANIMATIONS = {
 	Walk = 2510202577,
 	Run = 2510198475,
-	Idle = 2510197257,
+	Idle = 0,          -- TODO: Rthro Idle catalog ID (2510197257 was wrong)
 	Jump = 2510197830,
 	Fall = 2510195892,
-	Climb = 2510192778,
+	Climb = 0,         -- TODO: Rthro Climb catalog ID (2510192778 was wrong)
 	Swim = 2510199791,
 	Mood = 0,
 }
