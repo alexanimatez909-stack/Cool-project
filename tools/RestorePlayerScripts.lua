@@ -625,10 +625,10 @@ end
 do
 	local parent = game
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
-	local s = parent:FindFirstChild("BreathingSound")
+	local s = parent:FindFirstChild("Breathing_Sound")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
 	s = s or Instance.new("LocalScript")
-	s.Name = "BreathingSound"
+	s.Name = "Breathing_Sound"
 	s.Source = [=[
 -- BreathingSound (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Your own breathing: silent until stamina is low, then louder and faster as it runs out.
@@ -669,7 +669,7 @@ RunService.Heartbeat:Connect(function(dt)
 end)
 ]=]
 	s.Parent = parent
-	table.insert(done, "StarterPlayer.StarterPlayerScripts.BreathingSound")
+	table.insert(done, "StarterPlayer.StarterPlayerScripts.Breathing_Sound")
 end
 do
 	local parent = game
