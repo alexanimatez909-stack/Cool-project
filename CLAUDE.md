@@ -45,12 +45,18 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Dawn: church bell tolls once per death; missing players named, never where/when/how. Bodies must be found.
 - Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Shade (evil); Editor (Informants).
 
-## Evidence
-- DESIGN IN PROGRESS (not settled; talk it through with Alexander before building): he now wants ANY action to be able to leave traces, not only evil ones, and some traces help clear a player (ease suspicion). Clues carry over to later nights but become less accurate over time. The points below are the older draft.
-- Only evil actions leave clues. Each clue answers How / When / Where / Why / Who.
-- Who clues list a few names; the real culprit is always included (except forgeries).
-- Held clues auto-pin after two nights; clues drop on death; every kill leaves one clue that can't be destroyed.
-- Searching for clues only works alone (disturbed if others are within a few metres).
+## Evidence (agreed with Alexander; replaces the older "only evil actions leave clues" draft)
+- Victorian forensics (Sherlock Holmes, not CSI): observation and reasoning. One clue is never enough to convict; clues lead to other clues and only a combination narrows it down to one person. Must not be too hard: short sentences, the journal remembers everything.
+- Every clue must point to something players can check: where/when (compare with alibis), temporary marks on a person (sewer muck on boots, blood on a sleeve, items carried; inspectable during the day), and visible identity traits.
+- Visible identity traits: at game start every player is given one or two random visible accessories (e.g. red scarf, top hat, walking cane) so witness and physical clues ("red wool thread") can be matched to people.
+- Any action can leave traces, not only evil ones; some traces help clear a player (alibis). Kills are permanent unless an evil role (e.g. a Cleaner) moves the body; moving it leaves its own traces (a blood trail that fades faster).
+- One trace system: every trace has type, where, when, who made it (hidden), how long it lasts, and which question it answers (How/When/Where/Why/Who). New clue types are new entries in a list, not new code.
+- Trace vs clue: a trace is the thing in the world; examining it gives a clue, which gets vaguer the older the trace is (fresh footprint = direction, speed, a minute ago; last night's = "someone passed through"). This is how clues carry over between nights but lose accuracy.
+- Roles as experts: everyone gets the basic reading of a trace; experts get more (Inspector: footprints and scenes; Physician: bodies, time and cause of death; Watchman: routes and streets).
+- Finding clues at night: they glint in lantern light when you're close AND make a subtle sound nearby. Investigating: hold E for a few seconds (only when nobody is right next to you), and some clues use small mini-tasks (e.g. matching a footprint). Found clues go into a journal and get marked on the paper map.
+- First traces to build: the kill scene (permanent), footprints (fade fast; crouching leaves almost none), blood trail (fades).
+- Still open: does the original kill spot always keep something permanent even if the body is moved; which mini-tasks; the accessory list and whether players' own accessories are removed; how clues get onto the evidence board; forgeries.
+- Older draft points still worth keeping: Who clues list a few names including the culprit; clues drop on death; searching only works alone.
 
 ## Map plan files (source of truth for the greybox)
 - map-plan.png: to-scale plan for humans. map-plan.json: exact coordinates for building. map-plan-generator.py: the Python script that produced both (edit and rerun to change the layout).
