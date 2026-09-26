@@ -60,6 +60,8 @@ Config.STAMINA_REFILL_DELAY = 2 -- pause after you stop sprinting before it star
 Config.STAMINA_REFILL_TIME = 5  -- empty to full while walking or standing
 Config.STAMINA_RESPRINT_AT = 0.25 -- after running out, you can't sprint again until the bar is back to 25%
 Config.STAMINA_BAR_HIDE_DELAY = 1.5 -- the bar fades away this long after it's full again
+Config.STAMINA_BAR_WIDTH = 180      -- length of the stamina line (pixels)
+Config.STAMINA_BAR_MARGIN = 36      -- distance from the bottom-left corner of the screen (pixels)
 
 ---------------------------------------------------------------------
 -- CAMERA FEEL (DOORS-style). Distances in studs, angles in degrees.
