@@ -3,6 +3,8 @@
 -- Every frame Roblox hides your whole character in first person; straight after that, this shows
 -- it again, except your head and anything worn on it (hats, hair), because the camera sits
 -- inside your head.
+-- Your arms also swing less in first person (Config.FIRST_PERSON_ARM_SWING) so they stay low and
+-- close to your body instead of swinging into view. Only you see that; others see the full animation.
 -- Until there's a crouch animation (Config.CROUCH_ANIMATION_ID), the body hides while you crouch,
 -- because the lowered camera would otherwise end up inside your chest.
 local Players = game:GetService("Players")
@@ -28,20 +30,39 @@ local function isOnHead(part, head)
 	return false
 end
 
+local function isFirstPerson(head)
+	return player.CameraMode == Enum.CameraMode.LockFirstPerson
+		or (camera.CFrame.Position - head.Position).Magnitude < 3
+end
+
 RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value + 2, function()
 	if not Config.SHOW_BODY_IN_FIRST_PERSON then return end
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
-	if not head then return end
 	-- only in first person (in third person Roblox shows everything anyway)
-	local firstPerson = player.CameraMode == Enum.CameraMode.LockFirstPerson
-		or (camera.CFrame.Position - head.Position).Magnitude < 3
-	if not firstPerson then return end
+	if not head or not isFirstPerson(head) then return end
 
 	local hideBody = State.crouching and Config.CROUCH_ANIMATION_ID == 0
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then
 			part.LocalTransparencyModifier = (hideBody or isOnHead(part, head)) and 1 or 0
+		end
+	end
+end)
+
+-- Calmer arms: each frame the animation poses the arms, then (just before physics) this pulls
+-- that pose part of the way back to "arms hanging straight at your sides".
+local ARM_JOINTS = { "RightShoulder", "LeftShoulder", "RightElbow", "LeftElbow" }
+RunService.PreSimulation:Connect(function()
+	local swing = Config.FIRST_PERSON_ARM_SWING
+	if swing >= 1 then return end
+	local character = player.Character
+	local head = character and character:FindFirstChild("Head")
+	if not head or not isFirstPerson(head) then return end
+	for _, name in ARM_JOINTS do
+		local joint = character:FindFirstChild(name, true)
+		if joint and joint:IsA("Motor6D") then
+			joint.Transform = CFrame.identity:Lerp(joint.Transform, swing)
 		end
 	end
 end)
