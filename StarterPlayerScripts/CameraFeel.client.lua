@@ -28,6 +28,7 @@ local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
 local fov = Config.CAMERA_FOV
 local lagPitch, lagYaw = nil, nil                        -- where the "heavy" view is actually looking
+local mouseYaw, lastBaseYaw = nil, nil                   -- total turning so far (keeps counting past a full circle)
 local lastYaw = nil
 local applied = CFrame.identity -- the effect added last frame
 
@@ -93,13 +94,30 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 
 	-- camera weight: ease the view towards where the mouse points instead of snapping to it
 	local basePitch, baseYaw = camera.CFrame:ToOrientation()
+	-- Add up how far the mouse turned this frame. Comparing against the running total (instead of
+	-- taking the "shortest way round" to the lagging view) means a very fast fling can never make
+	-- the view turn back the wrong way.
+	if lastBaseYaw then
+		mouseYaw += (baseYaw - lastBaseYaw + math.pi) % (2 * math.pi) - math.pi
+	else
+		mouseYaw = baseYaw
+	end
+	lastBaseYaw = baseYaw
 	if Config.CAMERA_TURN_SMOOTHING > 0 and lagYaw then
 		local a = smooth(Config.CAMERA_TURN_SMOOTHING, dt)
 		lagPitch = lerp(lagPitch, basePitch, a)
-		lagYaw += ((baseYaw - lagYaw + math.pi) % (2 * math.pi) - math.pi) * a -- shortest way round
+		lagYaw = lerp(lagYaw, mouseYaw, a)
+		-- never trail too far behind the mouse
+		local maxLag = math.rad(Config.CAMERA_MAX_LAG)
+		lagYaw = mouseYaw + math.clamp(lagYaw - mouseYaw, -maxLag, maxLag)
+		lagPitch = basePitch + math.clamp(lagPitch - basePitch, -maxLag, maxLag)
 	else
-		lagPitch, lagYaw = basePitch, baseYaw
+		lagPitch, lagYaw = basePitch, mouseYaw
 	end
+	-- keep the running totals small (a full circle is the same direction)
+	local fullTurns = math.floor(mouseYaw / (2 * math.pi)) * 2 * math.pi
+	mouseYaw -= fullTurns
+	lagYaw -= fullTurns
 	local lag = CFrame.fromOrientation(basePitch, baseYaw, 0):Inverse() * CFrame.fromOrientation(lagPitch, lagYaw, 0)
 
 	if reduce then

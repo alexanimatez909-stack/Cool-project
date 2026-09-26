@@ -62,11 +62,13 @@ Config.BOB_ROLL_SPRINT = 0.2
 -- Camera weight: the view follows the mouse with a tiny smooth delay instead of snapping.
 -- Higher = snappier (lighter), lower = heavier. 0 switches it off. Not turned off by reduce motion (it calms the view).
 Config.CAMERA_TURN_SMOOTHING = 10
+Config.CAMERA_MAX_LAG = 30          -- the heavy view never trails more than this many degrees behind the mouse
 
 -- Tilt: gentle and smooth, like DOORS
 Config.STRAFE_TILT = 1              -- lean into a sidestep (A/D) at full walking speed
 Config.TURN_TILT = 0.012            -- lean per degree-per-second of turning the camera
 Config.TILT_MAX = 4
+Config.TILT_SMOOTHING = 6           -- only used by older versions of CameraFeel (safe to keep)
 -- The lean moves like a spring, so it overshoots a little and swings back when you stop turning.
 Config.TILT_SPRING_STIFFNESS = 60   -- how hard it pulls towards the lean (higher = quicker)
 Config.TILT_SPRING_DAMPING = 8      -- how quickly the swinging dies down (lower = more wobble, higher = no overshoot)
