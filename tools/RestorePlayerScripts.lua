@@ -71,8 +71,11 @@ Config.STAMINA_REFILL_DELAY = 2 -- pause after you stop sprinting before it star
 Config.STAMINA_REFILL_TIME = 5  -- empty to full while walking or standing
 Config.STAMINA_RESPRINT_AT = 0.25 -- after running out, you can't sprint again until the bar is back to 25%
 Config.STAMINA_BAR_HIDE_DELAY = 1.5 -- the bar fades away this long after it's full again
-Config.STAMINA_BAR_WIDTH = 180      -- length of the stamina line (pixels)
-Config.STAMINA_BAR_MARGIN = 36      -- distance from the bottom-left corner of the screen (pixels)
+Config.STAMINA_BAR_IMAGE_ID = 0     -- the uploaded art/stamina-frame.png image ID (0 = plain outline for now)
+Config.STAMINA_BAR_SIZE = 0.09      -- height of the whole bar as a share of the screen height (0.09 = 9%)
+Config.STAMINA_BAR_MARGIN = 0.02    -- gap from the bottom-left corner as a share of the screen
+Config.STAMINA_LOW_AT = 0.25        -- below this much stamina (25%) the bar flashes red
+Config.STAMINA_FLASH_SPEED = 6      -- how fast it flashes (higher = faster)
 
 ---------------------------------------------------------------------
 -- CAMERA FEEL (DOORS-style). Distances in studs, angles in degrees.
@@ -592,10 +595,11 @@ do
 	s.Name = "StaminaBar"
 	s.Source = [=[
 -- StaminaBar (LocalScript in StarterPlayer > StarterPlayerScripts)
--- A thin Victorian stamina line in the bottom-left corner: pale ink on a dark track, with a
--- small brass diamond at each end. No numbers; it only appears while stamina isn't full,
--- and turns a dull red and pulses when you've run out.
--- Position, size and colours are in ReplicatedStorage.Config (STAMINA_BAR_...).
+-- The ornate Victorian stamina bar in the bottom-left corner: a brass frame with scrollwork and
+-- "Stamina" written above it (an uploaded image, Config.STAMINA_BAR_IMAGE_ID), with the stamina
+-- line sliding inside it. It only appears while stamina isn't full. When you're low
+-- (below Config.STAMINA_LOW_AT) or out of breath, the whole bar flashes red.
+-- It scales with the screen, so it looks the same size on a phone, laptop or big monitor.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -604,12 +608,15 @@ local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local State = require(script.Parent:WaitForChild("MovementState"))
 local player = Players.LocalPlayer
 
-local WIDTH, HEIGHT = Config.STAMINA_BAR_WIDTH, 3
-local CAP_SIZE = 9                                    -- the brass diamonds
-local FILL_COLOR = Color3.fromRGB(222, 212, 190)      -- pale, like old paper
-local EXHAUSTED_COLOR = Color3.fromRGB(140, 45, 40)   -- dull red
+-- where the see-through channel sits inside the frame image (art/stamina-frame.png, 2048 x 336)
+local IMAGE_ASPECT = 2048 / 336
+local CHANNEL_POSITION = UDim2.fromScale(0.1484, 0.5536)
+local CHANNEL_SIZE = UDim2.fromScale(0.7031, 0.1310)
+
+local FILL_COLOR = Color3.fromRGB(222, 205, 160)      -- warm parchment
+local LOW_COLOR = Color3.fromRGB(150, 40, 34)         -- dull red
+local FLASH_TINT = Color3.fromRGB(255, 95, 80)        -- what the brass frame flashes towards
 local BRASS_COLOR = Color3.fromRGB(176, 141, 79)
-local TRACK_TRANSPARENCY, FILL_TRANSPARENCY, BRASS_TRANSPARENCY = 0.55, 0.1, 0.15
 local FADE_SPEED = 4 -- how fast it fades in and out (per second)
 
 local gui = Instance.new("ScreenGui")
@@ -617,21 +624,25 @@ gui.Name = "StaminaBar"
 gui.ResetOnSpawn = false
 gui.IgnoreGuiInset = true
 
--- holder: bottom-left corner, leaving room for the diamonds
+-- holder: bottom-left, sized as a fraction of the screen height, keeping the image's shape
 local holder = Instance.new("Frame")
 holder.Name = "Holder"
 holder.AnchorPoint = Vector2.new(0, 1)
-holder.Position = UDim2.new(0, Config.STAMINA_BAR_MARGIN, 1, -Config.STAMINA_BAR_MARGIN)
-holder.Size = UDim2.fromOffset(WIDTH, CAP_SIZE)
+holder.Position = UDim2.new(Config.STAMINA_BAR_MARGIN, 0, 1 - Config.STAMINA_BAR_MARGIN, 0)
+holder.Size = UDim2.fromScale(1, Config.STAMINA_BAR_SIZE)
 holder.BackgroundTransparency = 1
 holder.Parent = gui
+local aspect = Instance.new("UIAspectRatioConstraint")
+aspect.AspectRatio = IMAGE_ASPECT
+aspect.DominantAxis = Enum.DominantAxis.Height
+aspect.Parent = holder
 
+-- the dark channel and the stamina line inside it (drawn underneath the frame image)
 local track = Instance.new("Frame")
 track.Name = "Track"
-track.AnchorPoint = Vector2.new(0, 0.5)
-track.Position = UDim2.fromScale(0, 0.5)
-track.Size = UDim2.new(1, 0, 0, HEIGHT)
-track.BackgroundColor3 = Color3.new(0, 0, 0)
+track.Position = CHANNEL_POSITION
+track.Size = CHANNEL_SIZE
+track.BackgroundColor3 = Color3.fromRGB(26, 18, 10)
 track.BorderSizePixel = 0
 track.Parent = holder
 
@@ -641,31 +652,36 @@ fill.Size = UDim2.fromScale(1, 1)
 fill.BackgroundColor3 = FILL_COLOR
 fill.BorderSizePixel = 0
 fill.Parent = track
+local shine = Instance.new("UIGradient") -- lighter at the top, darker at the bottom, like glass
+shine.Rotation = 90
+shine.Color = ColorSequence.new(Color3.new(1, 1, 1), Color3.fromRGB(170, 170, 170))
+shine.Parent = fill
 
 local mark = Instance.new("Frame") -- faint mark where you can sprint again after running out
 mark.Name = "ResprintMark"
 mark.AnchorPoint = Vector2.new(0.5, 0.5)
 mark.Position = UDim2.fromScale(Config.STAMINA_RESPRINT_AT, 0.5)
-mark.Size = UDim2.fromOffset(1, HEIGHT + 6)
+mark.Size = UDim2.new(0, 2, 1, 0)
 mark.BackgroundColor3 = BRASS_COLOR
 mark.BorderSizePixel = 0
 mark.Parent = track
 
--- a small brass diamond at each end of the line
-local function makeCap(x)
-	local cap = Instance.new("Frame")
-	cap.Name = "Cap"
-	cap.AnchorPoint = Vector2.new(0.5, 0.5)
-	cap.Position = UDim2.fromScale(x, 0.5)
-	cap.Size = UDim2.fromOffset(CAP_SIZE * 0.7, CAP_SIZE * 0.7)
-	cap.Rotation = 45
-	cap.BackgroundColor3 = BRASS_COLOR
-	cap.BorderSizePixel = 0
-	cap.ZIndex = 2
-	cap.Parent = holder
-	return cap
+-- the brass frame image on top
+local frame = Instance.new("ImageLabel")
+frame.Name = "Frame"
+frame.Size = UDim2.fromScale(1, 1)
+frame.BackgroundTransparency = 1
+frame.ZIndex = 2
+frame.Parent = holder
+if Config.STAMINA_BAR_IMAGE_ID ~= 0 then
+	frame.Image = "rbxassetid://" .. Config.STAMINA_BAR_IMAGE_ID
+else
+	warn("[StaminaBar] No frame image yet: upload art/stamina-frame.png and put its ID in Config.STAMINA_BAR_IMAGE_ID")
+	local stroke = Instance.new("UIStroke") -- a plain brass outline until the image is uploaded
+	stroke.Color = BRASS_COLOR
+	stroke.Thickness = 2
+	stroke.Parent = track
 end
-local caps = { makeCap(0), makeCap(1) }
 
 gui.Parent = player:WaitForChild("PlayerGui")
 
@@ -677,23 +693,20 @@ RunService.RenderStepped:Connect(function(dt)
 	if not full then fullSince = os.clock() end
 	local want = (not full or os.clock() - fullSince < Config.STAMINA_BAR_HIDE_DELAY) and 1 or 0
 	visibility += math.clamp(want - visibility, -FADE_SPEED * dt, FADE_SPEED * dt)
+	local hide = 1 - visibility
 
 	fill.Size = UDim2.fromScale(State.stamina, 1)
-	local pulse = 0
-	if State.exhausted then
-		fill.BackgroundColor3 = EXHAUSTED_COLOR
-		pulse = (math.sin(os.clock() * 5) + 1) / 2 * 0.4 -- slow throb
-	else
-		fill.BackgroundColor3 = FILL_COLOR
-	end
 
-	local hide = 1 - visibility
-	track.BackgroundTransparency = TRACK_TRANSPARENCY + (1 - TRACK_TRANSPARENCY) * hide
-	fill.BackgroundTransparency = math.min(1, FILL_TRANSPARENCY + pulse + (1 - FILL_TRANSPARENCY) * hide)
-	mark.BackgroundTransparency = 0.5 + 0.5 * hide
-	for _, cap in caps do
-		cap.BackgroundTransparency = BRASS_TRANSPARENCY + (1 - BRASS_TRANSPARENCY) * hide
-	end
+	-- low or out of breath: the line turns red and the whole bar flashes red
+	local low = State.exhausted or State.stamina < Config.STAMINA_LOW_AT
+	local flash = low and (math.sin(os.clock() * Config.STAMINA_FLASH_SPEED) + 1) / 2 or 0
+	fill.BackgroundColor3 = low and LOW_COLOR:Lerp(FLASH_TINT, flash * 0.5) or FILL_COLOR
+	frame.ImageColor3 = Color3.new(1, 1, 1):Lerp(FLASH_TINT, flash * 0.75)
+
+	track.BackgroundTransparency = 0.15 + 0.85 * hide
+	fill.BackgroundTransparency = hide
+	mark.BackgroundTransparency = 0.4 + 0.6 * hide
+	frame.ImageTransparency = hide
 end)
 ]=]
 	s.Parent = parent
