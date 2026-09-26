@@ -17,12 +17,21 @@ do
 local Config = {}
 
 ---------------------------------------------------------------------
--- NIGHT (3 church bells)
+-- NIGHT: three bells start three stages of different lengths (seconds)
 ---------------------------------------------------------------------
-Config.BELLS_PER_NIGHT = 3      -- how many bells ring in one night
-Config.BELL_LENGTH = 45         -- seconds between bells
-Config.FOG_AT_BELL = 2          -- fog rolls in when this bell rings
-Config.LAMPS_OUT_AT_BELL = 3    -- gas lamps flicker out at this bell
+Config.NIGHT_STAGES = {
+	{ name = "Dusk", length = 60 },      -- bell 1: lamps on, light fog, everyone spreads out
+	{ name = "DeepNight", length = 75 }, -- bell 2: some districts go dark, main hunting time
+	{ name = "LastHour", length = 30 },  -- bell 3: short, tense final push
+}
+Config.DARK_FROM_STAGE = 2           -- districts go dark when this bell rings
+Config.DARK_DISTRICT_CHOICES = { "Market", "Terraces", "Soho", "CathedralQtr", "Docks" } -- Courthouse Square never goes dark
+Config.DARK_DISTRICTS_MIN = 2        -- how many districts go dark each night (picked at random)
+Config.DARK_DISTRICTS_MAX = 3
+Config.BELL_SOUND_ID = 0             -- church bell sound ID number (0 = silent for now)
+Config.BELL_TOLL_GAP = 2.5           -- seconds between tolls (bell 2 tolls twice, bell 3 three times)
+Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
+Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 
 ---------------------------------------------------------------------
 -- DAY (debate + vote in the Courthouse)
@@ -858,5 +867,104 @@ end
 ]=]
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.AvatarRules")
+end
+do
+	local parent = game
+	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("NightCycle")
+	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	s = s or Instance.new("Script")
+	s.Name = "NightCycle"
+	s.Source = [=[
+-- NightCycle (Script in ServerScriptService)
+-- The game's clock. The church bell starts each stage of the night (Dusk, Deep night,
+-- Last hour); at Deep night a few random districts go dark; then day; then the next night.
+-- Runs on the server so every player hears the same bell at the same moment.
+-- All lengths and choices are in ReplicatedStorage.Config.
+--
+-- Other scripts (fog, lamps, lanterns, a clock on screen) don't talk to this one directly.
+-- They read the time from attributes on workspace, which every player receives automatically:
+--   Night          which night it is (1, 2, 3...)
+--   Phase          "Night" or "Day"
+--   Stage          0 = day, 1 = Dusk, 2 = Deep night, 3 = Last hour
+--   StageName      "Dusk", "DeepNight", "LastHour" or "Day"
+--   StageEndsAt    when this stage ends, in workspace:GetServerTimeNow() seconds (for countdowns)
+--   DarkDistricts  districts without lamps right now, e.g. "Soho,Docks" ("" = none)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local speed = Config.NIGHT_TEST_SPEED -- 1 = normal; higher runs the whole cycle faster for testing
+local random = Random.new()
+
+-- the bell: each toll is a fresh copy, so one toll can ring out while the next starts
+local bellTemplate = nil
+if Config.BELL_SOUND_ID ~= 0 then
+	bellTemplate = Instance.new("Sound")
+	bellTemplate.Name = "ChurchBell"
+	bellTemplate.SoundId = "rbxassetid://" .. Config.BELL_SOUND_ID
+	bellTemplate.Volume = 1
+end
+
+local function toll(times)
+	print(("[NightCycle] Bell tolls %d time%s"):format(times, times == 1 and "" or "s"))
+	if not bellTemplate then return end
+	task.spawn(function()
+		for _ = 1, times do
+			local bell = bellTemplate:Clone()
+			bell.Parent = workspace -- not inside a part, so everyone hears it everywhere
+			bell.Ended:Once(function() bell:Destroy() end)
+			bell:Play()
+			task.wait(Config.BELL_TOLL_GAP)
+		end
+	end)
+end
+
+local function pickDarkDistricts()
+	local choices = table.clone(Config.DARK_DISTRICT_CHOICES)
+	local count = math.min(random:NextInteger(Config.DARK_DISTRICTS_MIN, Config.DARK_DISTRICTS_MAX), #choices)
+	local picked = {}
+	for _ = 1, count do
+		table.insert(picked, table.remove(choices, random:NextInteger(1, #choices)))
+	end
+	return picked
+end
+
+local function setStage(stage, name, seconds)
+	workspace:SetAttribute("Stage", stage)
+	workspace:SetAttribute("StageName", name)
+	workspace:SetAttribute("StageEndsAt", workspace:GetServerTimeNow() + seconds)
+end
+
+local night = 0
+while true do
+	night += 1
+	workspace:SetAttribute("Night", night)
+	workspace:SetAttribute("Phase", "Night")
+	workspace:SetAttribute("DarkDistricts", "")
+	print(("[NightCycle] ===== Night %d ====="):format(night))
+
+	for i, stage in Config.NIGHT_STAGES do
+		if i == Config.DARK_FROM_STAGE then
+			local dark = pickDarkDistricts()
+			workspace:SetAttribute("DarkDistricts", table.concat(dark, ","))
+			print("[NightCycle] Lamps go out in: " .. table.concat(dark, ", "))
+		end
+		local seconds = stage.length / speed
+		setStage(i, stage.name, seconds)
+		print(("[NightCycle] Bell %d: %s (%d s)"):format(i, stage.name, stage.length))
+		toll(i) -- bell 1 tolls once, bell 2 twice, bell 3 three times
+		task.wait(seconds)
+	end
+
+	-- day: just a pause for now (the Courthouse debate and vote come later)
+	workspace:SetAttribute("Phase", "Day")
+	workspace:SetAttribute("DarkDistricts", "")
+	setStage(0, "Day", Config.DAY_PLACEHOLDER_LENGTH / speed)
+	print(("[NightCycle] ===== DAY (placeholder, %d s) ====="):format(Config.DAY_PLACEHOLDER_LENGTH))
+	task.wait(Config.DAY_PLACEHOLDER_LENGTH / speed)
+end
+]=]
+	s.Parent = parent
+	table.insert(done, "ServerScriptService.NightCycle")
 end
 print("INSTALL" .. "ED: " .. table.concat(done, ", "))

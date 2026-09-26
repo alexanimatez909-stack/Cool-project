@@ -6,12 +6,21 @@
 local Config = {}
 
 ---------------------------------------------------------------------
--- NIGHT (3 church bells)
+-- NIGHT: three bells start three stages of different lengths (seconds)
 ---------------------------------------------------------------------
-Config.BELLS_PER_NIGHT = 3      -- how many bells ring in one night
-Config.BELL_LENGTH = 45         -- seconds between bells
-Config.FOG_AT_BELL = 2          -- fog rolls in when this bell rings
-Config.LAMPS_OUT_AT_BELL = 3    -- gas lamps flicker out at this bell
+Config.NIGHT_STAGES = {
+	{ name = "Dusk", length = 60 },      -- bell 1: lamps on, light fog, everyone spreads out
+	{ name = "DeepNight", length = 75 }, -- bell 2: some districts go dark, main hunting time
+	{ name = "LastHour", length = 30 },  -- bell 3: short, tense final push
+}
+Config.DARK_FROM_STAGE = 2           -- districts go dark when this bell rings
+Config.DARK_DISTRICT_CHOICES = { "Market", "Terraces", "Soho", "CathedralQtr", "Docks" } -- Courthouse Square never goes dark
+Config.DARK_DISTRICTS_MIN = 2        -- how many districts go dark each night (picked at random)
+Config.DARK_DISTRICTS_MAX = 3
+Config.BELL_SOUND_ID = 0             -- church bell sound ID number (0 = silent for now)
+Config.BELL_TOLL_GAP = 2.5           -- seconds between tolls (bell 2 tolls twice, bell 3 three times)
+Config.DAY_PLACEHOLDER_LENGTH = 10   -- for now day is just a pause before the next night
+Config.NIGHT_TEST_SPEED = 1          -- 1 = normal speed; e.g. 5 = the whole cycle runs 5x faster (testing only)
 
 ---------------------------------------------------------------------
 -- DAY (debate + vote in the Courthouse)
