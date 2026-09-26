@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="2048" height="256" viewBox="0 0 1024 128">
+  <defs>
+    <linearGradient id="brass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6df9c"/>
+      <stop offset="0.35" stop-color="#cfa24c"/>
+      <stop offset="0.65" stop-color="#946524"/>
+      <stop offset="1" stop-color="#553611"/>
+    </linearGradient>
+    <linearGradient id="brassSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6b4716"/>
+      <stop offset="0.5" stop-color="#e2bb67"/>
+      <stop offset="1" stop-color="#6b4716"/>
+    </linearGradient>
+    <radialGradient id="ball" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#fff1c2"/>
+      <stop offset="0.45" stop-color="#cfa24c"/>
+      <stop offset="1" stop-color="#553611"/>
+    </radialGradient>
+    <filter id="shadow" x="-5%" y="-30%" width="110%" height="160%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+
+    <!-- a curling scroll (volute): dark outline stroke under a brass stroke -->
+    <g id="scrollUp" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M124,58 C116,44 100,30 80,30 C62,30 54,44 62,52 C68,58 78,54 76,46 C75,41 69,40 66,43"
+            stroke="#2a1806" stroke-width="8"/>
+      <path d="M124,58 C116,44 100,30 80,30 C62,30 54,44 62,52 C68,58 78,54 76,46 C75,41 69,40 66,43"
+            stroke="url(#brassSide)" stroke-width="5"/>
+      <!-- small leaf on the scroll -->
+      <path d="M104,40 C100,30 104,24 112,22 C110,30 110,36 104,40 Z" fill="url(#brass)" stroke="#2a1806" stroke-width="1.3"/>
+      <!-- fine engraved hairline following the scroll -->
+      <path d="M118,52 C110,40 98,34 84,34" stroke="#fff1c2" stroke-width="0.8" opacity="0.6"/>
+    </g>
+
+    <g id="end" stroke-linejoin="round">
+      <!-- scrolls up and down -->
+      <use xlink:href="#scrollUp"/>
+      <use xlink:href="#scrollUp" transform="translate(0,128) scale(1,-1)"/>
+      <!-- collar with beads -->
+      <rect x="130" y="40" width="18" height="48" rx="5" fill="url(#brassSide)" stroke="#2a1806" stroke-width="1.6"/>
+      <line x1="134" y1="44" x2="134" y2="84" stroke="#553611" stroke-width="1"/>
+      <line x1="144" y1="44" x2="144" y2="84" stroke="#553611" stroke-width="1"/>
+      <circle cx="139" cy="38" r="3" fill="url(#ball)" stroke="#2a1806" stroke-width="1"/>
+      <circle cx="139" cy="90" r="3" fill="url(#ball)" stroke="#2a1806" stroke-width="1"/>
+      <!-- stem out to the finial -->
+      <rect x="96" y="58" width="36" height="12" rx="3" fill="url(#brass)" stroke="#2a1806" stroke-width="1.4"/>
+      <rect x="112" y="55" width="6" height="18" rx="2" fill="url(#brassSide)" stroke="#2a1806" stroke-width="1.2"/>
+      <!-- round finial: big ball, a small ball and a little drop -->
+      <circle cx="84" cy="64" r="11" fill="url(#ball)" stroke="#2a1806" stroke-width="1.6"/>
+      <circle cx="84" cy="64" r="6.5" fill="none" stroke="#553611" stroke-width="0.9" opacity="0.8"/>
+      <circle cx="66" cy="64" r="6" fill="url(#ball)" stroke="#2a1806" stroke-width="1.4"/>
+      <path d="M60,64 C54,60 48,61 46,64 C48,67 54,68 60,64 Z" fill="url(#brass)" stroke="#2a1806" stroke-width="1.2"/>
+    </g>
+
+    <!-- calligraphic pen flourish (one half), like engraved Victorian lettering -->
+    <g id="flourish" fill="none" stroke-linecap="round">
+      <path d="M500,41 C470,30 440,40 452,34 C462,29 474,38 462,42 C448,46 420,36 380,40 C350,43 330,41 312,38"
+            stroke="#2a1806" stroke-width="3.2"/>
+      <path d="M500,41 C470,30 440,40 452,34 C462,29 474,38 462,42 C448,46 420,36 380,40 C350,43 330,41 312,38"
+            stroke="url(#brassSide)" stroke-width="1.6"/>
+    </g>
+  </defs>
+
+  <g filter="url(#shadow)">
+    <!-- frame around the channel: outer shape minus the channel (evenodd leaves the channel see-through) -->
+    <path fill-rule="evenodd" fill="url(#brass)" stroke="#2a1806" stroke-width="1.6"
+      d="M152,44 H872 Q880,44 880,52 V76 Q880,84 872,84 H152 Q144,84 144,76 V52 Q144,44 152,44 Z
+         M152,53 V75 H872 V53 Z"/>
+    <!-- engraved grooves -->
+    <line x1="150" y1="47.5" x2="874" y2="47.5" stroke="#553611" stroke-width="0.9" opacity="0.8"/>
+    <line x1="150" y1="80.5" x2="874" y2="80.5" stroke="#553611" stroke-width="0.9" opacity="0.8"/>
+    <!-- beaded rims above and below the frame -->
+    <g id="beads" fill="url(#ball)" stroke="#2a1806" stroke-width="0.7">
+      <circle cx="160" cy="44" r="1.8"/><circle cx="160" cy="84" r="1.8"/><circle cx="172" cy="44" r="1.8"/><circle cx="172" cy="84" r="1.8"/><circle cx="184" cy="44" r="1.8"/><circle cx="184" cy="84" r="1.8"/><circle cx="196" cy="44" r="1.8"/><circle cx="196" cy="84" r="1.8"/><circle cx="208" cy="44" r="1.8"/><circle cx="208" cy="84" r="1.8"/><circle cx="220" cy="44" r="1.8"/><circle cx="220" cy="84" r="1.8"/><circle cx="232" cy="44" r="1.8"/><circle cx="232" cy="84" r="1.8"/><circle cx="244" cy="44" r="1.8"/><circle cx="244" cy="84" r="1.8"/><circle cx="256" cy="44" r="1.8"/><circle cx="256" cy="84" r="1.8"/><circle cx="268" cy="44" r="1.8"/><circle cx="268" cy="84" r="1.8"/><circle cx="280" cy="44" r="1.8"/><circle cx="280" cy="84" r="1.8"/><circle cx="292" cy="44" r="1.8"/><circle cx="292" cy="84" r="1.8"/><circle cx="304" cy="44" r="1.8"/><circle cx="304" cy="84" r="1.8"/><circle cx="316" cy="44" r="1.8"/><circle cx="316" cy="84" r="1.8"/><circle cx="328" cy="44" r="1.8"/><circle cx="328" cy="84" r="1.8"/><circle cx="340" cy="44" r="1.8"/><circle cx="340" cy="84" r="1.8"/><circle cx="352" cy="44" r="1.8"/><circle cx="352" cy="84" r="1.8"/><circle cx="364" cy="44" r="1.8"/><circle cx="364" cy="84" r="1.8"/><circle cx="376" cy="44" r="1.8"/><circle cx="376" cy="84" r="1.8"/><circle cx="388" cy="44" r="1.8"/><circle cx="388" cy="84" r="1.8"/><circle cx="400" cy="44" r="1.8"/><circle cx="400" cy="84" r="1.8"/><circle cx="412" cy="44" r="1.8"/><circle cx="412" cy="84" r="1.8"/><circle cx="424" cy="44" r="1.8"/><circle cx="424" cy="84" r="1.8"/><circle cx="436" cy="44" r="1.8"/><circle cx="436" cy="84" r="1.8"/><circle cx="448" cy="44" r="1.8"/><circle cx="448" cy="84" r="1.8"/><circle cx="460" cy="44" r="1.8"/><circle cx="460" cy="84" r="1.8"/><circle cx="472" cy="44" r="1.8"/><circle cx="472" cy="84" r="1.8"/><circle cx="484" cy="44" r="1.8"/><circle cx="484" cy="84" r="1.8"/><circle cx="544" cy="44" r="1.8"/><circle cx="544" cy="84" r="1.8"/><circle cx="556" cy="44" r="1.8"/><circle cx="556" cy="84" r="1.8"/><circle cx="568" cy="44" r="1.8"/><circle cx="568" cy="84" r="1.8"/><circle cx="580" cy="44" r="1.8"/><circle cx="580" cy="84" r="1.8"/><circle cx="592" cy="44" r="1.8"/><circle cx="592" cy="84" r="1.8"/><circle cx="604" cy="44" r="1.8"/><circle cx="604" cy="84" r="1.8"/><circle cx="616" cy="44" r="1.8"/><circle cx="616" cy="84" r="1.8"/><circle cx="628" cy="44" r="1.8"/><circle cx="628" cy="84" r="1.8"/><circle cx="640" cy="44" r="1.8"/><circle cx="640" cy="84" r="1.8"/><circle cx="652" cy="44" r="1.8"/><circle cx="652" cy="84" r="1.8"/><circle cx="664" cy="44" r="1.8"/><circle cx="664" cy="84" r="1.8"/><circle cx="676" cy="44" r="1.8"/><circle cx="676" cy="84" r="1.8"/><circle cx="688" cy="44" r="1.8"/><circle cx="688" cy="84" r="1.8"/><circle cx="700" cy="44" r="1.8"/><circle cx="700" cy="84" r="1.8"/><circle cx="712" cy="44" r="1.8"/><circle cx="712" cy="84" r="1.8"/><circle cx="724" cy="44" r="1.8"/><circle cx="724" cy="84" r="1.8"/><circle cx="736" cy="44" r="1.8"/><circle cx="736" cy="84" r="1.8"/><circle cx="748" cy="44" r="1.8"/><circle cx="748" cy="84" r="1.8"/><circle cx="760" cy="44" r="1.8"/><circle cx="760" cy="84" r="1.8"/><circle cx="772" cy="44" r="1.8"/><circle cx="772" cy="84" r="1.8"/><circle cx="784" cy="44" r="1.8"/><circle cx="784" cy="84" r="1.8"/><circle cx="796" cy="44" r="1.8"/><circle cx="796" cy="84" r="1.8"/><circle cx="808" cy="44" r="1.8"/><circle cx="808" cy="84" r="1.8"/><circle cx="820" cy="44" r="1.8"/><circle cx="820" cy="84" r="1.8"/><circle cx="832" cy="44" r="1.8"/><circle cx="832" cy="84" r="1.8"/><circle cx="844" cy="44" r="1.8"/><circle cx="844" cy="84" r="1.8"/><circle cx="856" cy="44" r="1.8"/><circle cx="856" cy="84" r="1.8"/>
+    </g>
+    <!-- inner edge of the channel -->
+    <rect x="152" y="53" width="720" height="22" fill="none" stroke="#1b1005" stroke-width="2"/>
+
+    <!-- centre ornament: an oval cartouche with flourishes on both sides, top and bottom -->
+    <use xlink:href="#flourish"/>
+    <use xlink:href="#flourish" transform="translate(1024,0) scale(-1,1)"/>
+    <use xlink:href="#flourish" transform="translate(0,128) scale(1,-1)"/>
+    <use xlink:href="#flourish" transform="translate(1024,128) scale(-1,-1)"/>
+    <ellipse cx="512" cy="40" rx="11" ry="7" fill="url(#brass)" stroke="#2a1806" stroke-width="1.4"/>
+    <circle cx="512" cy="40" r="2.6" fill="url(#ball)" stroke="#2a1806" stroke-width="0.8"/>
+    <ellipse cx="512" cy="88" rx="11" ry="7" fill="url(#brass)" stroke="#2a1806" stroke-width="1.4"/>
+    <circle cx="512" cy="88" r="2.6" fill="url(#ball)" stroke="#2a1806" stroke-width="0.8"/>
+
+    <!-- ends -->
+    <use xlink:href="#end"/>
+    <use xlink:href="#end" transform="translate(1024,0) scale(-1,1)"/>
+  </g>
+</svg>
