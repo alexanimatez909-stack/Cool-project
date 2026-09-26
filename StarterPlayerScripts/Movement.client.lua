@@ -87,8 +87,9 @@ RunService.Heartbeat:Connect(function(dt)
 		humanoid.WalkSpeed = speed
 	end
 
-	-- crouching lowers your eyes. CameraOffset moves the view without moving the body.
+	-- CameraOffset moves the view without moving the body: forward so your eyes sit at the
+	-- front of your head (not behind it), and down while crouching.
 	local target = State.crouching and 1 or 0
 	crouchMix += (target - crouchMix) * (1 - math.exp(-Config.CROUCH_CAMERA_SMOOTHING * dt))
-	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, 0)
+	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, -Config.CAMERA_FORWARD_OFFSET)
 end)

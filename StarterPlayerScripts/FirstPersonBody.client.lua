@@ -14,12 +14,18 @@ local State = require(script.Parent:WaitForChild("MovementState"))
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
--- true for the head itself and for accessories (hats, hair) attached to it
+-- true for the head itself and for accessories worn on it (hats, hair, glasses).
+-- An accessory is worn on the head if its attachment point (e.g. HatAttachment,
+-- HairAttachment) is one of the head's attachment points.
 local function isOnHead(part, head)
 	if part == head then return true end
 	if not part:FindFirstAncestorOfClass("Accessory") then return false end
-	local weld = part:FindFirstChild("AccessoryWeld")
-	return weld ~= nil and (weld.Part0 == head or weld.Part1 == head)
+	for _, attachment in part:GetChildren() do
+		if attachment:IsA("Attachment") and head:FindFirstChild(attachment.Name) then
+			return true
+		end
+	end
+	return false
 end
 
 RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value + 2, function()

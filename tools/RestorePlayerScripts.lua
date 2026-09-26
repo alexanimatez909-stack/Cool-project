@@ -107,6 +107,7 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 
 -- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
 Config.SHOW_BODY_IN_FIRST_PERSON = true
+Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
@@ -297,10 +298,11 @@ RunService.Heartbeat:Connect(function(dt)
 		humanoid.WalkSpeed = speed
 	end
 
-	-- crouching lowers your eyes. CameraOffset moves the view without moving the body.
+	-- CameraOffset moves the view without moving the body: forward so your eyes sit at the
+	-- front of your head (not behind it), and down while crouching.
 	local target = State.crouching and 1 or 0
 	crouchMix += (target - crouchMix) * (1 - math.exp(-Config.CROUCH_CAMERA_SMOOTHING * dt))
-	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, 0)
+	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, -Config.CAMERA_FORWARD_OFFSET)
 end)
 ]=]
 	s.Parent = parent
@@ -695,12 +697,18 @@ local State = require(script.Parent:WaitForChild("MovementState"))
 local player = Players.LocalPlayer
 local camera = workspace.CurrentCamera
 
--- true for the head itself and for accessories (hats, hair) attached to it
+-- true for the head itself and for accessories worn on it (hats, hair, glasses).
+-- An accessory is worn on the head if its attachment point (e.g. HatAttachment,
+-- HairAttachment) is one of the head's attachment points.
 local function isOnHead(part, head)
 	if part == head then return true end
 	if not part:FindFirstAncestorOfClass("Accessory") then return false end
-	local weld = part:FindFirstChild("AccessoryWeld")
-	return weld ~= nil and (weld.Part0 == head or weld.Part1 == head)
+	for _, attachment in part:GetChildren() do
+		if attachment:IsA("Attachment") and head:FindFirstChild(attachment.Name) then
+			return true
+		end
+	end
+	return false
 end
 
 RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value + 2, function()
