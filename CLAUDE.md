@@ -16,8 +16,14 @@ Milestones, in order:
    Map edges are SOFT: streets visibly carry on into a low-detail backdrop city (BackdropData.lua: blocks, fake_streets, passenger viaduct, south-bank skyline across the river), blocked at the edge by props (`edge_blockers`: police cordons, locked gates, road-works hoardings). Behind the props, an invisible collidable safety wall runs along playable_boundary. Add fog so the backdrop fades out. The workhouse & brewery (west) and road works (east) are still solid.
 2. Movement: first-person lock at night, sprint + stamina, crouch.
 3. DOORS-style camera: head bob, tilt on turns/strafe, sprint FOV, crouch lowers camera, exhaustion shake, visible body, "reduce motion" setting.
-4. Night cycle: 3 church bells ≈ 45 sec each; fog at bell 2; gas lamps flicker out at bell 3.
+4. Night cycle (redesigned, see "Night design" below): 3 church bells start 3 stages of different lengths (Dusk ~60 s, Deep night ~75 s, Last hour ~30 s, all in Config). Light fog all night. At Deep night 2–3 random districts lose their lamps (never the Courthouse Square). Everyone has a lantern.
 5. Then: one kill, one clue, the evidence board, anonymous vote.
+
+## Night design (agreed with Alexander; tune after playtests)
+- Stages instead of equal bells: Dusk (bell 1: lamps on, light fog, spread out), Deep night (bell 2: some districts go dark, main hunting time), Last hour (bell 3: short tense push), then dawn.
+- Darkness by district, not the whole city: 2–3 districts go dark each night, chosen at random so killers can't camp one spot. Courthouse Square is always lit. Lit = safe to search but full of witnesses; dark = killer opportunities, but clues there are valuable.
+- Lanterns are a trade-off: on = you see clues nearby but everyone sees you from afar; off = hidden but can't search well. Walking a dark district with the lantern off is suspicious (a social clue).
+- Balance comes from playtesting with every lever in Config. Aim for the smallest playable loop early (night clock, dark districts, lantern, one kill, one clue, vote) rather than waiting for all systems; test with friends using simple placeholder rules.
 
 ## Engineering rules
 - Server is the authority for anything that matters (kills, clues, roles, votes, win checks). Clients request via RemoteEvents; the server validates everything.
