@@ -29,6 +29,11 @@ Milestones, in order:
 - Built: ServerScriptService.NightCycle runs the clock. It publishes the time as workspace attributes (Night, Phase "Night"/"Day", Stage 0–3, StageName ("Gathering" before bell 1, "Dusk", "DeepNight", "LastHour", "Day"), StageEndsAt, DarkDistricts e.g. "Soho,Docks"). Fog, street lamps, lanterns and on-screen clocks should react to those attributes (GetAttributeChangedSignal) rather than keep their own timers. District names match Config.DISTRICT_HEIGHTS keys.
 - Balance comes from playtesting with every lever in Config. Aim for the smallest playable loop early (night clock, dark districts, lantern, one kill, one clue, vote) rather than waiting for all systems; test with friends using simple placeholder rules.
 
+## Matches and lobbies
+- Closed lobbies (decided): once a match starts, only the players who were in it can join back (e.g. after a disconnect). Nobody else can join a running match.
+- Planned structure (not built yet): a Lobby place where players gather, and a Match place (the city) that each group is sent into as a private reserved server; disconnected players are sent back into their match, anyone else goes to the lobby. Studio testing works in the single place until then.
+- Still open: how long someone may be gone before they count as out; what happens to their character while away (vanish or stay, can it be killed); whether they come back where they left or in the Courthouse Square; they should keep their role, journal clues and accessories.
+
 ## Engineering rules
 - Server is the authority for anything that matters (kills, clues, roles, votes, win checks). Clients request via RemoteEvents; the server validates everything.
 - Put every tuning number in one config ModuleScript (bell length, day phase lengths, lobby splits, stamina, cooldowns, friendly fire on/off) so balance changes are one edit.
