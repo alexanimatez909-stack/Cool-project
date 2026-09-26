@@ -23,6 +23,9 @@ Milestones, in order:
 - Stages instead of equal bells: Dusk (bell 1: lamps on, light fog, spread out), Deep night (bell 2: some districts go dark, main hunting time), Last hour (bell 3: short tense push), then dawn.
 - Darkness by district, not the whole city: 2–3 districts go dark each night, chosen at random so killers can't camp one spot. Courthouse Square is always lit. Lit = safe to search but full of witnesses; dark = killer opportunities, but clues there are valuable.
 - Lanterns are a trade-off: on = you see clues nearby but everyone sees you from afar; off = hidden but can't search well. Walking a dark district with the lantern off is suspicious (a social clue).
+- Spawning: each night everyone starts in the Courthouse Square and walks out at Dusk (the square's 3 exits make "who went which way" evidence). Dusk is already for gathering evidence while it's still easy.
+- Navigation: a Victorian paper map (press M) showing landmarks only, no streets: players know the direction, not the route. No minimap, and never show other players.
+- Fog: light at Dusk, medium in Deep night, medium in the Last hour then slowly lifting late in the stage toward dawn (Config.FOG). Heavier fog can later be per district (Docks).
 - Built: ServerScriptService.NightCycle runs the clock. It publishes the time as workspace attributes (Night, Phase "Night"/"Day", Stage 0–3, StageName, StageEndsAt, DarkDistricts e.g. "Soho,Docks"). Fog, street lamps, lanterns and on-screen clocks should react to those attributes (GetAttributeChangedSignal) rather than keep their own timers. District names match Config.DISTRICT_HEIGHTS keys.
 - Balance comes from playtesting with every lever in Config. Aim for the smallest playable loop early (night clock, dark districts, lantern, one kill, one clue, vote) rather than waiting for all systems; test with friends using simple placeholder rules.
 
@@ -43,6 +46,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Shade (evil); Editor (Informants).
 
 ## Evidence
+- DESIGN IN PROGRESS (not settled; talk it through with Alexander before building): he now wants ANY action to be able to leave traces, not only evil ones, and some traces help clear a player (ease suspicion). Clues carry over to later nights but become less accurate over time. The points below are the older draft.
 - Only evil actions leave clues. Each clue answers How / When / Where / Why / Who.
 - Who clues list a few names; the real culprit is always included (except forgeries).
 - Held clues auto-pin after two nights; clues drop on death; every kill leaves one clue that can't be destroyed.
