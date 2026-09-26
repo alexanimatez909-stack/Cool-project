@@ -26,8 +26,6 @@ local roll = 0           -- current lean
 local shakeAmount = 0    -- 0 .. 1, eases in while exhausted
 local shakeTime = 0
 local fov = Config.CAMERA_FOV
-local baseFov = Config.CAMERA_FOV                        -- the test key can change these two
-local turnSmoothing = Config.CAMERA_TURN_SMOOTHING
 local lagPitch, lagYaw = nil, nil                        -- where the "heavy" view is actually looking
 local lastYaw = nil
 local applied = CFrame.identity -- the effect added last frame
@@ -48,7 +46,7 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 	local reduce = State.reduceMotion
 
 	-- wider view while sprinting
-	local targetFov = baseFov + ((State.sprinting and not reduce) and (Config.SPRINT_FOV - Config.CAMERA_FOV) or 0)
+	local targetFov = Config.CAMERA_FOV + ((State.sprinting and not reduce) and (Config.SPRINT_FOV - Config.CAMERA_FOV) or 0)
 	fov = lerp(fov, targetFov, smooth(Config.FOV_SMOOTHING, dt))
 	camera.FieldOfView = fov
 
@@ -90,8 +88,8 @@ RunService:BindToRenderStep("CameraFeel", Enum.RenderPriority.Camera.Value + 1, 
 
 	-- camera weight: ease the view towards where the mouse points instead of snapping to it
 	local basePitch, baseYaw = camera.CFrame:ToOrientation()
-	if turnSmoothing > 0 and lagYaw then
-		local a = smooth(turnSmoothing, dt)
+	if Config.CAMERA_TURN_SMOOTHING > 0 and lagYaw then
+		local a = smooth(Config.CAMERA_TURN_SMOOTHING, dt)
 		lagPitch = lerp(lagPitch, basePitch, a)
 		lagYaw += ((baseYaw - lagYaw + math.pi) % (2 * math.pi) - math.pi) * a -- shortest way round
 	else
@@ -151,22 +149,10 @@ local function message(s)
 	end)
 end
 
-local WEIGHT_NAMES = { [0] = "off" }
-local function cycle(list, current)
-	local i = table.find(list, current) or 0
-	return list[i % #list + 1]
-end
-
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end
 	if input.KeyCode == Enum.KeyCode[Config.REDUCE_MOTION_KEY] then
 		State.reduceMotion = not State.reduceMotion
 		message("Reduce motion: " .. (State.reduceMotion and "ON" or "OFF"))
-	elseif Config.CAMERA_TEST_KEYS and input.KeyCode == Enum.KeyCode[Config.TEST_WEIGHT_KEY] then
-		turnSmoothing = cycle(Config.TEST_WEIGHT_STEPS, turnSmoothing)
-		message("Camera weight: " .. (WEIGHT_NAMES[turnSmoothing] or tostring(turnSmoothing)) .. "  (lower = heavier)")
-	elseif Config.CAMERA_TEST_KEYS and input.KeyCode == Enum.KeyCode[Config.TEST_FOV_KEY] then
-		baseFov = cycle(Config.TEST_FOV_STEPS, baseFov)
-		message("Field of view: " .. baseFov)
 	end
 end)
