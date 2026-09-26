@@ -14,6 +14,9 @@ SCRIPTS = [
     ("StarterPlayerScripts/FirstPersonBody.client.lua", "StarterPlayer.StarterPlayerScripts", "FirstPersonBody", "LocalScript"),
     ("StarterPlayerScripts/NightFog.client.lua", "StarterPlayer.StarterPlayerScripts", "NightFog", "LocalScript"),
     ("StarterPlayerScripts/NightClock.client.lua", "StarterPlayer.StarterPlayerScripts", "NightClock", "LocalScript"),
+    ("StarterPlayerScripts/JournalUI.client.lua", "StarterPlayer.StarterPlayerScripts", "JournalUI", "LocalScript"),
+    ("ServerScriptService/Journal.lua", "ServerScriptService", "Journal", "ModuleScript"),
+    ("ServerScriptService/JournalServer.server.lua", "ServerScriptService", "JournalServer", "Script"),
     ("ServerScriptService/AvatarRules.server.lua", "ServerScriptService", "AvatarRules", "Script"),
     ("ServerScriptService/NightCycle.server.lua", "ServerScriptService", "NightCycle", "Script"),
 ]

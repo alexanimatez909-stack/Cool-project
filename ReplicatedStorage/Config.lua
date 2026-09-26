@@ -150,6 +150,13 @@ Config.AVATAR_ANIMATIONS = {
 Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
 
 ---------------------------------------------------------------------
+-- JOURNAL
+---------------------------------------------------------------------
+Config.JOURNAL_KEY = "J"            -- opens and closes the journal
+Config.JOURNAL_NOTES_MAX = 2000     -- longest your notes can be (characters)
+Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell (turn off once real clues exist)
+
+---------------------------------------------------------------------
 -- TEAMS: how many Good / Evil / Informants for each lobby size
 ---------------------------------------------------------------------
 Config.LOBBY_SPLITS = {
