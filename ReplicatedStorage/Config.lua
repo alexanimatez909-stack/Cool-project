@@ -66,6 +66,18 @@ Config.STAMINA_BAR_MARGIN = 0.02    -- gap from the bottom-left corner as a shar
 Config.STAMINA_LOW_AT = 0.25        -- below this much stamina (25%) the bar flashes red
 Config.STAMINA_FLASH_SPEED = 6      -- how fast it flashes (higher = faster)
 
+-- Footsteps: a sound per floor. The name is the part's Material (e.g. Cobblestone, Slate) or, if the
+-- part has an attribute "FootstepSound", that text. Several IDs = a random one each step. 0 = silent.
+Config.FOOTSTEP_SOUNDS = {
+	Cobblestone = { 0 },            -- the cobbled roads
+	Slate = { 0 },                  -- stone-block pavements (change the name to match your pavement's Material)
+	Default = { 0 },                -- anything not listed above
+}
+Config.FOOTSTEP_VOLUME = { Crouch = 0.12, Walk = 0.45, Sprint = 0.9 }
+Config.FOOTSTEP_HEARING_DISTANCE = { Crouch = 15, Walk = 45, Sprint = 100 } -- studs; how far other players hear you
+Config.FOOTSTEP_PITCH_VARIATION = 0.08 -- each step slightly higher or lower, so it doesn't sound robotic
+Config.FOOTSTEP_DEBUG = true           -- prints the name of the floor you walk on (turn off when done)
+
 ---------------------------------------------------------------------
 -- CAMERA FEEL (DOORS-style). Distances in studs, angles in degrees.
 ---------------------------------------------------------------------
