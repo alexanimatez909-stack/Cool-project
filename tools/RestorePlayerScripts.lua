@@ -183,6 +183,9 @@ Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly sh
 Config.JOURNAL_KEY = "J"            -- opens and closes the journal
 Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain parchment for now)
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
+Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
+Config.JOURNAL_ICON_SIZE = 0.1      -- icon height as a share of the screen height
+Config.JOURNAL_ICON_MARGIN = 0.02   -- gap from the bottom-right corner as a share of the screen
 Config.JOURNAL_NOTES_MAX = 2000     -- longest your notes can be (characters)
 Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell (turn off once real clues exist)
 
@@ -1030,6 +1033,9 @@ do
 -- Your journal: press J to open or close it. An open Victorian book covering most of the screen:
 --   left page, Clues: filled in automatically when you find something (night, stage, district).
 --   right page, Notes: write anything you like. Saved to the server, kept for the whole match.
+-- A small journal icon with a "J" badge sits in the bottom-right corner, so players know it's
+-- there; clicking it also opens the journal (for phones and tablets). A red dot appears on it
+-- when a new clue arrives, until you open the journal.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
 -- means you can't look around until you close it again.
 local Players = game:GetService("Players")
@@ -1211,6 +1217,62 @@ end)
 applySizes()
 notes.TextSize = sizes.notes
 
+-- the journal icon in the corner, with the key as a brass badge (clicking it opens the journal)
+local iconGui = Instance.new("ScreenGui")
+iconGui.Name = "JournalIcon"
+iconGui.ResetOnSpawn = false
+iconGui.IgnoreGuiInset = true
+local icon = Instance.new("ImageButton")
+icon.Name = "Icon"
+icon.AnchorPoint = Vector2.new(1, 1)
+icon.Position = UDim2.fromScale(1 - Config.JOURNAL_ICON_MARGIN, 1 - Config.JOURNAL_ICON_MARGIN)
+icon.Size = UDim2.fromScale(1, Config.JOURNAL_ICON_SIZE)
+icon.BackgroundTransparency = 1
+icon.Parent = iconGui
+local iconRatio = Instance.new("UIAspectRatioConstraint")
+iconRatio.AspectRatio = 1
+iconRatio.DominantAxis = Enum.DominantAxis.Height
+iconRatio.Parent = icon
+if Config.JOURNAL_ICON_IMAGE_ID ~= 0 then
+	icon.Image = "rbxassetid://" .. Config.JOURNAL_ICON_IMAGE_ID
+else -- no image uploaded yet: a plain leather-coloured square
+	icon.BackgroundTransparency = 0
+	icon.BackgroundColor3 = Color3.fromRGB(85, 35, 15)
+	Instance.new("UICorner", icon).CornerRadius = UDim.new(0.1, 0)
+end
+
+local badge = Instance.new("TextLabel") -- the key, on a round brass badge
+badge.Name = "KeyBadge"
+badge.AnchorPoint = Vector2.new(0.5, 0.5)
+badge.Position = UDim2.fromScale(0.82, 0.82)
+badge.Size = UDim2.fromScale(0.38, 0.38)
+badge.BackgroundColor3 = Color3.fromRGB(207, 162, 76)
+badge.Text = Config.JOURNAL_KEY
+badge.Font = Enum.Font.Garamond
+badge.TextScaled = true
+badge.TextColor3 = Color3.fromRGB(42, 24, 6)
+badge.Parent = icon
+Instance.new("UICorner", badge).CornerRadius = UDim.new(1, 0)
+local badgeEdge = Instance.new("UIStroke")
+badgeEdge.Color = Color3.fromRGB(42, 24, 6)
+badgeEdge.Thickness = 2
+badgeEdge.Parent = badge
+
+local newDot = Instance.new("Frame") -- shows there's a clue you haven't looked at yet
+newDot.Name = "NewClueDot"
+newDot.AnchorPoint = Vector2.new(0.5, 0.5)
+newDot.Position = UDim2.fromScale(0.85, 0.12)
+newDot.Size = UDim2.fromScale(0.22, 0.22)
+newDot.BackgroundColor3 = Color3.fromRGB(156, 31, 34)
+newDot.Visible = false
+newDot.Parent = icon
+Instance.new("UICorner", newDot).CornerRadius = UDim.new(1, 0)
+local dotEdge = Instance.new("UIStroke")
+dotEdge.Color = Color3.fromRGB(246, 223, 156)
+dotEdge.Thickness = 2
+dotEdge.Parent = newDot
+iconGui.Parent = player:WaitForChild("PlayerGui")
+
 -- a short message when a new clue arrives
 local toastGui = Instance.new("ScreenGui")
 toastGui.Name = "JournalToast"
@@ -1237,6 +1299,7 @@ notes.Text = journal.notes
 local shown = 0
 remotes:WaitForChild("NewClue").OnClientEvent:Connect(function(clue)
 	addClueEntry(clue)
+	if not gui.Enabled then newDot.Visible = true end
 	toast.Text = "A new clue in your journal  (" .. Config.JOURNAL_KEY .. ")"
 	toast.Visible = true
 	shown += 1
@@ -1268,15 +1331,24 @@ task.spawn(function()
 	end
 end)
 
+local function setOpen(open)
+	gui.Enabled = open
+	if open then
+		newDot.Visible = false
+	else
+		notes:ReleaseFocus()
+		sendNotes()
+	end
+end
+
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end -- e.g. typing in the notes or chat
 	if input.KeyCode == Enum.KeyCode[Config.JOURNAL_KEY] then
-		gui.Enabled = not gui.Enabled
-		if not gui.Enabled then
-			notes:ReleaseFocus()
-			sendNotes()
-		end
+		setOpen(not gui.Enabled)
 	end
+end)
+icon.Activated:Connect(function()
+	setOpen(not gui.Enabled)
 end)
 ]=]
 	s.Parent = parent

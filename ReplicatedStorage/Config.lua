@@ -172,6 +172,9 @@ Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly sh
 Config.JOURNAL_KEY = "J"            -- opens and closes the journal
 Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain parchment for now)
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
+Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
+Config.JOURNAL_ICON_SIZE = 0.1      -- icon height as a share of the screen height
+Config.JOURNAL_ICON_MARGIN = 0.02   -- gap from the bottom-right corner as a share of the screen
 Config.JOURNAL_NOTES_MAX = 2000     -- longest your notes can be (characters)
 Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell (turn off once real clues exist)
 

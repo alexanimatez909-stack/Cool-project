@@ -1,0 +1,78 @@
+<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="leather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6a2e1b"/>
+      <stop offset="0.55" stop-color="#55230f"/>
+      <stop offset="1" stop-color="#3a1608"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2e1106"/>
+      <stop offset="0.5" stop-color="#5e2a19"/>
+      <stop offset="1" stop-color="#3a1608"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6df9c"/>
+      <stop offset="0.45" stop-color="#cfa24c"/>
+      <stop offset="1" stop-color="#7a5219"/>
+    </linearGradient>
+    <linearGradient id="pages" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d9c79d"/>
+      <stop offset="1" stop-color="#f1e6ca"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5e0f12"/>
+      <stop offset="0.5" stop-color="#9c1f22"/>
+      <stop offset="1" stop-color="#5e0f12"/>
+    </linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.3 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="2" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+    <g id="corner" fill="none" stroke-linecap="round">
+      <path d="M0,26 C0,11 11,0 26,0" stroke="#2a1806" stroke-width="5"/>
+      <path d="M0,26 C0,11 11,0 26,0" stroke="url(#gold)" stroke-width="3"/>
+      <path d="M26,0 C34,0 37,6 33,10 C30,12 27,9 29,7" stroke="url(#gold)" stroke-width="2"/>
+      <path d="M0,26 C0,34 6,37 10,33 C12,30 9,27 7,29" stroke="url(#gold)" stroke-width="2"/>
+      <path d="M8,20 C8,13 13,8 20,8 C15,11 12,14 11,19 Z" fill="url(#gold)" stroke="#2a1806" stroke-width="1"/>
+    </g>
+  </defs>
+  <g filter="url(#shadow)">
+    <!-- page block showing on the right and bottom -->
+    <rect x="52" y="30" width="170" height="200" rx="6" fill="url(#pages)" stroke="#8a6a3a" stroke-width="1.5"/>
+    <g stroke="#b59a68" stroke-width="0.8">
+      <line x1="215" y1="40" x2="215" y2="222"/><line x1="218" y1="40" x2="218" y2="222"/>
+      <line x1="60" y1="226" x2="212" y2="226"/>
+    </g>
+    <!-- ribbon hanging out at the bottom -->
+    <path d="M160,210 L174,210 L174,246 L167,239 L160,246 Z" fill="url(#ribbon)" stroke="#3a0708" stroke-width="1.2"/>
+    <!-- cover -->
+    <rect x="40" y="22" width="172" height="200" rx="8" fill="url(#leather)" stroke="#220c04" stroke-width="2"/>
+    <rect x="40" y="22" width="172" height="200" rx="8" filter="url(#grain)" fill="#000"/>
+    <!-- spine -->
+    <rect x="40" y="22" width="24" height="200" rx="8" fill="url(#spine)"/>
+    <g stroke="url(#gold)" stroke-width="3">
+      <line x1="42" y1="52" x2="62" y2="52"/><line x1="42" y1="192" x2="62" y2="192"/>
+    </g>
+    <!-- gold tooled border -->
+    <rect x="72" y="32" width="130" height="180" rx="4" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+    <rect x="78" y="38" width="118" height="168" rx="3" fill="none" stroke="#cfa24c" stroke-width="0.9" opacity="0.8"/>
+    <use xlink:href="#corner" transform="translate(76,36)"/>
+    <use xlink:href="#corner" transform="translate(198,36) scale(-1,1)"/>
+    <use xlink:href="#corner" transform="translate(76,208) scale(1,-1)"/>
+    <use xlink:href="#corner" transform="translate(198,208) scale(-1,-1)"/>
+    <!-- gold magnifying glass emblem -->
+    <g stroke-linecap="round">
+      <line x1="150" y1="138" x2="172" y2="162" stroke="#2a1806" stroke-width="11"/>
+      <line x1="150" y1="138" x2="172" y2="162" stroke="url(#gold)" stroke-width="7"/>
+      <circle cx="131" cy="117" r="27" fill="none" stroke="#2a1806" stroke-width="11"/>
+      <circle cx="131" cy="117" r="27" fill="none" stroke="url(#gold)" stroke-width="7"/>
+      <circle cx="131" cy="117" r="21" fill="#caa55a" opacity="0.18"/>
+      <path d="M116,106 C120,98 128,95 136,96" fill="none" stroke="#fff3cf" stroke-width="2.2" opacity="0.8"/>
+    </g>
+  </g>
+</svg>
+</body></html>
