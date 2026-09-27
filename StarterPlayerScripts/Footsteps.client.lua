@@ -2,8 +2,7 @@
 -- A footstep sound for every step, chosen by what's underfoot (cobbles, stone paving...).
 -- Sprinting is loud and carries far, walking is normal, crouching is barely audible.
 -- It plays everyone's footsteps, not just yours: other players are heard from where they are,
--- getting quieter with distance. Walking and crouching, your steps line up with the head bob
--- (CameraFeel counts them); sprinting has its own quicker rhythm (Config.FOOTSTEP_SPRINT_STEP_LENGTH).
+-- getting quieter with distance. Your own steps line up with the head bob (CameraFeel counts them).
 -- Roblox's default running sound is muted so it doesn't play on top.
 -- Sounds and volumes are in ReplicatedStorage.Config (FOOTSTEP_...).
 --
@@ -97,17 +96,15 @@ RunService.Heartbeat:Connect(function(dt)
 			local speed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
 			local movement = movementOf(speed)
 			local grounded = humanoid.FloorMaterial ~= Enum.Material.Air
-			if player == localPlayer and not State.sprinting then
-				-- your own walking/crouching steps: whenever the head bob counts a footstep
+			if player == localPlayer then
+				-- your own steps: whenever the head bob counts a footstep
 				if State.footsteps ~= lastLocalSteps then
 					lastLocalSteps = State.footsteps
-					playStep(character, State.crouching and "Crouch" or "Walk")
+					playStep(character, State.sprinting and "Sprint" or State.crouching and "Crouch" or "Walk")
 				end
-				distanceSinceStep[character] = 0
 			elseif grounded and speed > 0.5 then
-				-- sprinting, and other players: a step every so many studs
-				lastLocalSteps = State.footsteps
-				local stepLength = movement == "Sprint" and Config.FOOTSTEP_SPRINT_STEP_LENGTH or Config.BOB_STEP_LENGTH_WALK
+				-- other players: a step every so many studs, like the head bob does for you
+				local stepLength = movement == "Sprint" and Config.BOB_STEP_LENGTH_SPRINT or Config.BOB_STEP_LENGTH_WALK
 				local walked = (distanceSinceStep[character] or 0) + speed * dt
 				if walked >= stepLength then
 					walked -= stepLength

@@ -86,7 +86,6 @@ Config.FOOTSTEP_SOUNDS = {
 }
 Config.FOOTSTEP_VOLUME = { Crouch = 0.12, Walk = 0.45, Sprint = 0.9 }
 Config.FOOTSTEP_HEARING_DISTANCE = { Crouch = 15, Walk = 45, Sprint = 100 } -- studs; how far other players hear you
-Config.FOOTSTEP_SPRINT_STEP_LENGTH = 7 -- studs per footstep SOUND when sprinting (quicker than the head bob; walking follows the bob)
 Config.FOOTSTEP_PITCH_VARIATION = 0.08 -- each step slightly higher or lower, so it doesn't sound robotic
 Config.FOOTSTEP_DEBUG = true           -- prints the name of the floor you walk on (turn off when done)
 
@@ -99,15 +98,15 @@ Config.FOV_SMOOTHING = 6            -- how quickly the view widens/narrows (high
 
 -- Head bob: one dip per footstep. Step length decides how often you step.
 Config.BOB_STEP_LENGTH_WALK = 8     -- studs travelled per footstep while walking
-Config.BOB_STEP_LENGTH_SPRINT = 10
+Config.BOB_STEP_LENGTH_SPRINT = 7      -- quick running rhythm (footstep sounds follow the same steps)
 Config.BOB_HEIGHT_WALK = 0.15       -- how far the head dips each step (the main DOORS-style bob)
-Config.BOB_HEIGHT_SPRINT = 0.38
+Config.BOB_HEIGHT_SPRINT = 0.2     -- small, because running steps are quick
 Config.BOB_NOD_WALK = 0.35          -- the view nods down slightly as each foot lands
-Config.BOB_NOD_SPRINT = 0.9
+Config.BOB_NOD_SPRINT = 0.5
 Config.BOB_SWAY_WALK = 0.02         -- side-to-side sway (left foot, right foot) - kept small
 Config.BOB_SWAY_SPRINT = 0.04
 Config.BOB_ROLL_WALK = 0.1          -- slight roll with each step
-Config.BOB_ROLL_SPRINT = 0.2
+Config.BOB_ROLL_SPRINT = 0.12
 
 -- Camera weight: the view follows the mouse with a tiny smooth delay instead of snapping.
 -- Higher = snappier (lighter), lower = heavier. 0 switches it off. Not turned off by reduce motion (it calms the view).
@@ -1290,8 +1289,7 @@ do
 -- A footstep sound for every step, chosen by what's underfoot (cobbles, stone paving...).
 -- Sprinting is loud and carries far, walking is normal, crouching is barely audible.
 -- It plays everyone's footsteps, not just yours: other players are heard from where they are,
--- getting quieter with distance. Walking and crouching, your steps line up with the head bob
--- (CameraFeel counts them); sprinting has its own quicker rhythm (Config.FOOTSTEP_SPRINT_STEP_LENGTH).
+-- getting quieter with distance. Your own steps line up with the head bob (CameraFeel counts them).
 -- Roblox's default running sound is muted so it doesn't play on top.
 -- Sounds and volumes are in ReplicatedStorage.Config (FOOTSTEP_...).
 --
@@ -1385,17 +1383,15 @@ RunService.Heartbeat:Connect(function(dt)
 			local speed = Vector3.new(velocity.X, 0, velocity.Z).Magnitude
 			local movement = movementOf(speed)
 			local grounded = humanoid.FloorMaterial ~= Enum.Material.Air
-			if player == localPlayer and not State.sprinting then
-				-- your own walking/crouching steps: whenever the head bob counts a footstep
+			if player == localPlayer then
+				-- your own steps: whenever the head bob counts a footstep
 				if State.footsteps ~= lastLocalSteps then
 					lastLocalSteps = State.footsteps
-					playStep(character, State.crouching and "Crouch" or "Walk")
+					playStep(character, State.sprinting and "Sprint" or State.crouching and "Crouch" or "Walk")
 				end
-				distanceSinceStep[character] = 0
 			elseif grounded and speed > 0.5 then
-				-- sprinting, and other players: a step every so many studs
-				lastLocalSteps = State.footsteps
-				local stepLength = movement == "Sprint" and Config.FOOTSTEP_SPRINT_STEP_LENGTH or Config.BOB_STEP_LENGTH_WALK
+				-- other players: a step every so many studs, like the head bob does for you
+				local stepLength = movement == "Sprint" and Config.BOB_STEP_LENGTH_SPRINT or Config.BOB_STEP_LENGTH_WALK
 				local walked = (distanceSinceStep[character] or 0) + speed * dt
 				if walked >= stepLength then
 					walked -= stepLength
