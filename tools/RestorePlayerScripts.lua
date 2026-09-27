@@ -1033,7 +1033,7 @@ do
 -- Your journal: press J to open or close it. An open Victorian book covering most of the screen:
 --   left page, Clues: filled in automatically when you find something (night, stage, district).
 --   right page, Notes: write anything you like. Saved to the server, kept for the whole match.
--- A small journal icon with a "J" badge sits in the bottom-right corner, so players know it's
+-- A small journal icon with a fancy "J" sits in the bottom-right corner, so players know it's
 -- there; clicking it also opens the journal (for phones and tablets). A red dot appears on it
 -- when a new clue arrives, until you open the journal.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
@@ -1241,7 +1241,7 @@ else -- no image uploaded yet: a plain leather-coloured square
 	Instance.new("UICorner", icon).CornerRadius = UDim.new(0.1, 0)
 end
 
-local badge = Instance.new("TextLabel") -- the key, on a round brass badge
+local badge = Instance.new("TextLabel") -- the key, on a round brass badge (only until the icon image is uploaded)
 badge.Name = "KeyBadge"
 badge.AnchorPoint = Vector2.new(0.5, 0.5)
 badge.Position = UDim2.fromScale(0.82, 0.82)
@@ -1251,6 +1251,7 @@ badge.Text = Config.JOURNAL_KEY
 badge.Font = Enum.Font.Garamond
 badge.TextScaled = true
 badge.TextColor3 = Color3.fromRGB(42, 24, 6)
+badge.Visible = Config.JOURNAL_ICON_IMAGE_ID == 0 -- the uploaded icon already has a fancy J on it
 badge.Parent = icon
 Instance.new("UICorner", badge).CornerRadius = UDim.new(1, 0)
 local badgeEdge = Instance.new("UIStroke")
