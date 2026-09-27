@@ -87,7 +87,7 @@ Config.FOV_SMOOTHING = 6            -- how quickly the view widens/narrows (high
 
 -- Head bob: one dip per footstep. Step length decides how often you step.
 Config.BOB_STEP_LENGTH_WALK = 8     -- studs travelled per footstep while walking
-Config.BOB_STEP_LENGTH_SPRINT = 10
+Config.BOB_STEP_LENGTH_SPRINT = 7      -- shorter than walking so running has a quick rhythm (10 sounded like hopping)
 Config.BOB_HEIGHT_WALK = 0.15       -- how far the head dips each step (the main DOORS-style bob)
 Config.BOB_HEIGHT_SPRINT = 0.38
 Config.BOB_NOD_WALK = 0.35          -- the view nods down slightly as each foot lands
