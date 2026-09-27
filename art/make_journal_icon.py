@@ -1,4 +1,57 @@
-<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 256 256">
+"""Builds journal-icon.svg: a thick journal seen at an angle, on a round brass medallion.
+The book is drawn flat and then placed with a 2D transform; its thickness (page edges and back
+cover) is computed from the transformed corners so everything lines up."""
+import math
+
+W, H = 150, 196                       # flat cover size
+theta = math.radians(-12)             # tilt
+skew = math.radians(-9)               # turn (skewY)
+sx = 0.86
+T = (58, 44)                          # where the cover's top-left lands
+t = (24, 13)                          # thickness direction (towards the page edges)
+
+def M(x, y):
+    x *= sx
+    y = y + math.tan(skew) * x
+    xr = x * math.cos(theta) - y * math.sin(theta)
+    yr = x * math.sin(theta) + y * math.cos(theta)
+    return (xr + T[0], yr + T[1])
+
+a, b = math.cos(theta), math.sin(theta)
+# matrix for the flat cover group: rotate * skewY * scale
+k = math.tan(skew)
+m = (sx * (a - b * k), sx * (b + a * k), -b, a, T[0], T[1])
+matrix = "matrix(%.4f %.4f %.4f %.4f %.2f %.2f)" % m
+
+TL, TR, BR, BL = M(0, 0), M(W, 0), M(W, H), M(0, H)
+add = lambda p, d=1.0: (p[0] + t[0] * d, p[1] + t[1] * d)
+def poly(pts):
+    return " ".join("%.2f,%.2f" % p for p in pts)
+
+# back cover (a little bigger than the pages, so leather shows past them)
+back = [add(TL), add(TR), add(BR), add(BL)]
+# page block faces (inset slightly from the covers)
+inset = 0.1
+pr = [TR, BR, add(BR, 0.92), add(TR, 0.92)]
+pb = [BL, BR, add(BR, 0.92), add(BL, 0.92)]
+page_lines = []
+for i in range(1, 7):
+    d = i / 7 * 0.92
+    page_lines.append('<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f"/>' % (*add(TR, d), *add(BR, d)))
+    page_lines.append('<line x1="%.2f" y1="%.2f" x2="%.2f" y2="%.2f"/>' % (*add(BL, d), *add(BR, d)))
+
+# medallion ornaments
+beads = []
+for i in range(40):
+    ang = i / 40 * 2 * math.pi
+    beads.append('<circle cx="%.2f" cy="%.2f" r="1.7"/>' % (128 + 108 * math.cos(ang), 128 + 108 * math.sin(ang)))
+curls = []
+for ang in (45, 135, 225, 315):
+    r = math.radians(ang)
+    cx, cy = 128 + 116 * math.cos(r), 128 + 116 * math.sin(r)
+    curls.append('<use xlink:href="#curlPair" transform="translate(%.2f %.2f) rotate(%d)"/>' % (cx, cy, ang + 90))
+
+svg = f'''<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="512" height="512" viewBox="0 0 256 256">
   <defs>
     <linearGradient id="leather" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#74331e"/><stop offset="0.55" stop-color="#57240f"/><stop offset="1" stop-color="#3a1608"/>
@@ -59,34 +112,34 @@
     <circle cx="128" cy="128" r="116" fill="url(#medallion)" stroke="#2a1806" stroke-width="2"/>
     <circle cx="128" cy="128" r="113" fill="none" stroke="url(#gold)" stroke-width="5"/>
     <circle cx="128" cy="128" r="102" fill="none" stroke="url(#gold)" stroke-width="1.6"/>
-    <g fill="url(#ball)" stroke="#2a1806" stroke-width="0.6"><circle cx="236.00" cy="128.00" r="1.7"/><circle cx="234.67" cy="144.89" r="1.7"/><circle cx="230.71" cy="161.37" r="1.7"/><circle cx="224.23" cy="177.03" r="1.7"/><circle cx="215.37" cy="191.48" r="1.7"/><circle cx="204.37" cy="204.37" r="1.7"/><circle cx="191.48" cy="215.37" r="1.7"/><circle cx="177.03" cy="224.23" r="1.7"/><circle cx="161.37" cy="230.71" r="1.7"/><circle cx="144.89" cy="234.67" r="1.7"/><circle cx="128.00" cy="236.00" r="1.7"/><circle cx="111.11" cy="234.67" r="1.7"/><circle cx="94.63" cy="230.71" r="1.7"/><circle cx="78.97" cy="224.23" r="1.7"/><circle cx="64.52" cy="215.37" r="1.7"/><circle cx="51.63" cy="204.37" r="1.7"/><circle cx="40.63" cy="191.48" r="1.7"/><circle cx="31.77" cy="177.03" r="1.7"/><circle cx="25.29" cy="161.37" r="1.7"/><circle cx="21.33" cy="144.89" r="1.7"/><circle cx="20.00" cy="128.00" r="1.7"/><circle cx="21.33" cy="111.11" r="1.7"/><circle cx="25.29" cy="94.63" r="1.7"/><circle cx="31.77" cy="78.97" r="1.7"/><circle cx="40.63" cy="64.52" r="1.7"/><circle cx="51.63" cy="51.63" r="1.7"/><circle cx="64.52" cy="40.63" r="1.7"/><circle cx="78.97" cy="31.77" r="1.7"/><circle cx="94.63" cy="25.29" r="1.7"/><circle cx="111.11" cy="21.33" r="1.7"/><circle cx="128.00" cy="20.00" r="1.7"/><circle cx="144.89" cy="21.33" r="1.7"/><circle cx="161.37" cy="25.29" r="1.7"/><circle cx="177.03" cy="31.77" r="1.7"/><circle cx="191.48" cy="40.63" r="1.7"/><circle cx="204.37" cy="51.63" r="1.7"/><circle cx="215.37" cy="64.52" r="1.7"/><circle cx="224.23" cy="78.97" r="1.7"/><circle cx="230.71" cy="94.63" r="1.7"/><circle cx="234.67" cy="111.11" r="1.7"/></g>
-    <use xlink:href="#curlPair" transform="translate(210.02 210.02) rotate(135)"/><use xlink:href="#curlPair" transform="translate(45.98 210.02) rotate(225)"/><use xlink:href="#curlPair" transform="translate(45.98 45.98) rotate(315)"/><use xlink:href="#curlPair" transform="translate(210.02 45.98) rotate(405)"/>
+    <g fill="url(#ball)" stroke="#2a1806" stroke-width="0.6">{"".join(beads)}</g>
+    {"".join(curls)}
   </g>
 
   <g filter="url(#shadow)" transform="translate(126 128) scale(0.74) translate(-152 -122)">
     <!-- back cover, page edges, ribbon -->
-    <polygon points="82.00,57.00 203.93,10.19 244.68,201.91 122.75,248.72" fill="url(#backLeather)" stroke="#1a0802" stroke-width="1.5" stroke-linejoin="round"/>
-    <polygon points="179.93,-2.81 220.68,188.91 242.76,200.87 202.01,9.15" fill="url(#pageSide)" stroke="#8a6a3a" stroke-width="1" stroke-linejoin="round"/>
-    <polygon points="98.75,235.72 220.68,188.91 242.76,200.87 120.83,247.68" fill="url(#pageBottom)" stroke="#8a6a3a" stroke-width="1" stroke-linejoin="round"/>
-    <g stroke="#b59a68" stroke-width="0.6" opacity="0.8"><line x1="183.09" y1="-1.10" x2="223.84" y2="190.62"/><line x1="101.90" y1="237.43" x2="223.84" y2="190.62"/><line x1="186.24" y1="0.61" x2="226.99" y2="192.33"/><line x1="105.06" y1="239.13" x2="226.99" y2="192.33"/><line x1="189.40" y1="2.32" x2="230.15" y2="194.04"/><line x1="108.21" y1="240.84" x2="230.15" y2="194.04"/><line x1="192.55" y1="4.03" x2="233.30" y2="195.75"/><line x1="111.37" y1="242.55" x2="233.30" y2="195.75"/><line x1="195.70" y1="5.74" x2="236.46" y2="197.45"/><line x1="114.52" y1="244.26" x2="236.46" y2="197.45"/><line x1="198.86" y1="7.45" x2="239.61" y2="199.16"/><line x1="117.68" y1="245.97" x2="239.61" y2="199.16"/></g>
-    <g transform="matrix(0.8129 -0.3120 0.2079 0.9781 58.00 44.00)">
-      <path d="M104,192 L118,192 L118,230 L111,223 L104,230 Z" fill="url(#ribbon)" stroke="#3a0708" stroke-width="1.2"/>
+    <polygon points="{poly(back)}" fill="url(#backLeather)" stroke="#1a0802" stroke-width="1.5" stroke-linejoin="round"/>
+    <polygon points="{poly(pr)}" fill="url(#pageSide)" stroke="#8a6a3a" stroke-width="1" stroke-linejoin="round"/>
+    <polygon points="{poly(pb)}" fill="url(#pageBottom)" stroke="#8a6a3a" stroke-width="1" stroke-linejoin="round"/>
+    <g stroke="#b59a68" stroke-width="0.6" opacity="0.8">{"".join(page_lines)}</g>
+    <g transform="{matrix}">
+      <path d="M104,{H - 4} L118,{H - 4} L118,{H + 34} L111,{H + 27} L104,{H + 34} Z" fill="url(#ribbon)" stroke="#3a0708" stroke-width="1.2"/>
     </g>
 
     <!-- front cover, drawn flat and placed at an angle -->
-    <g transform="matrix(0.8129 -0.3120 0.2079 0.9781 58.00 44.00)">
-      <rect x="0" y="0" width="150" height="196" rx="7" fill="url(#leather)" stroke="#220c04" stroke-width="2"/>
-      <rect x="0" y="0" width="150" height="196" rx="7" filter="url(#grain)" fill="#000"/>
-      <rect x="0" y="0" width="22" height="196" rx="7" fill="url(#spine)"/>
+    <g transform="{matrix}">
+      <rect x="0" y="0" width="{W}" height="{H}" rx="7" fill="url(#leather)" stroke="#220c04" stroke-width="2"/>
+      <rect x="0" y="0" width="{W}" height="{H}" rx="7" filter="url(#grain)" fill="#000"/>
+      <rect x="0" y="0" width="22" height="{H}" rx="7" fill="url(#spine)"/>
       <g stroke="url(#gold)" stroke-width="3">
-        <line x1="2" y1="28" x2="20" y2="28"/><line x1="2" y1="168" x2="20" y2="168"/>
+        <line x1="2" y1="28" x2="20" y2="28"/><line x1="2" y1="{H - 28}" x2="20" y2="{H - 28}"/>
       </g>
-      <rect x="30" y="10" width="110" height="176" rx="4" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
-      <rect x="36" y="16" width="98" height="164" rx="3" fill="none" stroke="#cfa24c" stroke-width="0.9" opacity="0.8"/>
+      <rect x="30" y="10" width="{W - 40}" height="{H - 20}" rx="4" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+      <rect x="36" y="16" width="{W - 52}" height="{H - 32}" rx="3" fill="none" stroke="#cfa24c" stroke-width="0.9" opacity="0.8"/>
       <use xlink:href="#corner" transform="translate(34,14)"/>
-      <use xlink:href="#corner" transform="translate(136,14) scale(-1,1)"/>
-      <use xlink:href="#corner" transform="translate(34,182) scale(1,-1)"/>
-      <use xlink:href="#corner" transform="translate(136,182) scale(-1,-1)"/>
+      <use xlink:href="#corner" transform="translate({W - 14},14) scale(-1,1)"/>
+      <use xlink:href="#corner" transform="translate(34,{H - 14}) scale(1,-1)"/>
+      <use xlink:href="#corner" transform="translate({W - 14},{H - 14}) scale(-1,-1)"/>
       <g stroke-linecap="round">
         <line x1="104" y1="118" x2="122" y2="138" stroke="#2a1806" stroke-width="10"/>
         <line x1="104" y1="118" x2="122" y2="138" stroke="url(#gold)" stroke-width="6"/>
@@ -96,7 +149,9 @@
         <path d="M75,91 C79,84 86,81 93,82" fill="none" stroke="#fff3cf" stroke-width="2" opacity="0.8"/>
       </g>
       <!-- light catching the top edge of the cover -->
-      <path d="M8,1.5 H142" stroke="#c07a52" stroke-width="1.2" opacity="0.6"/>
+      <path d="M8,1.5 H{W - 8}" stroke="#c07a52" stroke-width="1.2" opacity="0.6"/>
     </g>
   </g>
-</svg></body></html>
+</svg>'''
+open("journal-icon.svg", "w").write(svg)
+open("render-icon.html", "w").write(f'<html><body style="margin:0;background:transparent">{svg}</body></html>')
