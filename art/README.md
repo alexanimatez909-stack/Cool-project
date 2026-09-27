@@ -11,4 +11,5 @@
 - `make_journal_icon.py`: builds `journal-icon.png` (512x512, the journal button). The book is a real 3D box
   (LIFT = degrees up, TURN = degrees turned towards you) projected with perspective; the flat cover
   (`journal-icon-cover.svg`) is warped onto it, and the brass frame follows the book's outline
-  (`journal-icon.svg` = frame + page edges). Run `python3 make_journal_icon.py`.
+  (`journal-icon.svg` = frame + page edges): its 4 sides sit the same distance (GAP_*) from the book's outline.
+  The J medallion in the bottom-right corner uses `PlayfairDisplay.ttf` (SIL Open Font License). Run `python3 make_journal_icon.py`.

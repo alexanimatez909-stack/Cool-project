@@ -63,19 +63,16 @@ back_board = box(0, W, 0, H, T - BOARD, T)
 pages = box(0, W - 5, 5, H - 5, BOARD, T - BOARD)
 front_board = box(0, W, 0, H, 0, BOARD)
 
-# the frame's size around the book (book units)
-RING_INNER, RING_OUTER, PLATE = 22, 30, 36
-ZF = T / 2   # the frame sits at the book's middle depth, so it wraps round it evenly
+# the frame's distance from the book, in canvas pixels (the same all the way round)
+GAP_INNER, GAP_OUTER, GAP_PLATE = 30, 48, 62
 
-# fit the frame into the middle of the canvas (leaving room for the curls and the J)
-all_pts = [proj(p) for m in (PLATE,) for p in
-           [(-m, -m, ZF), (W + m, -m, ZF), (W + m, H + m, ZF), (-m, H + m, ZF)]]
-all_pts += [proj(p) for b in (back_board, front_board) for f in b.values() for p in f]
+# fit the book into the middle of the canvas, leaving room for the frame, curls and the J
+all_pts = [proj(p) for b in (back_board, front_board) for f in b.values() for p in f]
 xs, ys = [p[0] for p in all_pts], [p[1] for p in all_pts]
-room = S - 2 * 88
+room = S - 2 * 185
 scale = min(room / (max(xs) - min(xs)), room / (max(ys) - min(ys)))
 ox = S / 2 - scale * (max(xs) + min(xs)) / 2
-oy = S / 2 - scale * (max(ys) + min(ys)) / 2 - 18
+oy = S / 2 - scale * (max(ys) + min(ys)) / 2
 def P(p):
     x, y = proj(p)
     return (ox + x * scale, oy + y * scale)
@@ -112,18 +109,13 @@ for name, b in (("back", back_board), ("pages", pages), ("front", front_board)):
                 layers.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#b09160" stroke-width="1.6" opacity="0.8"/>'
                               % (*a, *c))
     if name == "pages":  # the ribbon bookmark hangs out of the bottom of the pages
-        top = P((W * 0.84, H - 5, T * 0.5))
-        top2 = P((W * 0.84 + 16, H - 5, T * 0.5))
-        L = 150
+        top = P((W * 0.58, H - 5, T * 0.5))
+        top2 = P((W * 0.58 + 16, H - 5, T * 0.5))
+        L = 95
         layers.append('<path d="M%.1f,%.1f L%.1f,%.1f L%.1f,%.1f L%.1f,%.1f L%.1f,%.1f Z" fill="url(#ribbon)" stroke="#3a0708" stroke-width="3" stroke-linejoin="round"/>'
                       % (top[0], top[1], top2[0], top2[1], top2[0] + 6, top2[1] + L, (top[0] + top2[0]) / 2 + 3, top2[1] + L - 22, top[0] + 6, top[1] + L))
 
-# ---------- the frame: a board in 3D just behind the book, so it has exactly the book's angle ----------
-def frame_rect(m):
-    # corners of a rectangle m units bigger than the book on every side, in a plane behind the back cover
-    zf = ZF
-    return [(-m, -m, zf), (W + m, -m, zf), (W + m, H + m, zf), (-m, H + m, zf)]
-
+# ---------- the frame: the book's outline pushed out by the same distance on every side ----------
 def hull(points):
     pts = sorted(set(points))
     def half(seq):
@@ -137,33 +129,54 @@ def hull(points):
     return lower[:-1] + upper[:-1]
 
 book_outline = [P(p) for b in (back_board, front_board) for f in b.values() for p in f]
-h = hull([(round(x, 1), round(y, 1)) for x, y in book_outline])   # used for the book's shadow
+h = hull([(round(x, 1), round(y, 1)) for x, y in book_outline])   # the book's outline on screen
 
-plate3d, ring_outer3d, ring_inner3d = frame_rect(PLATE), frame_rect(RING_OUTER), frame_rect(RING_INNER)
-plate = [P(p) for p in plate3d]
-ring_outer = [P(p) for p in ring_outer3d]
-ring_inner = [P(p) for p in ring_inner3d]
+# the book's 4 main sides (the 4 longest edges of its outline, in order); the short corner bits are skipped
+n = len(h)
+edges = [(np.array(h[i]), np.array(h[(i + 1) % n])) for i in range(n)]
+longest = sorted(range(n), key=lambda i: -np.linalg.norm(edges[i][1] - edges[i][0]))[:4]
+sides = [edges[i] for i in sorted(longest)]
+area = sum(h[i][0] * h[(i + 1) % n][1] - h[(i + 1) % n][0] * h[i][1] for i in range(n))
+outward = 1 if area > 0 else -1
+
+def frame_quad(d):
+    # move each side outwards by d pixels and find where neighbouring sides meet
+    lines = []
+    for a, b in sides:
+        e = (b - a) / np.linalg.norm(b - a)
+        lines.append((a + np.array([e[1], -e[0]]) * outward * d, e))
+    out = []
+    for i in range(4):
+        (p1, d1), (p2, d2) = lines[i - 1], lines[i]
+        t = np.linalg.solve(np.array([d1, -d2]).T, p2 - p1)[0]
+        out.append(tuple(p1 + d1 * t))
+    return out
+
+plate, ring_outer, ring_inner = frame_quad(GAP_PLATE), frame_quad(GAP_OUTER), frame_quad(GAP_INNER)
 centroid = np.mean(np.array(plate), axis=0)
+jcorner = max(range(4), key=lambda i: plate[i][0] + plate[i][1])   # bottom-right corner gets the J
 
 beads = []
 for i in range(4):
-    a, b = np.array(ring_outer3d[i], float), np.array(ring_outer3d[(i + 1) % 4], float)
-    count = int(np.linalg.norm(b - a) // 9)
+    a, b = np.array(ring_outer[i]), np.array(ring_outer[(i + 1) % 4])
+    count = int(np.linalg.norm(b - a) // 30)
     for k in range(1, count):
         t = k / count
-        if 0.13 < t < 0.87 and not (i == 2 and 0.3 < t < 0.7):  # room for the curls and the J
-            x, y = P(tuple(a + (b - a) * t))
+        near_j = (i == jcorner and t < 0.3) or ((i + 1) % 4 == jcorner and t > 0.7)
+        if 0.14 < t < 0.86 and not near_j:  # room for the curls and the J
+            x, y = a + (b - a) * t
             beads.append('<circle cx="%.1f" cy="%.1f" r="6"/>' % (x, y))
 curls = []
-for p in plate:
+for i, p in enumerate(plate):
+    if i == jcorner:
+        continue
     d = np.array(p) - centroid
     ang = math.degrees(math.atan2(d[1], d[0]))
     q = np.array(p) - d / np.linalg.norm(d) * 8
     curls.append('<use href="#curlPair" transform="translate(%.1f %.1f) rotate(%.1f) scale(3.4)"/>' % (q[0], q[1], ang + 90))
 
-# the fancy J on a brass cartouche in the middle of the bottom edge
-jx, jy = P((W / 2, H + RING_OUTER, ZF))
-jy += 4
+# the J on a brass medallion in the bottom-right corner
+jx, jy = np.array(ring_outer[jcorner]) - (np.array(ring_outer[jcorner]) - centroid) / np.linalg.norm(np.array(ring_outer[jcorner]) - centroid) * 6
 
 defs = '''
     <linearGradient id="boardEdge" x1="0" y1="0" x2="1" y2="1">
@@ -207,7 +220,7 @@ defs = '''
 
 back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" viewBox="0 0 {S} {S}">
   <defs>{defs}</defs>
-  <style>@font-face {{ font-family: Pinyon; src: url("PinyonScript-Regular.ttf"); }}</style>
+  <style>@font-face {{ font-family: Playfair; src: url("PlayfairDisplay.ttf"); font-weight: 400 900; }}</style>
   <!-- brass frame, at the same angle as the book -->
   <g filter="url(#shadow)">
     <polygon points="{poly(plate)}" fill="url(#plate)" stroke="#2a1806" stroke-width="10" stroke-linejoin="round"/>
@@ -220,15 +233,13 @@ back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" 
   <!-- the book's shadow on the frame -->
   <polygon points="{poly(h)}" fill="#000" opacity="0.55" filter="url(#blur)" transform="translate(10 16)"/>
   {"".join(layers)}
-  <!-- the J cartouche -->
-  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f}) scale(1.2)">
-    <use href="#curlPair" transform="translate(-58 6) rotate(-90) scale(2.6)"/>
-    <use href="#curlPair" transform="translate(58 6) rotate(90) scale(2.6)"/>
-    <ellipse rx="62" ry="70" fill="url(#plate)" stroke="#2a1806" stroke-width="18"/>
-    <ellipse rx="62" ry="70" fill="none" stroke="url(#gold)" stroke-width="10"/>
-    <ellipse rx="50" ry="58" fill="none" stroke="url(#gold)" stroke-width="3"/>
-    <text x="4" y="40" text-anchor="middle" font-family="Pinyon" font-size="132" fill="#2a1806" stroke="#2a1806" stroke-width="10" stroke-linejoin="round">J</text>
-    <text x="4" y="40" text-anchor="middle" font-family="Pinyon" font-size="132" fill="url(#gold)">J</text>
+  <!-- the J medallion -->
+  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f})">
+    <circle r="104" fill="url(#plate)" stroke="#2a1806" stroke-width="20"/>
+    <circle r="104" fill="none" stroke="url(#gold)" stroke-width="13"/>
+    <circle r="88" fill="none" stroke="url(#gold)" stroke-width="3.5"/>
+    <text x="0" y="54" text-anchor="middle" font-family="Playfair" font-weight="900" font-size="160" fill="#1e1004" stroke="#1e1004" stroke-width="16" stroke-linejoin="round">J</text>
+    <text x="0" y="54" text-anchor="middle" font-family="Playfair" font-weight="900" font-size="160" fill="url(#gold)">J</text>
   </g>
 </svg>'''
 
