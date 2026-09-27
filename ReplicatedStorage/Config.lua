@@ -74,6 +74,11 @@ Config.FOOTSTEP_SOUNDS = {
 	Default = { 0 },                -- anything not listed above
 }
 Config.FOOTSTEP_VOLUME = { Crouch = 0.12, Walk = 0.45, Sprint = 0.9 }
+-- Per floor loudness, to even out recordings that are quieter or louder (1 = normal, 2 = twice as loud).
+-- Use the same names as in FOOTSTEP_SOUNDS. Floors not listed stay at 1.
+Config.FOOTSTEP_FLOOR_VOLUME = {
+	Slate = 2,                      -- the pavement recording is quieter than the cobbles
+}
 Config.FOOTSTEP_HEARING_DISTANCE = { Crouch = 15, Walk = 45, Sprint = 100 } -- studs; how far other players hear you
 Config.FOOTSTEP_PITCH_VARIATION = 0.08 -- each step slightly higher or lower, so it doesn't sound robotic
 Config.FOOTSTEP_DEBUG = true           -- prints the name of the floor you walk on (turn off when done)

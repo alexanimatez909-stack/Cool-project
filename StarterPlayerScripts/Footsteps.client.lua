@@ -56,7 +56,8 @@ local function playStep(character, movement)
 
 	local sound = Instance.new("Sound")
 	sound.SoundId = "rbxassetid://" .. id
-	sound.Volume = Config.FOOTSTEP_VOLUME[movement]
+	-- some recordings are quieter than others, so each floor can be turned up or down
+	sound.Volume = Config.FOOTSTEP_VOLUME[movement] * (Config.FOOTSTEP_FLOOR_VOLUME[floor] or 1)
 	sound.PlaybackSpeed = 1 + random:NextNumber(-1, 1) * Config.FOOTSTEP_PITCH_VARIATION
 	sound.RollOffMode = Enum.RollOffMode.InverseTapered
 	sound.RollOffMinDistance = 6
