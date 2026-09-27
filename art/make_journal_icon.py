@@ -63,13 +63,19 @@ back_board = box(0, W, 0, H, T - BOARD, T)
 pages = box(0, W - 5, 5, H - 5, BOARD, T - BOARD)
 front_board = box(0, W, 0, H, 0, BOARD)
 
-# fit the whole book into the middle of the canvas
-all_pts = [proj(p) for b in (back_board, front_board) for f in b.values() for p in f]
+# the frame's size around the book (book units)
+RING_INNER, RING_OUTER, PLATE = 22, 30, 36
+ZF = T / 2   # the frame sits at the book's middle depth, so it wraps round it evenly
+
+# fit the frame into the middle of the canvas (leaving room for the curls and the J)
+all_pts = [proj(p) for m in (PLATE,) for p in
+           [(-m, -m, ZF), (W + m, -m, ZF), (W + m, H + m, ZF), (-m, H + m, ZF)]]
+all_pts += [proj(p) for b in (back_board, front_board) for f in b.values() for p in f]
 xs, ys = [p[0] for p in all_pts], [p[1] for p in all_pts]
-room = S - 2 * 190
+room = S - 2 * 88
 scale = min(room / (max(xs) - min(xs)), room / (max(ys) - min(ys)))
 ox = S / 2 - scale * (max(xs) + min(xs)) / 2
-oy = S / 2 - scale * (max(ys) + min(ys)) / 2 - 6
+oy = S / 2 - scale * (max(ys) + min(ys)) / 2 - 18
 def P(p):
     x, y = proj(p)
     return (ox + x * scale, oy + y * scale)
@@ -106,13 +112,18 @@ for name, b in (("back", back_board), ("pages", pages), ("front", front_board)):
                 layers.append('<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" stroke="#b09160" stroke-width="1.6" opacity="0.8"/>'
                               % (*a, *c))
     if name == "pages":  # the ribbon bookmark hangs out of the bottom of the pages
-        top = P((W * 0.68, H - 5, T * 0.5))
-        top2 = P((W * 0.68 + 16, H - 5, T * 0.5))
+        top = P((W * 0.84, H - 5, T * 0.5))
+        top2 = P((W * 0.84 + 16, H - 5, T * 0.5))
         L = 150
         layers.append('<path d="M%.1f,%.1f L%.1f,%.1f L%.1f,%.1f L%.1f,%.1f L%.1f,%.1f Z" fill="url(#ribbon)" stroke="#3a0708" stroke-width="3" stroke-linejoin="round"/>'
                       % (top[0], top[1], top2[0], top2[1], top2[0] + 6, top2[1] + L, (top[0] + top2[0]) / 2 + 3, top2[1] + L - 22, top[0] + 6, top[1] + L))
 
-# ---------- the frame that follows the book ----------
+# ---------- the frame: a board in 3D just behind the book, so it has exactly the book's angle ----------
+def frame_rect(m):
+    # corners of a rectangle m units bigger than the book on every side, in a plane behind the back cover
+    zf = ZF
+    return [(-m, -m, zf), (W + m, -m, zf), (W + m, H + m, zf), (-m, H + m, zf)]
+
 def hull(points):
     pts = sorted(set(points))
     def half(seq):
@@ -125,58 +136,23 @@ def hull(points):
     lower, upper = half(pts), half(reversed(pts))
     return lower[:-1] + upper[:-1]
 
-def offset(poly_pts, d):
-    # push every edge of a convex polygon outwards by d and meet the neighbours
-    n = len(poly_pts)
-    area = sum(poly_pts[i][0] * poly_pts[(i + 1) % n][1] - poly_pts[(i + 1) % n][0] * poly_pts[i][1] for i in range(n))
-    sign = 1 if area > 0 else -1
-    lines = []
-    for i in range(n):
-        a, b = np.array(poly_pts[i]), np.array(poly_pts[(i + 1) % n])
-        e = (b - a) / np.linalg.norm(b - a)
-        nrm = np.array([e[1], -e[0]]) * sign
-        lines.append((a + nrm * d, e))
-    out = []
-    for i in range(n):
-        (p1, d1), (p2, d2) = lines[i - 1], lines[i]
-        t = np.linalg.solve(np.array([d1, -d2]).T, p2 - p1)[0]
-        out.append(tuple(p1 + d1 * t))
-    return out
-
 book_outline = [P(p) for b in (back_board, front_board) for f in b.values() for p in f]
-h = hull([(round(x, 1), round(y, 1)) for x, y in book_outline])
-# drop corners that are nearly straight so the frame has clean sides
-def simplify(pts, min_turn=18):
-    keep = []
-    n = len(pts)
-    for i in range(n):
-        a, b, c = np.array(pts[i - 1]), np.array(pts[i]), np.array(pts[(i + 1) % n])
-        u, v = b - a, c - b
-        ang = math.degrees(math.acos(np.clip(np.dot(u, v) / np.linalg.norm(u) / np.linalg.norm(v), -1, 1)))
-        if ang >= min_turn:
-            keep.append(pts[i])
-    return keep
-h = simplify(h)
-# keep the 4 corners that enclose the most area, so the frame is a clean 4-sided shape like the book
-from itertools import combinations
-def area(q):
-    return abs(sum(q[i][0] * q[(i + 1) % 4][1] - q[(i + 1) % 4][0] * q[i][1] for i in range(4))) / 2
-if len(h) > 4:
-    h = list(max(combinations(h, 4), key=area))
-plate = offset(h, 58)
-ring_outer = offset(h, 48)
-ring_inner = offset(h, 34)
-centroid = np.mean(np.array(h), axis=0)
+h = hull([(round(x, 1), round(y, 1)) for x, y in book_outline])   # used for the book's shadow
+
+plate3d, ring_outer3d, ring_inner3d = frame_rect(PLATE), frame_rect(RING_OUTER), frame_rect(RING_INNER)
+plate = [P(p) for p in plate3d]
+ring_outer = [P(p) for p in ring_outer3d]
+ring_inner = [P(p) for p in ring_inner3d]
+centroid = np.mean(np.array(plate), axis=0)
 
 beads = []
-for i in range(len(ring_outer)):
-    a, b = np.array(ring_outer[i]), np.array(ring_outer[(i + 1) % len(ring_outer)])
-    length = np.linalg.norm(b - a)
-    count = int(length // 30)
+for i in range(4):
+    a, b = np.array(ring_outer3d[i], float), np.array(ring_outer3d[(i + 1) % 4], float)
+    count = int(np.linalg.norm(b - a) // 9)
     for k in range(1, count):
         t = k / count
-        if 0.18 < t < 0.82:  # leave room for the curls at the corners
-            x, y = a + (b - a) * t
+        if 0.13 < t < 0.87 and not (i == 2 and 0.3 < t < 0.7):  # room for the curls and the J
+            x, y = P(tuple(a + (b - a) * t))
             beads.append('<circle cx="%.1f" cy="%.1f" r="6"/>' % (x, y))
 curls = []
 for p in plate:
@@ -184,6 +160,10 @@ for p in plate:
     ang = math.degrees(math.atan2(d[1], d[0]))
     q = np.array(p) - d / np.linalg.norm(d) * 8
     curls.append('<use href="#curlPair" transform="translate(%.1f %.1f) rotate(%.1f) scale(3.4)"/>' % (q[0], q[1], ang + 90))
+
+# the fancy J on a brass cartouche in the middle of the bottom edge
+jx, jy = P((W / 2, H + RING_OUTER, ZF))
+jy += 4
 
 defs = '''
     <linearGradient id="boardEdge" x1="0" y1="0" x2="1" y2="1">
@@ -227,10 +207,10 @@ defs = '''
 
 back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" viewBox="0 0 {S} {S}">
   <defs>{defs}</defs>
-  <!-- brass frame shaped like the book -->
+  <style>@font-face {{ font-family: Pinyon; src: url("PinyonScript-Regular.ttf"); }}</style>
+  <!-- brass frame, at the same angle as the book -->
   <g filter="url(#shadow)">
-    <polygon points="{poly(plate)}" fill="url(#plate)" stroke="#2a1806" stroke-width="28" stroke-linejoin="round"/>
-    <polygon points="{poly(plate)}" fill="none" stroke="url(#plate)" stroke-width="20" stroke-linejoin="round"/>
+    <polygon points="{poly(plate)}" fill="url(#plate)" stroke="#2a1806" stroke-width="10" stroke-linejoin="round"/>
     <polygon points="{poly(ring_outer)}" fill="none" stroke="#2a1806" stroke-width="22" stroke-linejoin="round"/>
     <polygon points="{poly(ring_outer)}" fill="none" stroke="url(#gold)" stroke-width="15" stroke-linejoin="round"/>
     <polygon points="{poly(ring_inner)}" fill="none" stroke="url(#gold)" stroke-width="5" stroke-linejoin="round"/>
@@ -240,6 +220,16 @@ back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" 
   <!-- the book's shadow on the frame -->
   <polygon points="{poly(h)}" fill="#000" opacity="0.55" filter="url(#blur)" transform="translate(10 16)"/>
   {"".join(layers)}
+  <!-- the J cartouche -->
+  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f}) scale(1.2)">
+    <use href="#curlPair" transform="translate(-58 6) rotate(-90) scale(2.6)"/>
+    <use href="#curlPair" transform="translate(58 6) rotate(90) scale(2.6)"/>
+    <ellipse rx="62" ry="70" fill="url(#plate)" stroke="#2a1806" stroke-width="18"/>
+    <ellipse rx="62" ry="70" fill="none" stroke="url(#gold)" stroke-width="10"/>
+    <ellipse rx="50" ry="58" fill="none" stroke="url(#gold)" stroke-width="3"/>
+    <text x="4" y="40" text-anchor="middle" font-family="Pinyon" font-size="132" fill="#2a1806" stroke="#2a1806" stroke-width="10" stroke-linejoin="round">J</text>
+    <text x="4" y="40" text-anchor="middle" font-family="Pinyon" font-size="132" fill="url(#gold)">J</text>
+  </g>
 </svg>'''
 
 # ---------- the front cover, drawn flat ----------
@@ -289,7 +279,7 @@ def render(svg, w, h, out):
     html = os.path.join(HERE, "_render.html")
     open(html, "w").write(f'<html><body style="margin:0;background:transparent">{svg}</body></html>')
     subprocess.run([CHROME, "--headless", "--no-sandbox", "--disable-gpu", "--hide-scrollbars",
-                    "--default-background-color=00000000", f"--window-size={w},{h + 200}",
+                    "--default-background-color=00000000", "--virtual-time-budget=3000", f"--window-size={w},{h + 200}",
                     f"--screenshot={out}", "file://" + html], check=True, capture_output=True)
     os.remove(html)
     return Image.open(out).convert("RGBA").crop((0, 0, w, h))
