@@ -173,6 +173,11 @@ Config.JOURNAL_KEY = "J"            -- opens and closes the journal
 Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain parchment for now)
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
 Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
+Config.JOURNAL_COVER_IMAGE_ID = 0   -- uploaded art/journal-cover.png: the closed front cover (swings open)
+Config.JOURNAL_OPEN_TIME = 0.7      -- seconds for the open animation (book rises, cover swings); 0 = instant
+Config.JOURNAL_OPEN_SOUND_ID = 0    -- sound when opening (a book / leather / page sound); 0 = none
+Config.JOURNAL_CLOSE_SOUND_ID = 0   -- sound when closing (can be the same ID)
+Config.JOURNAL_SOUND_VOLUME = 0.6
 Config.JOURNAL_ICON_SIZE = 0.1      -- icon height as a share of the screen height
 Config.JOURNAL_ICON_MARGIN = 0.02   -- gap from the bottom-right corner as a share of the screen
 Config.JOURNAL_NOTES_MAX = 2000     -- longest your notes can be (characters)

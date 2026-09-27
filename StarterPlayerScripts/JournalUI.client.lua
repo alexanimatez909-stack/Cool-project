@@ -5,13 +5,17 @@
 -- A small journal icon with a fancy "J" sits in the bottom-right corner, so players know it's
 -- there; clicking it also opens the journal (for phones and tablets). A red dot appears on it
 -- when a new clue arrives, until you open the journal.
+-- Opening: the closed book rises up from the bottom of the screen, then its cover swings open
+-- (faked 3D: the cover gets narrower towards the spine and darker as it turns). Closing plays it backwards.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
 -- means you can't look around until you close it again.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local State = require(script.Parent:WaitForChild("MovementState"))
 local remotes = ReplicatedStorage:WaitForChild("JournalRemotes")
 local player = Players.LocalPlayer
 
@@ -52,9 +56,11 @@ local ratio = Instance.new("UIAspectRatioConstraint")
 ratio.AspectRatio = 1.5
 ratio.Parent = book
 
+-- each half is pinned at the spine (the middle of the book) so it can be squashed towards it
 local function pageImage(id, x)
 	local image = Instance.new("ImageLabel")
-	image.Position = UDim2.fromScale(x, 0)
+	image.AnchorPoint = Vector2.new(x == 0 and 1 or 0, 0.5)
+	image.Position = UDim2.fromScale(0.5, 0.5)
 	image.Size = UDim2.fromScale(0.5, 1)
 	image.BackgroundTransparency = 1
 	image.Parent = book
@@ -67,8 +73,13 @@ local function pageImage(id, x)
 	end
 	return image
 end
-pageImage(Config.JOURNAL_LEFT_IMAGE_ID, 0)
+local leftPage = pageImage(Config.JOURNAL_LEFT_IMAGE_ID, 0)
 pageImage(Config.JOURNAL_RIGHT_IMAGE_ID, 0.5)
+local cover = pageImage(Config.JOURNAL_COVER_IMAGE_ID, 0.5) -- the closed front cover, lying over the right page
+cover.ZIndex = 5
+if Config.JOURNAL_COVER_IMAGE_ID == 0 then cover.BackgroundColor3 = Color3.fromRGB(85, 35, 15) end
+local bookScale = Instance.new("UIScale")
+bookScale.Parent = book
 if Config.JOURNAL_LEFT_IMAGE_ID == 0 or Config.JOURNAL_RIGHT_IMAGE_ID == 0 then
 	warn("[JournalUI] Book images not set yet: upload art/journal-left.png and art/journal-right.png and put their IDs in Config")
 end
@@ -78,7 +89,7 @@ local mouseFreer = Instance.new("TextButton")
 mouseFreer.Text = ""
 mouseFreer.BackgroundTransparency = 1
 mouseFreer.Size = UDim2.fromOffset(1, 1)
-mouseFreer.Modal = true
+mouseFreer.Modal = false -- switched on while the journal is open
 mouseFreer.Parent = book
 
 local function label(parent, text, font, color)
@@ -93,12 +104,15 @@ local function label(parent, text, font, color)
 	return l
 end
 
+local textFrames = {}
 local function textArea(area)
 	local f = Instance.new("Frame")
 	f.BackgroundTransparency = 1
 	f.Position = UDim2.fromScale(area.x, area.y)
 	f.Size = UDim2.fromScale(area.w, area.h)
+	f.Visible = false -- only shown once the book is fully open
 	f.Parent = book
+	table.insert(textFrames, f)
 	return f
 end
 
@@ -266,10 +280,11 @@ for _, clue in journal.clues do
 end
 notes.Text = journal.notes
 
+local isOpen = false -- whether the journal is open (or opening)
 local shown = 0
 remotes:WaitForChild("NewClue").OnClientEvent:Connect(function(clue)
 	addClueEntry(clue)
-	if not gui.Enabled then newDot.Visible = true end
+	if not isOpen then newDot.Visible = true end
 	toast.Text = "A new clue in your journal  (" .. Config.JOURNAL_KEY .. ")"
 	toast.Visible = true
 	shown += 1
@@ -301,22 +316,89 @@ task.spawn(function()
 	end
 end)
 
+---------------------------------------------------------------- the open / close animation
+-- progress goes from 0 (closed, off screen) to 1 (open). The first part raises the closed book,
+-- the rest swings the cover open. Closing just runs progress backwards.
+local RISE = 0.35 -- share of the animation spent raising the book (the rest is the cover swinging)
+local progress = 0
+
+local function sound(id)
+	if id == 0 then return nil end
+	local s = Instance.new("Sound")
+	s.SoundId = "rbxassetid://" .. id
+	s.Volume = Config.JOURNAL_SOUND_VOLUME
+	s.Parent = gui
+	return s
+end
+local openSound = sound(Config.JOURNAL_OPEN_SOUND_ID)
+local closeSound = sound(Config.JOURNAL_CLOSE_SOUND_ID)
+
+local function smooth(x) -- eases in and out
+	x = math.clamp(x, 0, 1)
+	return x * x * (3 - 2 * x)
+end
+
+local function draw()
+	local rise = smooth(progress / RISE)
+	local swing = smooth((progress - RISE) / (1 - RISE))
+	local angle = swing * math.pi -- 0 = cover shut, pi = cover lying open on the left
+
+	-- while closed the right half (the cover) sits in the middle of the screen; it slides to the
+	-- left as the cover opens, so the open book ends up centred
+	book.AnchorPoint = Vector2.new(0.75 - 0.25 * swing, 0.5)
+	book.Position = UDim2.fromScale(0.5, 0.5 + 0.9 * (1 - rise)) -- comes up from below the screen
+	bookScale.Scale = 0.85 + 0.15 * rise
+
+	-- the turning cover: as wide as cos(angle) on the right, then the inside lands on the left
+	local lift = 1 + 0.06 * math.sin(angle) -- the edge coming towards you looks a little bigger
+	local shade = 0.55 + 0.45 * math.abs(math.cos(angle)) -- darker when it's side-on
+	local grey = Color3.new(shade, shade, shade)
+	cover.Visible = angle < math.pi / 2
+	cover.Size = UDim2.fromScale(0.5 * math.max(math.cos(angle), 0), lift)
+	cover.ImageColor3 = grey
+	leftPage.Visible = angle > math.pi / 2
+	leftPage.Size = UDim2.fromScale(0.5 * math.max(-math.cos(angle), 0), angle > math.pi / 2 and lift or 1)
+	leftPage.ImageColor3 = grey
+
+	dim.BackgroundTransparency = 1 - 0.55 * rise
+	for _, f in textFrames do f.Visible = progress >= 1 end
+	gui.Enabled = progress > 0
+end
+draw()
+
+RunService.RenderStepped:Connect(function(dt)
+	local target = isOpen and 1 or 0
+	if progress == target then return end
+	if Config.JOURNAL_OPEN_TIME <= 0 or State.reduceMotion then
+		progress = target -- no animation
+	else
+		local step = dt / Config.JOURNAL_OPEN_TIME
+		progress = math.clamp(progress + (isOpen and step or -step), 0, 1)
+	end
+	draw()
+end)
+
 local function setOpen(open)
-	gui.Enabled = open
+	if open == isOpen then return end
+	isOpen = open
 	if open then
 		newDot.Visible = false
+		if openSound then openSound:Play() end
 	else
 		notes:ReleaseFocus()
 		sendNotes()
+		if closeSound then closeSound:Play() end
 	end
+	gui.Enabled = true
+	mouseFreer.Modal = open -- give the mouse back to the camera straight away when closing
 end
 
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	if gameProcessed then return end -- e.g. typing in the notes or chat
 	if input.KeyCode == Enum.KeyCode[Config.JOURNAL_KEY] then
-		setOpen(not gui.Enabled)
+		setOpen(not isOpen)
 	end
 end)
 icon.Activated:Connect(function()
-	setOpen(not gui.Enabled)
+	setOpen(not isOpen)
 end)

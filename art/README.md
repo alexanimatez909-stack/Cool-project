@@ -13,3 +13,5 @@
   (`journal-icon-cover.svg`) is warped onto it, and the brass frame follows the book's outline
   (`journal-icon.svg` = frame + page edges): its 4 sides sit the same distance (GAP_*) from the book's outline.
   The fancy J in the bottom-right corner is drawn as brush strokes (J_STEM, J_BAR). Run `python3 make_journal_icon.py`.
+- `journal-cover.svg`: the closed front cover for the open/close animation, drawn in the same coordinates as the right
+  half of `journal-book.svg` so it lines up exactly. Rendered to `journal-cover.png` (1024x1366) with `render-cover.html`.
