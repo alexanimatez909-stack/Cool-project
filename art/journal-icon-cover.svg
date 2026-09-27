@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1568" viewBox="0 0 150 196">
+  <defs>
+    <linearGradient id="boardEdge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4a1d0c"/><stop offset="1" stop-color="#220b03"/>
+    </linearGradient>
+    <linearGradient id="spine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2e1106"/><stop offset="0.5" stop-color="#6a2e1b"/><stop offset="1" stop-color="#3a1608"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6df9c"/><stop offset="0.45" stop-color="#cfa24c"/><stop offset="1" stop-color="#7a5219"/>
+    </linearGradient>
+    <linearGradient id="goldSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#6b4716"/><stop offset="0.5" stop-color="#e2bb67"/><stop offset="1" stop-color="#6b4716"/>
+    </linearGradient>
+    <linearGradient id="pageSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f3e9cf"/><stop offset="1" stop-color="#c9b07c"/>
+    </linearGradient>
+    <linearGradient id="pageBottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ece0bf"/><stop offset="1" stop-color="#b99f69"/>
+    </linearGradient>
+    <radialGradient id="plate" cx="0.45" cy="0.4" r="0.75">
+      <stop offset="0" stop-color="#3a2a1c"/><stop offset="1" stop-color="#140f0a"/>
+    </radialGradient>
+    <radialGradient id="ball" cx="0.35" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#fff1c2"/><stop offset="0.45" stop-color="#cfa24c"/><stop offset="1" stop-color="#553611"/>
+    </radialGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5e0f12"/><stop offset="0.5" stop-color="#a02226"/><stop offset="1" stop-color="#5e0f12"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="150%" height="150%">
+      <feDropShadow dx="8" dy="14" stdDeviation="12" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+    <filter id="blur" x="-20%" y="-20%" width="150%" height="150%"><feGaussianBlur stdDeviation="10"/></filter>
+    <g id="curlPair" fill="none" stroke-linecap="round">
+      <path d="M0,0 C-4,-10 -16,-13 -21,-6 C-24,-1 -18,3 -15,-1" stroke="#2a1806" stroke-width="5"/>
+      <path d="M0,0 C-4,-10 -16,-13 -21,-6 C-24,-1 -18,3 -15,-1" stroke="url(#goldSide)" stroke-width="2.6"/>
+      <path d="M0,0 C4,-10 16,-13 21,-6 C24,-1 18,3 15,-1" stroke="#2a1806" stroke-width="5"/>
+      <path d="M0,0 C4,-10 16,-13 21,-6 C24,-1 18,3 15,-1" stroke="url(#goldSide)" stroke-width="2.6"/>
+      <circle cx="0" cy="-2" r="3" fill="url(#ball)" stroke="#2a1806" stroke-width="0.8"/>
+    </g>
+    <linearGradient id="leather" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c3820"/><stop offset="0.55" stop-color="#57240f"/><stop offset="1" stop-color="#3a1608"/>
+    </linearGradient>
+    <filter id="grain" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency="1.6" numOctaves="2" seed="3"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.3 0"/>
+      <feComposite in2="SourceGraphic" operator="in"/>
+    </filter>
+    <g id="corner" fill="none" stroke-linecap="round">
+      <path d="M0,26 C0,11 11,0 26,0" stroke="#2a1806" stroke-width="5"/>
+      <path d="M0,26 C0,11 11,0 26,0" stroke="url(#gold)" stroke-width="3"/>
+      <path d="M26,0 C34,0 37,6 33,10 C30,12 27,9 29,7" stroke="url(#gold)" stroke-width="2"/>
+      <path d="M0,26 C0,34 6,37 10,33 C12,30 9,27 7,29" stroke="url(#gold)" stroke-width="2"/>
+      <path d="M8,20 C8,13 13,8 20,8 C15,11 12,14 11,19 Z" fill="url(#gold)" stroke="#2a1806" stroke-width="1"/>
+    </g>
+  </defs>
+  <rect x="0" y="0" width="150" height="196" rx="3" fill="url(#leather)" stroke="#220c04" stroke-width="2"/>
+  <rect x="0" y="0" width="150" height="196" rx="3" filter="url(#grain)" fill="#000"/>
+  <rect x="0" y="0" width="22" height="196" rx="3" fill="url(#spine)"/>
+  <g stroke="url(#gold)" stroke-width="3">
+    <line x1="2" y1="28" x2="20" y2="28"/><line x1="2" y1="168" x2="20" y2="168"/>
+  </g>
+  <rect x="30" y="10" width="110" height="176" rx="4" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+  <rect x="36" y="16" width="98" height="164" rx="3" fill="none" stroke="#cfa24c" stroke-width="0.9" opacity="0.8"/>
+  <use href="#corner" transform="translate(34,14)"/>
+  <use href="#corner" transform="translate(136,14) scale(-1,1)"/>
+  <use href="#corner" transform="translate(34,182) scale(1,-1)"/>
+  <use href="#corner" transform="translate(136,182) scale(-1,-1)"/>
+  <g stroke-linecap="round">
+    <line x1="104" y1="118" x2="122" y2="138" stroke="#2a1806" stroke-width="10"/>
+    <line x1="104" y1="118" x2="122" y2="138" stroke="url(#gold)" stroke-width="6"/>
+    <circle cx="88" cy="100" r="23" fill="none" stroke="#2a1806" stroke-width="10"/>
+    <circle cx="88" cy="100" r="23" fill="none" stroke="url(#gold)" stroke-width="6"/>
+    <circle cx="88" cy="100" r="18" fill="#caa55a" opacity="0.18"/>
+    <path d="M75,91 C79,84 86,81 93,82" fill="none" stroke="#fff3cf" stroke-width="2" opacity="0.8"/>
+  </g>
+  <path d="M6,1.5 H144" stroke="#c07a52" stroke-width="1.2" opacity="0.6"/>
+</svg>
