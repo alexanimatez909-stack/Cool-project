@@ -184,10 +184,9 @@ Config.JOURNAL_KEY = "J"            -- opens and closes the journal
 Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain parchment for now)
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
 Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
-Config.JOURNAL_COVER_IMAGE_ID = 0   -- uploaded art/journal-cover.png: the closed front cover (swings open)
-Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up
-Config.JOURNAL_COVER_TIME = 0.45    -- seconds for the book to swing open
-Config.JOURNAL_THICKNESS = 0.05     -- how thick the turning half looks side-on (share of the book width)
+Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up (pages pointing at you)
+Config.JOURNAL_OPEN_TIME = 0.45     -- seconds for both halves to open out flat
+Config.JOURNAL_THICKNESS = 0.08     -- how thick the closed book looks from the page edges (share of the book width)
 Config.JOURNAL_CLOSE_SPEED = 1.8    -- closing plays the animation backwards this many times faster
 Config.JOURNAL_OPEN_SOUND_ID = 0    -- sound when opening (a book / leather / page sound); 0 = none
 Config.JOURNAL_CLOSE_SOUND_ID = 0   -- sound when closing (can be the same ID)
@@ -1044,10 +1043,10 @@ do
 -- A small journal icon with a fancy "J" sits in the bottom-right corner, so players know it's
 -- there; clicking it also opens the journal (for phones and tablets), and a brass X on the book's
 -- corner closes it. A red dot appears on the icon when a new clue arrives, until you open the journal.
--- Opening: the closed book rises up from the bottom of the screen and opens in the middle, straight
--- onto the Clues and Notes pages: the front half (cover and half the pages) swings over to the left
--- (faked 3D: it gets narrower towards the spine and darker as it turns, and its thick stack of page
--- edges shows while it's side-on). Closing plays it backwards, faster.
+-- Opening: the closed book rises up from the bottom of the screen with its page edges pointing at
+-- you (spine at the back), then both halves open outwards at the same time until it lies flat on the
+-- Clues and Notes pages (faked 3D: each half grows out from the spine and gets lighter as it turns
+-- towards you, and each half's page edges stay at its outer side). Closing plays it backwards, faster.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
 -- means you can't look around until you close it again.
 local Players = game:GetService("Players")
@@ -1115,30 +1114,37 @@ local function pageImage(id, x)
 	return image
 end
 local leftPage = pageImage(Config.JOURNAL_LEFT_IMAGE_ID, 0)
-pageImage(Config.JOURNAL_RIGHT_IMAGE_ID, 0.5)
-local cover = pageImage(Config.JOURNAL_COVER_IMAGE_ID, 0.5) -- the closed front cover, lying over the right page
-cover.ZIndex = 8
-if Config.JOURNAL_COVER_IMAGE_ID == 0 then cover.BackgroundColor3 = Color3.fromRGB(85, 35, 15) end
+local rightPage = pageImage(Config.JOURNAL_RIGHT_IMAGE_ID, 0.5)
 
--- the edges of the pages in the turning half, seen while it's side-on
-local pageEdges = Instance.new("Frame")
-pageEdges.Name = "PageEdges"
-pageEdges.AnchorPoint = Vector2.new(0.5, 0.5)
-pageEdges.Position = UDim2.fromScale(0.5, 0.5)
-pageEdges.BackgroundColor3 = Color3.new(1, 1, 1) -- the colours come from the gradient below
-pageEdges.BorderSizePixel = 0
-pageEdges.ZIndex = 7
-pageEdges.Visible = false
-pageEdges.Parent = book
-local edgeShade = Instance.new("UIGradient") -- darker towards the covers, like a stack of pages
-edgeShade.Color = ColorSequence.new({
-	ColorSequenceKeypoint.new(0, Color3.fromRGB(90, 45, 25)),
-	ColorSequenceKeypoint.new(0.15, Color3.fromRGB(200, 185, 150)),
-	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(240, 230, 205)),
-	ColorSequenceKeypoint.new(0.85, Color3.fromRGB(200, 185, 150)),
-	ColorSequenceKeypoint.new(1, Color3.fromRGB(90, 45, 25)),
-})
-edgeShade.Parent = pageEdges
+-- the page edges of each half (what you see of the closed book when its pages point at you):
+-- thin vertical lines for the pages, leather at the outside for the cover
+local function edgeBlock(side) -- side = -1 for the left half, 1 for the right half
+	local block = Instance.new("Frame")
+	block.AnchorPoint = Vector2.new(side < 0 and 1 or 0, 0.5)
+	block.BackgroundColor3 = Color3.new(1, 1, 1) -- the colours come from the gradient
+	block.BorderSizePixel = 0
+	block.ZIndex = 3
+	block.Parent = book
+	local keys = {}
+	local LEATHER = Color3.fromRGB(70, 30, 14)
+	for i = 0, 18 do
+		local x = i / 18
+		local colour
+		if i <= 1 then colour = LEATHER -- the cover (outer side)
+		elseif i % 2 == 0 then colour = Color3.fromRGB(236, 224, 196) -- a page
+		else colour = Color3.fromRGB(196, 178, 140) -- the gap between pages
+		end
+		if side > 0 then x = 1 - x end
+		table.insert(keys, ColorSequenceKeypoint.new(x, colour))
+	end
+	table.sort(keys, function(a, b) return a.Time < b.Time end)
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new(keys)
+	gradient.Parent = block
+	return block
+end
+local leftEdges = edgeBlock(-1)
+local rightEdges = edgeBlock(1)
 local bookScale = Instance.new("UIScale")
 bookScale.Parent = book
 if Config.JOURNAL_LEFT_IMAGE_ID == 0 or Config.JOURNAL_RIGHT_IMAGE_ID == 0 then
@@ -1415,10 +1421,10 @@ end)
 
 ---------------------------------------------------------------- the open / close animation
 -- clock runs from 0 (closed, off screen) to the total time (open), in seconds:
---   rise (the closed book comes up) -> the front half swings open.
+--   rise (the closed book comes up, pages towards you) -> both halves open out.
 -- Closing runs the same clock backwards (faster), so it plays in reverse.
-local RISE, COVER = Config.JOURNAL_RISE_TIME, Config.JOURNAL_COVER_TIME
-local TOTAL = RISE + COVER
+local RISE, OPEN = Config.JOURNAL_RISE_TIME, Config.JOURNAL_OPEN_TIME
+local TOTAL = RISE + OPEN
 local clock = 0
 
 local function sound(id)
@@ -1441,35 +1447,32 @@ local function part(start, length) -- how far through one step of the animation 
 	return smooth((clock - start) / length)
 end
 
-local function turning(angle) -- size bump and shading for something turning over (0 to pi)
-	local lift = 1 + 0.06 * math.sin(angle) -- the edge coming towards you looks a little bigger
-	local shade = 0.55 + 0.45 * math.abs(math.cos(angle)) -- darker when it's side-on
-	return lift, Color3.new(shade, shade, shade)
-end
-
 local function draw()
 	local rise = part(0, RISE)
-	local swing = part(RISE, COVER)
-	local angle = swing * math.pi -- 0 = cover shut, pi = cover lying open on the left
+	local open = part(RISE, OPEN)
+	local angle = open * math.pi / 2 -- 0 = shut with the pages pointing at you, 90 degrees = lying flat
 
-	-- while closed the right half (the cover) sits in the middle of the screen; it slides to the
-	-- left as the cover opens, so the open book ends up centred
-	book.AnchorPoint = Vector2.new(0.75 - 0.25 * swing, 0.5)
+	book.AnchorPoint = Vector2.new(0.5, 0.5)
 	book.Position = UDim2.fromScale(0.5, 0.5 + 0.9 * (1 - rise)) -- comes up from below the screen
 	bookScale.Scale = 0.85 + 0.15 * rise
 
-	-- the cover: as wide as cos(angle) on the right, then its inside lands on the left
-	local lift, grey = turning(angle)
-	cover.Visible = angle < math.pi / 2
-	cover.Size = UDim2.fromScale(0.5 * math.max(math.cos(angle), 0), lift)
-	cover.ImageColor3 = grey
-	leftPage.Visible = angle > math.pi / 2
-	leftPage.Size = UDim2.fromScale(0.5 * math.max(-math.cos(angle), 0), angle > math.pi / 2 and lift or 1)
-	leftPage.ImageColor3 = grey
-
-	-- side-on, you see the thickness of the half that is turning
-	pageEdges.Visible = angle > 0 and angle < math.pi
-	pageEdges.Size = UDim2.fromScale(Config.JOURNAL_THICKNESS * math.sin(angle), 0.96 * lift)
+	-- each half grows out from the spine; its page edges ride along on its outer side
+	local width = 0.5 * math.sin(angle)
+	local thickness = Config.JOURNAL_THICKNESS / 2 * math.cos(angle)
+	local height = 1 + 0.05 * math.cos(angle) -- the outer edges start nearer to you, so a bit bigger
+	local shade = 0.45 + 0.55 * math.sin(angle) -- the pages start in shadow and light up as they face you
+	local grey = Color3.new(shade, shade, shade)
+	for _, half in { leftPage, rightPage } do
+		half.Visible = width > 0.001
+		half.Size = UDim2.fromScale(width, height)
+		half.ImageColor3 = grey
+	end
+	leftEdges.Visible = thickness > 0.001
+	rightEdges.Visible = thickness > 0.001
+	leftEdges.Position = UDim2.fromScale(0.5 - width, 0.5)
+	rightEdges.Position = UDim2.fromScale(0.5 + width, 0.5)
+	leftEdges.Size = UDim2.fromScale(thickness, height * 0.98)
+	rightEdges.Size = UDim2.fromScale(thickness, height * 0.98)
 
 	dim.BackgroundTransparency = 1 - 0.55 * rise
 	for _, f in textFrames do f.Visible = clock >= TOTAL end

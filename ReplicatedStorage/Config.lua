@@ -173,10 +173,9 @@ Config.JOURNAL_KEY = "J"            -- opens and closes the journal
 Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain parchment for now)
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
 Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
-Config.JOURNAL_COVER_IMAGE_ID = 0   -- uploaded art/journal-cover.png: the closed front cover (swings open)
-Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up
-Config.JOURNAL_COVER_TIME = 0.45    -- seconds for the book to swing open
-Config.JOURNAL_THICKNESS = 0.05     -- how thick the turning half looks side-on (share of the book width)
+Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up (pages pointing at you)
+Config.JOURNAL_OPEN_TIME = 0.45     -- seconds for both halves to open out flat
+Config.JOURNAL_THICKNESS = 0.08     -- how thick the closed book looks from the page edges (share of the book width)
 Config.JOURNAL_CLOSE_SPEED = 1.8    -- closing plays the animation backwards this many times faster
 Config.JOURNAL_OPEN_SOUND_ID = 0    -- sound when opening (a book / leather / page sound); 0 = none
 Config.JOURNAL_CLOSE_SOUND_ID = 0   -- sound when closing (can be the same ID)
