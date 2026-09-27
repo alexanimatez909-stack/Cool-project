@@ -75,6 +75,7 @@ Config.FOOTSTEP_SOUNDS = {
 }
 Config.FOOTSTEP_VOLUME = { Crouch = 0.12, Walk = 0.45, Sprint = 0.9 }
 Config.FOOTSTEP_HEARING_DISTANCE = { Crouch = 15, Walk = 45, Sprint = 100 } -- studs; how far other players hear you
+Config.FOOTSTEP_SPRINT_STEP_LENGTH = 7 -- studs per footstep SOUND when sprinting (quicker than the head bob; walking follows the bob)
 Config.FOOTSTEP_PITCH_VARIATION = 0.08 -- each step slightly higher or lower, so it doesn't sound robotic
 Config.FOOTSTEP_DEBUG = true           -- prints the name of the floor you walk on (turn off when done)
 
@@ -87,7 +88,7 @@ Config.FOV_SMOOTHING = 6            -- how quickly the view widens/narrows (high
 
 -- Head bob: one dip per footstep. Step length decides how often you step.
 Config.BOB_STEP_LENGTH_WALK = 8     -- studs travelled per footstep while walking
-Config.BOB_STEP_LENGTH_SPRINT = 7      -- shorter than walking so running has a quick rhythm (10 sounded like hopping)
+Config.BOB_STEP_LENGTH_SPRINT = 10
 Config.BOB_HEIGHT_WALK = 0.15       -- how far the head dips each step (the main DOORS-style bob)
 Config.BOB_HEIGHT_SPRINT = 0.38
 Config.BOB_NOD_WALK = 0.35          -- the view nods down slightly as each foot lands
