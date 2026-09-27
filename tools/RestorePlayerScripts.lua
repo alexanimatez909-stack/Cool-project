@@ -185,9 +185,15 @@ Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain 
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
 Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
 Config.JOURNAL_COVER_IMAGE_ID = 0   -- uploaded art/journal-cover.png: the closed front cover (swings open)
-Config.JOURNAL_OPEN_TIME = 0.7      -- seconds for the open animation (book rises, cover swings); 0 = instant
+Config.JOURNAL_PAGE_IMAGE_ID = 0    -- uploaded art/journal-page.png: a blank page, for the page flicks
+Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up
+Config.JOURNAL_COVER_TIME = 0.4     -- seconds for the cover to swing open
+Config.JOURNAL_PAGE_FLIPS = 3       -- blank pages that flick over before the Clues/Notes pages (0 = none)
+Config.JOURNAL_FLIP_TIME = 0.16     -- seconds per page flick
+Config.JOURNAL_CLOSE_SPEED = 1.8    -- closing plays the animation backwards this many times faster
 Config.JOURNAL_OPEN_SOUND_ID = 0    -- sound when opening (a book / leather / page sound); 0 = none
 Config.JOURNAL_CLOSE_SOUND_ID = 0   -- sound when closing (can be the same ID)
+Config.JOURNAL_PAGE_SOUND_ID = 0    -- a short page-turn sound, played for each page flick; 0 = none
 Config.JOURNAL_SOUND_VOLUME = 0.6
 Config.JOURNAL_ICON_SIZE = 0.1      -- icon height as a share of the screen height
 Config.JOURNAL_ICON_MARGIN = 0.02   -- gap from the bottom-right corner as a share of the screen
@@ -1041,8 +1047,9 @@ do
 -- A small journal icon with a fancy "J" sits in the bottom-right corner, so players know it's
 -- there; clicking it also opens the journal (for phones and tablets), and a brass X on the book's
 -- corner closes it. A red dot appears on the icon when a new clue arrives, until you open the journal.
--- Opening: the closed book rises up from the bottom of the screen, then its cover swings open
--- (faked 3D: the cover gets narrower towards the spine and darker as it turns). Closing plays it backwards.
+-- Opening: the closed book rises up from the bottom of the screen, its cover swings open, a few
+-- blank pages flick over, and the last one turns to the Clues and Notes pages (faked 3D: a turning
+-- page gets narrower towards the spine and darker as it turns). Closing plays it backwards, faster.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
 -- means you can't look around until you close it again.
 local Players = game:GetService("Players")
@@ -1110,10 +1117,59 @@ local function pageImage(id, x)
 	return image
 end
 local leftPage = pageImage(Config.JOURNAL_LEFT_IMAGE_ID, 0)
-pageImage(Config.JOURNAL_RIGHT_IMAGE_ID, 0.5)
+local rightPage = pageImage(Config.JOURNAL_RIGHT_IMAGE_ID, 0.5)
 local cover = pageImage(Config.JOURNAL_COVER_IMAGE_ID, 0.5) -- the closed front cover, lying over the right page
-cover.ZIndex = 5
+cover.ZIndex = 8
 if Config.JOURNAL_COVER_IMAGE_ID == 0 then cover.BackgroundColor3 = Color3.fromRGB(85, 35, 15) end
+
+-- the paper part of each page (between the ribbon and the leather), as a share of the book
+-- (from art/journal-book.svg: pages run x 80-738 and 762-1420, y 54-946, in a 1500 x 1000 book)
+local PAGE_W, PAGE_H = 658 / 1500, 892 / 1000
+local SPINE_LEFT, SPINE_RIGHT = 738 / 1500, 762 / 1500
+
+local function blankPage(parent, zIndex)
+	-- a blank journal page (art/journal-page.png); plain parchment until it's uploaded
+	local page = Instance.new("ImageLabel")
+	page.BackgroundTransparency = 1
+	page.ZIndex = zIndex
+	page.Parent = parent
+	if Config.JOURNAL_PAGE_IMAGE_ID ~= 0 then
+		page.Image = "rbxassetid://" .. Config.JOURNAL_PAGE_IMAGE_ID
+	else
+		page.BackgroundTransparency = 0
+		page.BackgroundColor3 = PAPER
+		page.BorderSizePixel = 0
+	end
+	return page
+end
+-- blank pages lying on top of Clues and Notes until the last page has turned (inside the half
+-- images, so they squash along with the cover while it turns)
+local leftBlank = blankPage(leftPage, 2)
+leftBlank.Position = UDim2.fromScale(80 / 750, 0.054)
+leftBlank.Size = UDim2.fromScale(658 / 750, PAGE_H)
+local rightBlank = blankPage(rightPage, 2)
+rightBlank.Position = UDim2.fromScale(12 / 750, 0.054)
+rightBlank.Size = UDim2.fromScale(658 / 750, PAGE_H)
+
+-- the page that is turning: a blank page on its way over, pinned at the spine
+local flipping = blankPage(book, 6)
+flipping.AnchorPoint = Vector2.new(0, 0.5)
+flipping.Position = UDim2.fromScale(SPINE_RIGHT, 0.5)
+-- the back of the last page is the Clues page: a window onto the left half image, pinned at the spine
+local lastBack = Instance.new("Frame")
+lastBack.AnchorPoint = Vector2.new(1, 0.5)
+lastBack.Position = UDim2.fromScale(SPINE_LEFT, 0.5)
+lastBack.BackgroundTransparency = 1
+lastBack.ClipsDescendants = true
+lastBack.ZIndex = 6
+lastBack.Parent = book
+local lastBackImage = leftPage:Clone()
+for _, child in lastBackImage:GetChildren() do child:Destroy() end
+lastBackImage.AnchorPoint = Vector2.new(0, 0)
+lastBackImage.Position = UDim2.fromScale(-80 / 658, -54 / 892)
+lastBackImage.Size = UDim2.fromScale(750 / 658, 1000 / 892)
+lastBackImage.ZIndex = 6
+lastBackImage.Parent = lastBack
 local bookScale = Instance.new("UIScale")
 bookScale.Parent = book
 if Config.JOURNAL_LEFT_IMAGE_ID == 0 or Config.JOURNAL_RIGHT_IMAGE_ID == 0 then
@@ -1389,10 +1445,13 @@ task.spawn(function()
 end)
 
 ---------------------------------------------------------------- the open / close animation
--- progress goes from 0 (closed, off screen) to 1 (open). The first part raises the closed book,
--- the rest swings the cover open. Closing just runs progress backwards.
-local RISE = 0.35 -- share of the animation spent raising the book (the rest is the cover swinging)
-local progress = 0
+-- clock runs from 0 (closed, off screen) to the total time (open), in seconds:
+--   rise (the closed book comes up) -> cover swings open -> a few blank pages flick over.
+-- Closing runs the same clock backwards (faster), so the whole thing plays in reverse.
+local RISE, COVER, FLIP = Config.JOURNAL_RISE_TIME, Config.JOURNAL_COVER_TIME, Config.JOURNAL_FLIP_TIME
+local FLIPS = Config.JOURNAL_PAGE_FLIPS
+local TOTAL = RISE + COVER + FLIPS * FLIP
+local clock = 0
 
 local function sound(id)
 	if id == 0 then return nil end
@@ -1404,15 +1463,26 @@ local function sound(id)
 end
 local openSound = sound(Config.JOURNAL_OPEN_SOUND_ID)
 local closeSound = sound(Config.JOURNAL_CLOSE_SOUND_ID)
+local pageSound = sound(Config.JOURNAL_PAGE_SOUND_ID)
 
 local function smooth(x) -- eases in and out
 	x = math.clamp(x, 0, 1)
 	return x * x * (3 - 2 * x)
 end
+local function part(start, length) -- how far through one step of the animation we are, 0 to 1
+	if length <= 0 then return clock >= start and 1 or 0 end
+	return smooth((clock - start) / length)
+end
+
+local function turning(angle) -- size bump and shading for something turning over (0 to pi)
+	local lift = 1 + 0.06 * math.sin(angle) -- the edge coming towards you looks a little bigger
+	local shade = 0.55 + 0.45 * math.abs(math.cos(angle)) -- darker when it's side-on
+	return lift, Color3.new(shade, shade, shade)
+end
 
 local function draw()
-	local rise = smooth(progress / RISE)
-	local swing = smooth((progress - RISE) / (1 - RISE))
+	local rise = part(0, RISE)
+	local swing = part(RISE, COVER)
 	local angle = swing * math.pi -- 0 = cover shut, pi = cover lying open on the left
 
 	-- while closed the right half (the cover) sits in the middle of the screen; it slides to the
@@ -1421,31 +1491,70 @@ local function draw()
 	book.Position = UDim2.fromScale(0.5, 0.5 + 0.9 * (1 - rise)) -- comes up from below the screen
 	bookScale.Scale = 0.85 + 0.15 * rise
 
-	-- the turning cover: as wide as cos(angle) on the right, then the inside lands on the left
-	local lift = 1 + 0.06 * math.sin(angle) -- the edge coming towards you looks a little bigger
-	local shade = 0.55 + 0.45 * math.abs(math.cos(angle)) -- darker when it's side-on
-	local grey = Color3.new(shade, shade, shade)
+	-- the cover: as wide as cos(angle) on the right, then its inside lands on the left
+	local lift, grey = turning(angle)
 	cover.Visible = angle < math.pi / 2
 	cover.Size = UDim2.fromScale(0.5 * math.max(math.cos(angle), 0), lift)
 	cover.ImageColor3 = grey
 	leftPage.Visible = angle > math.pi / 2
 	leftPage.Size = UDim2.fromScale(0.5 * math.max(-math.cos(angle), 0), angle > math.pi / 2 and lift or 1)
 	leftPage.ImageColor3 = grey
+	leftBlank.ImageColor3 = grey
+
+	-- the page flicks: find the page that is turning right now (if any)
+	flipping.Visible, lastBack.Visible = false, false
+	local lastStart = RISE + COVER + (FLIPS - 1) * FLIP
+	for i = 0, FLIPS - 1 do
+		local f = part(RISE + COVER + i * FLIP, FLIP)
+		if f > 0 and f < 1 then
+			local a = f * math.pi
+			local pageLift, pageGrey = turning(a)
+			if a < math.pi / 2 then -- still on the right, narrowing towards the spine
+				flipping.Visible = true
+				flipping.AnchorPoint = Vector2.new(0, 0.5)
+				flipping.Position = UDim2.fromScale(SPINE_RIGHT, 0.5)
+				flipping.Size = UDim2.fromScale(PAGE_W * math.cos(a), PAGE_H * pageLift)
+				flipping.ImageColor3 = pageGrey
+			elseif i < FLIPS - 1 then -- landing on the left: another blank page
+				flipping.Visible = true
+				flipping.AnchorPoint = Vector2.new(1, 0.5)
+				flipping.Position = UDim2.fromScale(SPINE_LEFT, 0.5)
+				flipping.Size = UDim2.fromScale(PAGE_W * -math.cos(a), PAGE_H * pageLift)
+				flipping.ImageColor3 = pageGrey
+			else -- the last page lands on the left: its back is the Clues page
+				lastBack.Visible = true
+				lastBack.Size = UDim2.fromScale(PAGE_W * -math.cos(a), PAGE_H * pageLift)
+				lastBackImage.ImageColor3 = pageGrey
+			end
+		end
+	end
+	-- the blank pages on top of Notes and Clues go once the last page uncovers / covers them
+	rightBlank.Visible = FLIPS > 0 and clock < lastStart
+	leftBlank.Visible = FLIPS > 0 and clock < lastStart + FLIP
 
 	dim.BackgroundTransparency = 1 - 0.55 * rise
-	for _, f in textFrames do f.Visible = progress >= 1 end
-	gui.Enabled = progress > 0
+	for _, f in textFrames do f.Visible = clock >= TOTAL end
+	gui.Enabled = clock > 0
 end
 draw()
 
 RunService.RenderStepped:Connect(function(dt)
-	local target = isOpen and 1 or 0
-	if progress == target then return end
-	if Config.JOURNAL_OPEN_TIME <= 0 or State.reduceMotion then
-		progress = target -- no animation
+	local target = isOpen and TOTAL or 0
+	if clock == target then return end
+	local before = clock
+	if State.reduceMotion then
+		clock = target -- no animation
+	elseif isOpen then
+		clock = math.min(clock + dt, TOTAL)
 	else
-		local step = dt / Config.JOURNAL_OPEN_TIME
-		progress = math.clamp(progress + (isOpen and step or -step), 0, 1)
+		clock = math.max(clock - dt * Config.JOURNAL_CLOSE_SPEED, 0)
+	end
+	-- a page sound each time a page starts to turn
+	if pageSound and not State.reduceMotion then
+		for i = 0, FLIPS - 1 do
+			local start = RISE + COVER + i * FLIP + FLIP * 0.1
+			if (before < start) ~= (clock < start) then pageSound:Play() end
+		end
 	end
 	draw()
 end)
