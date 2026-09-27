@@ -176,7 +176,12 @@ for i, p in enumerate(plate):
     curls.append('<use href="#curlPair" transform="translate(%.1f %.1f) rotate(%.1f) scale(3.4)"/>' % (q[0], q[1], ang + 90))
 
 # the J on a brass medallion in the bottom-right corner
-jx, jy = np.array(ring_outer[jcorner]) - (np.array(ring_outer[jcorner]) - centroid) / np.linalg.norm(np.array(ring_outer[jcorner]) - centroid) * 6
+jx, jy = ring_outer[jcorner][0] - 10, ring_outer[jcorner][1] - 60
+jy = min(jy, S - 12 - 110 * 1.55)   # keep the curl inside the picture
+
+J_PATHS = [('M-30,-92 C-14,-100 18,-84 40,-94', 16), ('M14,-88 L14,26', 30), ('M14,26 C14,82 -24,104 -58,86', 24), ('M-58,86 C-86,70 -80,34 -52,34', 16), ('M-52,34 C-38,34 -32,48 -42,56', 11)]
+J_DARK = "".join('<path d="%s" stroke="#1e1004" stroke-width="%d"/>' % (d, w + 14) for d, w in J_PATHS)
+J_GOLD = "".join('<path d="%s" stroke="url(#goldJ)" stroke-width="%d"/>' % (d, w) for d, w in J_PATHS)
 
 defs = '''
     <linearGradient id="boardEdge" x1="0" y1="0" x2="1" y2="1">
@@ -196,6 +201,9 @@ defs = '''
     </linearGradient>
     <linearGradient id="pageBottom" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ece0bf"/><stop offset="1" stop-color="#b99f69"/>
+    </linearGradient>
+    <linearGradient id="goldJ" gradientUnits="userSpaceOnUse" x1="-60" y1="-100" x2="40" y2="100">
+      <stop offset="0" stop-color="#fbe7a8"/><stop offset="0.5" stop-color="#d6a94f"/><stop offset="1" stop-color="#8a5d1c"/>
     </linearGradient>
     <radialGradient id="plate" cx="0.45" cy="0.4" r="0.75">
       <stop offset="0" stop-color="#3a2a1c"/><stop offset="1" stop-color="#140f0a"/>
@@ -233,13 +241,12 @@ back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" 
   <!-- the book's shadow on the frame -->
   <polygon points="{poly(h)}" fill="#000" opacity="0.55" filter="url(#blur)" transform="translate(10 16)"/>
   {"".join(layers)}
-  <!-- the J medallion -->
-  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f})">
-    <circle r="104" fill="url(#plate)" stroke="#2a1806" stroke-width="20"/>
-    <circle r="104" fill="none" stroke="url(#gold)" stroke-width="13"/>
-    <circle r="88" fill="none" stroke="url(#gold)" stroke-width="3.5"/>
-    <text x="0" y="54" text-anchor="middle" font-family="Playfair" font-weight="900" font-size="160" fill="#1e1004" stroke="#1e1004" stroke-width="16" stroke-linejoin="round">J</text>
-    <text x="0" y="54" text-anchor="middle" font-family="Playfair" font-weight="900" font-size="160" fill="url(#gold)">J</text>
+  <!-- the fancy J in the bottom-right corner: drawn as brush strokes, dark outline first, then gold -->
+  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f}) scale(1.55)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    {J_DARK}
+    <circle cx="-44" cy="52" r="15" fill="#1e1004"/><circle cx="-30" cy="-92" r="13" fill="#1e1004"/><circle cx="40" cy="-94" r="12" fill="#1e1004"/>
+    {J_GOLD}
+    <circle cx="-44" cy="52" r="9" fill="url(#ball)"/><circle cx="-30" cy="-92" r="8" fill="url(#ball)"/><circle cx="40" cy="-94" r="7" fill="url(#ball)"/>
   </g>
 </svg>'''
 

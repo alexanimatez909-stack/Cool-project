@@ -18,6 +18,9 @@
     <linearGradient id="pageBottom" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ece0bf"/><stop offset="1" stop-color="#b99f69"/>
     </linearGradient>
+    <linearGradient id="goldJ" gradientUnits="userSpaceOnUse" x1="-60" y1="-100" x2="40" y2="100">
+      <stop offset="0" stop-color="#fbe7a8"/><stop offset="0.5" stop-color="#d6a94f"/><stop offset="1" stop-color="#8a5d1c"/>
+    </linearGradient>
     <radialGradient id="plate" cx="0.45" cy="0.4" r="0.75">
       <stop offset="0" stop-color="#3a2a1c"/><stop offset="1" stop-color="#140f0a"/>
     </radialGradient>
