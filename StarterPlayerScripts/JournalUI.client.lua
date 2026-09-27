@@ -3,8 +3,8 @@
 --   left page, Clues: filled in automatically when you find something (night, stage, district).
 --   right page, Notes: write anything you like. Saved to the server, kept for the whole match.
 -- A small journal icon with a fancy "J" sits in the bottom-right corner, so players know it's
--- there; clicking it also opens the journal (for phones and tablets). A red dot appears on it
--- when a new clue arrives, until you open the journal.
+-- there; clicking it also opens the journal (for phones and tablets), and a brass X on the book's
+-- corner closes it. A red dot appears on the icon when a new clue arrives, until you open the journal.
 -- Opening: the closed book rises up from the bottom of the screen, then its cover swings open
 -- (faked 3D: the cover gets narrower towards the spine and darker as it turns). Closing plays it backwards.
 -- You can keep walking while it's open. The mouse is freed so you can click and type, which
@@ -199,6 +199,42 @@ book:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
 end)
 applySizes()
 notes.TextSize = sizes.notes
+
+-- a round brass X button on the book's top-right corner, to close it by tapping (phones and tablets)
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "Close"
+closeButton.Text = ""
+closeButton.AnchorPoint = Vector2.new(0.5, 0.5)
+closeButton.Position = UDim2.fromScale(0.975, 0.04)
+closeButton.Size = UDim2.fromScale(0.075, 0.075)
+closeButton.SizeConstraint = Enum.SizeConstraint.RelativeYY -- a circle, sized by the book's height
+closeButton.BackgroundColor3 = Color3.fromRGB(207, 162, 76)
+closeButton.AutoButtonColor = true
+closeButton.ZIndex = 10
+closeButton.Visible = false -- only shown once the book is fully open
+closeButton.Parent = book
+table.insert(textFrames, closeButton)
+Instance.new("UICorner", closeButton).CornerRadius = UDim.new(1, 0)
+local closeEdge = Instance.new("UIStroke")
+closeEdge.Color = Color3.fromRGB(42, 24, 6)
+closeEdge.Thickness = 3
+closeEdge.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+closeEdge.Parent = closeButton
+local closeMin = Instance.new("UISizeConstraint") -- never smaller than a fingertip
+closeMin.MinSize = Vector2.new(40, 40)
+closeMin.Parent = closeButton
+for _, turn in { 45, -45 } do -- the X: two dark bars crossed
+	local bar = Instance.new("Frame")
+	bar.AnchorPoint = Vector2.new(0.5, 0.5)
+	bar.Position = UDim2.fromScale(0.5, 0.5)
+	bar.Size = UDim2.fromScale(0.6, 0.12)
+	bar.Rotation = turn
+	bar.BackgroundColor3 = Color3.fromRGB(42, 24, 6)
+	bar.BorderSizePixel = 0
+	bar.ZIndex = 11
+	bar.Parent = closeButton
+	Instance.new("UICorner", bar).CornerRadius = UDim.new(1, 0)
+end
 
 -- the journal icon in the corner, with the key as a brass badge (clicking it opens the journal)
 local iconGui = Instance.new("ScreenGui")
@@ -401,4 +437,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 end)
 icon.Activated:Connect(function()
 	setOpen(not isOpen)
+end)
+closeButton.Activated:Connect(function()
+	setOpen(false)
 end)
