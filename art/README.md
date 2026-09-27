@@ -15,5 +15,3 @@
   The fancy J in the bottom-right corner is drawn as brush strokes (J_STEM, J_BAR). Run `python3 make_journal_icon.py`.
 - `journal-cover.svg`: the closed front cover for the open/close animation, drawn in the same coordinates as the right
   half of `journal-book.svg` so it lines up exactly. Rendered to `journal-cover.png` (1024x1366) with `render-cover.html`.
-- `journal-page.svg`: one blank journal page for the page flicks (the paper area x 762-1420, y 54-946 of the book), rendered to
-  `journal-page.png` (756x1024) with `render-page.html`. `journal-open-storyboard.png` shows the open animation frame by frame.

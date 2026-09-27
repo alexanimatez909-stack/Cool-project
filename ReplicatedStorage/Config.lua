@@ -174,15 +174,12 @@ Config.JOURNAL_LEFT_IMAGE_ID = 0    -- uploaded art/journal-left.png (0 = plain 
 Config.JOURNAL_RIGHT_IMAGE_ID = 0   -- uploaded art/journal-right.png
 Config.JOURNAL_ICON_IMAGE_ID = 0    -- uploaded art/journal-icon.png: the journal icon in the bottom-right corner
 Config.JOURNAL_COVER_IMAGE_ID = 0   -- uploaded art/journal-cover.png: the closed front cover (swings open)
-Config.JOURNAL_PAGE_IMAGE_ID = 0    -- uploaded art/journal-page.png: a blank page, for the page flicks
 Config.JOURNAL_RISE_TIME = 0.25     -- seconds for the closed book to come up
-Config.JOURNAL_COVER_TIME = 0.4     -- seconds for the cover to swing open
-Config.JOURNAL_PAGE_FLIPS = 3       -- blank pages that flick over before the Clues/Notes pages (0 = none)
-Config.JOURNAL_FLIP_TIME = 0.16     -- seconds per page flick
+Config.JOURNAL_COVER_TIME = 0.45    -- seconds for the book to swing open
+Config.JOURNAL_THICKNESS = 0.05     -- how thick the turning half looks side-on (share of the book width)
 Config.JOURNAL_CLOSE_SPEED = 1.8    -- closing plays the animation backwards this many times faster
 Config.JOURNAL_OPEN_SOUND_ID = 0    -- sound when opening (a book / leather / page sound); 0 = none
 Config.JOURNAL_CLOSE_SOUND_ID = 0   -- sound when closing (can be the same ID)
-Config.JOURNAL_PAGE_SOUND_ID = 0    -- a short page-turn sound, played for each page flick; 0 = none
 Config.JOURNAL_SOUND_VOLUME = 0.6
 Config.JOURNAL_ICON_SIZE = 0.1      -- icon height as a share of the screen height
 Config.JOURNAL_ICON_MARGIN = 0.02   -- gap from the bottom-right corner as a share of the screen
