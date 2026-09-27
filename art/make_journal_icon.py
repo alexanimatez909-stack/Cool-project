@@ -176,12 +176,32 @@ for i, p in enumerate(plate):
     curls.append('<use href="#curlPair" transform="translate(%.1f %.1f) rotate(%.1f) scale(3.4)"/>' % (q[0], q[1], ang + 90))
 
 # the J on a brass medallion in the bottom-right corner
-jx, jy = ring_outer[jcorner][0] - 10, ring_outer[jcorner][1] - 60
-jy = min(jy, S - 12 - 110 * 1.55)   # keep the curl inside the picture
+jx, jy = ring_outer[jcorner][0] - 6, ring_outer[jcorner][1] - 40
+jy = min(jy, S - 12 - 110 * 1.2)   # keep the curl inside the picture
 
-J_PATHS = [('M-30,-92 C-14,-100 18,-84 40,-94', 16), ('M14,-88 L14,26', 30), ('M14,26 C14,82 -24,104 -58,86', 24), ('M-58,86 C-86,70 -80,34 -52,34', 16), ('M-52,34 C-38,34 -32,48 -42,56', 11)]
-J_DARK = "".join('<path d="%s" stroke="#1e1004" stroke-width="%d"/>' % (d, w + 14) for d, w in J_PATHS)
-J_GOLD = "".join('<path d="%s" stroke="url(#goldJ)" stroke-width="%d"/>' % (d, w) for d, w in J_PATHS)
+# the J as smooth brush strokes: a centre line made of curves, drawn with a width that changes gradually
+def bez(p0, p1, p2, p3, n=40):
+    return [tuple((1 - t) ** 3 * np.array(p0) + 3 * (1 - t) ** 2 * t * np.array(p1) + 3 * (1 - t) * t ** 2 * np.array(p2) + t ** 3 * np.array(p3))
+            for t in np.linspace(0, 1, n)]
+J_STEM = (bez((14, -88), (14, -50), (14, -12), (14, 26)) + bez((14, 26), (14, 82), (-24, 104), (-58, 86))[1:]
+          + bez((-58, 86), (-86, 70), (-80, 34), (-52, 34))[1:] + bez((-52, 34), (-38, 34), (-32, 48), (-42, 56))[1:])
+J_BAR = bez((-30, -92), (-14, -100), (18, -84), (40, -94))
+
+def brush(pts, width):
+    # outline of a stroke whose width follows width(t), t = 0..1 along the line
+    left, right = [], []
+    for i, p in enumerate(pts):
+        a, b = np.array(pts[max(i - 1, 0)]), np.array(pts[min(i + 1, len(pts) - 1)])
+        d = (b - a) / np.linalg.norm(b - a)
+        nrm = np.array([-d[1], d[0]]) * width(i / (len(pts) - 1)) / 2
+        left.append(tuple(np.array(p) + nrm)); right.append(tuple(np.array(p) - nrm))
+    return "M" + " L".join("%.1f,%.1f" % q for q in left + right[::-1]) + " Z"
+
+stem_w = lambda t: 28 if t < 0.3 else 28 - 18 * ((t - 0.3) / 0.7) ** 1.2      # thick stem, thinning round the curl
+bar_w = lambda t: 7 + 9 * math.sin(math.pi * t)                                  # thin at the ends, fuller in the middle
+J_SHAPES = [brush(J_STEM, stem_w), brush(J_BAR, bar_w)]
+J_DARK = "".join('<path d="%s" fill="#1e1004" stroke="#1e1004" stroke-width="12"/>' % d for d in J_SHAPES)
+J_GOLD = "".join('<path d="%s" fill="url(#goldJ)"/>' % d for d in J_SHAPES)
 
 defs = '''
     <linearGradient id="boardEdge" x1="0" y1="0" x2="1" y2="1">
@@ -242,11 +262,11 @@ back_svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{S}" height="{S}" 
   <polygon points="{poly(h)}" fill="#000" opacity="0.55" filter="url(#blur)" transform="translate(10 16)"/>
   {"".join(layers)}
   <!-- the fancy J in the bottom-right corner: drawn as brush strokes, dark outline first, then gold -->
-  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f}) scale(1.55)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <g filter="url(#shadow)" transform="translate({jx:.1f} {jy:.1f}) scale(1.2)" fill="none" stroke-linecap="round" stroke-linejoin="round">
     {J_DARK}
-    <circle cx="-44" cy="52" r="15" fill="#1e1004"/><circle cx="-30" cy="-92" r="13" fill="#1e1004"/><circle cx="40" cy="-94" r="12" fill="#1e1004"/>
+    <circle cx="-42" cy="56" r="13" fill="#1e1004"/><circle cx="-30" cy="-92" r="11" fill="#1e1004"/><circle cx="40" cy="-94" r="11" fill="#1e1004"/>
     {J_GOLD}
-    <circle cx="-44" cy="52" r="9" fill="url(#ball)"/><circle cx="-30" cy="-92" r="8" fill="url(#ball)"/><circle cx="40" cy="-94" r="7" fill="url(#ball)"/>
+    <circle cx="-42" cy="56" r="8" fill="url(#ball)"/><circle cx="-30" cy="-92" r="6.5" fill="url(#ball)"/><circle cx="40" cy="-94" r="6.5" fill="url(#ball)"/>
   </g>
 </svg>'''
 
