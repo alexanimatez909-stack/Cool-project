@@ -45,7 +45,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Teams: Good and Evil roughly even; Informants (2–3) in lobbies of 12+. 8 players = 4/4/0, 12 = 5/5/2, 16 = 7/7/2, 20 = 9/8/3.
 - Nobody knows their teammates. Evil players recognise each other only up close (subtle mark). No team chat for good/evil; Informants have private chat.
 - Only evil head roles can kill. Friendly fire on (killing a teammate = very long cooldown).
-- Win: a team is out when all its head roles are out. Informants win by publishing their report.
+- Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report (how they lose: being killed/voted out, to confirm).
 - On death/vote-out only the name is announced; roles stay hidden. A head-role counter shows both sides' remaining heads.
 - Dawn: church bell tolls once per death; missing players named, never where/when/how. Bodies must be found.
 - Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Shade (evil); Editor (Informants).
