@@ -42,14 +42,18 @@ Milestones, in order:
 
 ## The game in brief
 Hidden-role mystery in a Victorian London–inspired city. Nights are a first-person hunt; days are a debate over an evidence board in the Courthouse (third-person).
-- Teams: Good and Evil roughly even; Informants (2–3) in lobbies of 12+. 8 players = 4/4/0, 12 = 5/5/2, 16 = 7/7/2, 20 = 8/8/4 (decided: 4 Informants and 8 per team at 20; roles are being built for a 20-player server first, smaller splits to be re-checked).
+- Teams: Good and Evil roughly even, plus Informants. Minimum lobby is 12 players (decided): a match never starts with fewer (Config.MIN_PLAYERS). 12 = 5/5/2, 16 = 7/7/2, 20 = 8/8/4 (decided: 4 Informants and 8 per team at 20; roles are being built for a 20-player server first, smaller splits to be re-checked). Config.LOBBY_SPLITS. Every lobby always has all 3 heads per team; smaller lobbies lose support roles first.
 - Nobody knows their teammates. Evil players recognise each other only up close (subtle mark). No team chat for good/evil; Informants have private chat.
-- Only evil head roles can kill, plus ONE evil killing support role that is weaker than the heads (decided), so evil can still kill if its heads are out. Friendly fire on (killing a teammate = very long cooldown).
+- Killing (decided, so evil can't wipe out half the good team in one night):
+  - A: not every evil head can kill. The Forger (head) only forges; the Cutthroat and the Apothecary are the head killers.
+  - B: a team kill limit per night that scales with lobby size (Config.EVIL_KILLS_PER_NIGHT: 12 = 1, 16 = 2, 20 = 2). After the last allowed kill, every evil kill locks until dawn ("the city is on alert"). Evil players don't know each other, so they race for the kills.
+  - C: ONE evil killing support role, weaker than the heads, whose kill is LOCKED until an evil head is out, so evil can still kill once its heads fall.
+  - Friendly fire on (killing a teammate = very long cooldown).
 - Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report and lose if they're all killed/voted out (decided).
 - On death/vote-out only the name is announced; roles stay hidden. A head-role counter shows both sides' remaining heads.
 - Dawn: church bell tolls once per death; missing players named, never where/when/how. Bodies must be found.
 - Informant roles (being designed, 20 players = 4 Informants): the Editor stays the Informants' HEAD role (decided), but ANY Informant can take the report to a printing press and publish it (decided), so the Editor isn't useless for most of the game. The report is SHARED (decided): once complete, any Informant can publish it. Editor's main ability = Lead story (decided). 4th Informant role = Eavesdropper (decided). Stringer and Photographer kept (decided). One of each role. Report needs specific dirt on 8 players at 20 (decided, tune in playtests). The 'Newsboy' idea was rejected. Full role list with levels: design/roles.md.
-- Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Shade (evil); Editor (Informants).
+- Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Forger (evil; the Forger replaces the Undertaker/'Shade', and moving bodies goes to a Cleaner support role); Editor (Informants).
 
 ## Evidence (agreed with Alexander; replaces the older "only evil actions leave clues" draft)
 - Victorian forensics (Sherlock Holmes, not CSI): observation and reasoning. One clue is never enough to convict; clues lead to other clues and only a combination narrows it down to one person. Must not be too hard: short sentences, the journal remembers everything.
@@ -66,7 +70,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Head roles leave bigger marks (decided): actions by head (lead) roles leave stronger, longer-lasting traces than ordinary players' actions, so the kill spot keeps a strong mark even if the body is moved.
 - Mini-tasks: can be anything that fits the clue (decided: no fixed list; design per clue type).
 - Forgeries (decided): only ONE evil role can plant fake evidence, and it is one of the evil HEAD roles because it's powerful.
-- Still open: the actual accessory list; which evil head role forges and how; how clues get onto the evidence board.
+- Still open: the actual accessory list; how the Forger forges; how clues get onto the evidence board.
 - Older draft points still worth keeping: Who clues list a few names including the culprit; clues drop on death; searching only works alone.
 
 ## Tasks (agreed with Alexander; being designed, nothing built yet)

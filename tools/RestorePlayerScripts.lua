@@ -199,11 +199,19 @@ Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell
 ---------------------------------------------------------------------
 -- TEAMS: how many Good / Evil / Informants for each lobby size
 ---------------------------------------------------------------------
+Config.MIN_PLAYERS = 12             -- a match never starts with fewer players than this
 Config.LOBBY_SPLITS = {
-	[8]  = { Good = 4, Evil = 4, Informants = 0 },
 	[12] = { Good = 5, Evil = 5, Informants = 2 },
 	[16] = { Good = 7, Evil = 7, Informants = 2 },
-	[20] = { Good = 9, Evil = 8, Informants = 3 },
+	[20] = { Good = 8, Evil = 8, Informants = 4 },
+}
+
+-- The most kills the WHOLE evil team can make in one night, by lobby size.
+-- After the last one, every evil kill locks until dawn ("the city is on alert").
+Config.EVIL_KILLS_PER_NIGHT = {
+	[12] = 1,
+	[16] = 2,
+	[20] = 2,
 }
 
 ---------------------------------------------------------------------
