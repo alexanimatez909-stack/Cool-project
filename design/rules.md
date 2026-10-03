@@ -60,7 +60,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Clues glint in lantern light and make a small sound; hold E to investigate (only alone).
 - Everyone wears 3 random Victorian accessories (head, neck, carried), each shared by 3-4 players. Only the Inspector can analyse marks on them.
 - Only the Forger (evil head) can plant fake evidence.
-- **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die; picking it up means taking all its clues. How many clues each player holds is shown during the day.
+- **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die; picking it up means taking all its clues. If the Cleaner dumps the body in the river, the journal sinks and its clues are lost. How many clues each player holds is shown during the day.
 - **OPEN**: accessory list, how the Forger forges, how clues get onto the board.
 
 ## 8. Movement and the night

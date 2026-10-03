@@ -71,7 +71,7 @@ Supports (3 slots, decided): the Footpad is ALWAYS in; the other 2 are drawn at 
 | **Footpad** (killing support) | **Mug**: knocks a player out (~10 s) and steals one clue from their journal. Once BOTH killing heads are out, the mug becomes a KILL (downs the victim) and still steals a clue. Leaves a clear clue for the victim (e.g. "they had a cane"). | (draft) Shorter cooldown | (draft) Chooses which clue to steal (e.g. the newest) | Decided (levels draft) |
 
 | **Swindler** (task role) | Reads one player's task list (knows where they'll go tonight) | Reads two lists | Swaps one task on a player's list, sending them to a spot of the Swindler's choosing (a lure) | Decided |
-| **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks. | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
+| **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks (the dropped journal sinks with it and its clues are LOST, decided). | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
 
 | **Arsonist** (working name) | **Sabotage** (Among Us-style): picks one sabotage from a menu; all share one cooldown and only one can be active at a time. Fixing a sabotage gives task charge (anyone can fix, evil too). | Shorter cooldown | Can sabotage from ANYWHERE (level 1-2 must go to the sabotage point) | Decided |
 
