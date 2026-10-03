@@ -4,13 +4,13 @@ Grades are 1 (low) to 3 (high). Time = how long it takes, Noise = disruption (ho
 Danger = how exposed/isolated the spot is, Reward = charge earned (riskier tasks pay more).
 New tasks can be added at any time; each new task gets a row here.
 
-## Rules for common tasks
-- Common tasks can be given to anyone (any role, any team) on any night.
-- Each night, a common task is only handed out to a few players (about 3), so lists stay varied.
+## Rules for tasks
+- There are two kinds: normal tasks (anyone can get them, any role, any team, any night) and role tasks (only for a specific role).
+- Each night, a normal task is only handed out to a few players (about 3), so lists stay varied.
 - Carrying anything (bucket, letter, crate...) stops you sprinting.
 - Multi-step tasks keep finished steps if you're interrupted or leave.
 
-## Common tasks
+## Normal tasks
 
 | # | Task | Where | What you do (the puzzle) | Time | Noise | Danger | Reward |
 |---|---|---|---|---|---|---|---|
@@ -27,5 +27,5 @@ New tasks can be added at any time; each new task gets a row here.
 | 11 | Hoist a crate | Docks crane | One cranks the winch, one guides the hook; teamwork required (very slow alone) | 3 | 3 | 2 | 3 |
 
 ## Still open
-- Role tasks (per role) and the task-related role.
+- Role tasks (per role), and the task-related role.
 - How task records (alibis) are shown to players.
