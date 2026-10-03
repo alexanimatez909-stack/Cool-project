@@ -42,7 +42,7 @@ Milestones, in order:
 
 ## The game in brief
 Hidden-role mystery in a Victorian London–inspired city. Nights are a first-person hunt; days are a debate over an evidence board in the Courthouse (third-person).
-- Teams: Good and Evil roughly even; Informants (2–3) in lobbies of 12+. 8 players = 4/4/0, 12 = 5/5/2, 16 = 7/7/2, 20 = 9/8/3.
+- Teams: Good and Evil roughly even; Informants (2–3) in lobbies of 12+. 8 players = 4/4/0, 12 = 5/5/2, 16 = 7/7/2, 20 = 8/8/4 (decided: 4 Informants and 8 per team at 20; roles are being built for a 20-player server first, smaller splits to be re-checked).
 - Nobody knows their teammates. Evil players recognise each other only up close (subtle mark). No team chat for good/evil; Informants have private chat.
 - Only evil head roles can kill, plus ONE evil killing support role that is weaker than the heads (decided), so evil can still kill if its heads are out. Friendly fire on (killing a teammate = very long cooldown).
 - Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report and lose if they're all killed/voted out (decided).
