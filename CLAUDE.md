@@ -77,7 +77,9 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - No "just hold a button" tasks: each one is a short puzzle or activity, Among Us-like but different, with lots of variety so nights don't repeat. Multi-step tasks keep finished steps if you're interrupted or leave, so players aren't discouraged.
 - No "visual" tasks that prove innocence (unlike Among Us): what it means to see someone doing a task is left to the players' interpretation.
 - Lists must be planned so travel between tasks doesn't eat the whole night but still moves players around the map. The night may need to be longer (most of the action and the game's selling point is the night).
-- Still open: night length; how many tasks per list; what the task-related role does; the actual task list with each task's 4 grades; how good-team progress pays off; how a task reveals a clue.
+- List size depends on task length (decided): each list adds up to a similar amount of task time, e.g. 2 long tasks or 5 short ones.
+- Roles must stay the heart of the night (Alexander's concern): tasks must not eat the night; abilities should get used during the night, not saved up forever.
+- Still open: night length (7 min suggested; Alexander thinks that's a big jump); an Among Us-style "emergency meeting" way to cut the night short; how much of the night tasks should take; what the task-related role does; the actual task list with each task's 4 grades; how good-team progress pays off; how a task reveals a clue.
 
 ## Map plan files (source of truth for the greybox)
 - map-plan.png: to-scale plan for humans. map-plan.json: exact coordinates for building. map-plan-generator.py: the Python script that produced both (edit and rerun to change the layout).
