@@ -55,4 +55,4 @@ Supports (3):
 
 | **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks. | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
 
-Other support ideas (1 slot left, being designed as an Among Us-style SABOTAGE role, working name Arsonist): Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
+3rd support (1 slot left): an Among Us-style SABOTAGE role, working name Arsonist (being designed). Pickpocket was folded into the Footpad; Saboteur's task-tampering may become one of its sabotages. Watch out: too many evidence-messing roles make clues pointless.
