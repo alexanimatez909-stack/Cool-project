@@ -8,9 +8,9 @@ local Config = {}
 ---------------------------------------------------------------------
 -- NIGHT: three bells start three stages of different lengths (seconds)
 ---------------------------------------------------------------------
-Config.NIGHT_STAGES = {               -- 4.5 minutes in total (never more than 7)
-	{ name = "Dusk", length = 75 },      -- bell 1: lamps on, light fog, everyone spreads out
-	{ name = "DeepNight", length = 135 }, -- bell 2: some districts go dark, main hunting time
+Config.NIGHT_STAGES = {               -- 4 minutes in total (never more than 7)
+	{ name = "Dusk", length = 60 },      -- bell 1: lamps on, light fog, everyone spreads out
+	{ name = "DeepNight", length = 120 }, -- bell 2: some districts go dark, main hunting time
 	{ name = "LastHour", length = 60 },  -- bell 3: short, tense final push
 }
 Config.DARK_FROM_STAGE = 2           -- districts go dark when this bell rings
