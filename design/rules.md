@@ -67,6 +67,6 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
 
 ## 9. Roles so far
-- **Good heads:** Inspector (on hold), Physician (revive, once per night), Watchman (arrest). 7 supports: **OPEN**.
-- **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (on hold). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
+- **Good heads:** Inspector (lantern beam), Physician (revive, once per night), Watchman (arrest, being reworked). Good abilities are visible when used; being seen makes you a target. 7 supports: **OPEN**.
+- **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (plants fake clues; **OPEN**: who can spot the flaw). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on 8 players; any Informant can publish it at a press (~20 s, loud).

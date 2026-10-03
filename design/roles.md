@@ -23,11 +23,11 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
-| **Inspector** (head) | Lantern beam reveals hidden traces; analyses accessories up close. | Exact age of a trace | Accessory category of whoever left a footprint | ON HOLD (to discuss separately; incl. dropping the daytime interrogation) |
+| **Inspector** (head) | Lantern beam reveals hidden traces; analyses accessories up close. | Exact age of a trace | Accessory category of whoever left a footprint | Decided (the old daytime interrogation is dropped: one ability per role) |
 | **Physician** (head) | **Revive**: fully revives a downed player, once per night. | Revived player gives "last words" (a clue about the attacker) | Senses roughly where downed players are (heartbeat) | Decided |
-| **Watchman** (head) | **Arrest**: takes a player to the cells (out of the game). Wrong arrest = very long cooldown. Arresting an Informant counts as RIGHT. | Whistle first: freezes the target a few seconds | Shorter cooldown after a correct arrest | Decided |
+| **Watchman** (head) | **Arrest**: takes a player to the cells (out of the game). Wrong arrest = very long cooldown. Arresting an Informant counts as RIGHT. | Whistle first: freezes the target a few seconds | Shorter cooldown after a correct arrest | BEING REWORKED (a wrongful arrest, especially of a head, feels too harsh) |
 
-OPEN: good abilities are visible when used (e.g. seeing someone revive a player), like Among Us visual tasks. Being discussed.
+Visible abilities (decided, for now): good abilities can be seen when used (e.g. someone reviving a player). Being seen is a risk (killers learn who to hunt), so players figure it out themselves. Revisit after playtests (ideas: look-alike actions, hidden results).
 
 Supports (7): to design.
 
@@ -45,6 +45,6 @@ Killing rules (decided):
 |---|---|---|---|---|
 | **Cutthroat** (head) | **Knife**: fast, silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. | Shorter cooldown | Fewer traces | Decided |
 | **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
-| **Forger** (head, does NOT kill) | Plants a fake clue in the world. | Shorter cooldown | Forgeries age like real ones | ON HOLD (to discuss separately; counter: a flaw someone can spot) |
+| **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (OPEN: who can spot a forgery's flaw) |
 
 Support ideas (3 needed, nothing decided): killing support (locked until a head is out), Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
