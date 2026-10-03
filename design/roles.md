@@ -39,9 +39,9 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 | **Registrar** (Among Us Scientist) | **Death register**: shows who is alive, downed or dead right now. Uses a battery that tasks recharge. | Also shows the district where someone is downed/dead | Also shows when they went down | Decided |
 | **Handyman** (task role) | Does tasks twice as fast and can finish another player's task for them (that player still gets the charge) | Carrying doesn't stop them sprinting | Each task they finish adds a little charge to everyone nearby | Decided |
 
-| **Clerk** | **Check**: tests one clue (in a journal or on the board): real or forged? This is how the Forger's flaw is spotted. | Shorter cooldown | Also learns how old the clue is | Decided |
+| **Clerk** | Forgery counter. BEING REWORKED (Alexander's ideas: check a suspicion over the next night; remove fake clues from the board; see how many clues someone picked up last round; see how many clues someone has contributed to the board) | | | Being reworked |
 
-| **Civilian** | No ability: an ordinary citizen who does tasks and investigates | | | Decided |
+| **Civilian** | **Take up the trade**: at full task charge (about every 2 nights), kneels at a dead player's body and gets ONE use of that player's ability. Can't be used on the living (so it's never a lie detector). | | | Decided |
 
 Good support slots (decided, 7 at 20 players): Registrar, Constable, Foreman, Clerk, Lamplighter, Handyman and 1 Civilian. NO role ever appears twice (decided: duplicates cause unnecessary confusion).
 
