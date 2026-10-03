@@ -203,6 +203,11 @@ Config.EVIL_KILLS_PER_NIGHT = {
 	[20] = 2,
 }
 
+-- WIN: a team is out when ALL 3 of its head roles AND this many of its support players are out.
+Config.SUPPORTS_OUT_TO_LOSE = {
+	[20] = { Good = 2, Evil = 1 },   -- good: 5 of 10 out; evil: 4 of 6 out
+}
+
 ---------------------------------------------------------------------
 -- RULES
 ---------------------------------------------------------------------

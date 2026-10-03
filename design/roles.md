@@ -24,6 +24,8 @@ To design.
 
 ## Evil team (6: 3 heads + 3 supports)
 
+Win (decided): evil is out when its 3 heads + 1 support are out (4 of 6 at 20 players).
+
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.
 - B: team kill limit per night by lobby size (Config.EVIL_KILLS_PER_NIGHT: 12 = 1, 16 = 2, 20 = 2). After the last allowed kill, all evil kills lock until dawn.
