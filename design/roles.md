@@ -23,9 +23,9 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
-| **Inspector** (head) | Lantern beam reveals hidden traces; analyses accessories up close. | Exact age of a trace | Accessory category of whoever left a footprint | Decided (the old daytime interrogation is dropped: one ability per role) |
+| **Inspector** (head) | Lantern beam reveals hidden traces; analyses accessories up close. | Exact age of a trace | Unlocks a DAYTIME examination (once per game): question a player about where they were at a chosen bell; the game secretly tells the Inspector if it's true | Decided (the Inspector is the one special exception to 'one ability': so important that level 3 adds a daytime power) |
 | **Physician** (head) | **Revive**: fully revives a downed player, once per night. | Revived player gives "last words" (a clue about the attacker) | Senses roughly where downed players are (heartbeat) | Decided |
-| **Watchman** (head) | **Arrest**: takes a player to the cells (out of the game). Wrong arrest = very long cooldown. Arresting an Informant counts as RIGHT. | Whistle first: freezes the target a few seconds | Shorter cooldown after a correct arrest | BEING REWORKED (a wrongful arrest, especially of a head, feels too harsh) |
+| **Watchman** (head) | **Arrest -> trial**: locks a player in the cells for the rest of the night (they're SAFE from killers there). The next day opens with a quick trial (Config.DAY_TRIAL_LENGTH): the town votes guilty or not guilty. Guilty = out. Not guilty = released, and the Watchman gets a very long cooldown. Arresting an Informant counts as right. | Whistle first: freezes the target a few seconds | Shorter cooldown after a correct arrest | Decided |
 
 Visible abilities (decided, for now): good abilities can be seen when used (e.g. someone reviving a player). Being seen is a risk (killers learn who to hunt), so players figure it out themselves. Revisit after playtests (ideas: look-alike actions, hidden results).
 

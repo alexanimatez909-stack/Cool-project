@@ -37,8 +37,9 @@ Config.FOG_CHANGE_SPEED = 0.3        -- how fast the fog rolls in between stages
 ---------------------------------------------------------------------
 -- DAY (debate + vote in the Courthouse)
 ---------------------------------------------------------------------
-Config.DAY_DISCUSSION_LENGTH = nil  -- TODO: decide (seconds)
-Config.DAY_VOTE_LENGTH = nil        -- TODO: decide (seconds)
+Config.DAY_TRIAL_LENGTH = 30        -- only if the Watchman arrested someone: quick guilty / not guilty trial that opens the day
+Config.DAY_DISCUSSION_LENGTH = 60   -- debate at the evidence board
+Config.DAY_VOTE_LENGTH = 30         -- anonymous vote
 
 ---------------------------------------------------------------------
 -- MOVEMENT (placeholder guesses - tune after playtesting)

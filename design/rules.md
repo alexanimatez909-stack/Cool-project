@@ -23,7 +23,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
   - Deep night 2:00 (2-3 random districts go dark, never the Square; main hunting time)
   - Last hour 1:00 (tense final push, fog lifts toward dawn)
 - **Dawn:** a bell tolls once per death; missing players are named, never where/when/how.
-- **Day, third person:** 1:00 discussion at the evidence board, then 0:30 anonymous vote.
+- **Day, third person:** (0:30 trial if someone was arrested), 1:00 discussion at the evidence board, then 0:30 anonymous vote.
 - **Alarm bell:** each player can ring it ONCE per match to end the night early (early inquest). No "report body" button.
 
 ## 4. Killing
@@ -34,7 +34,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Kills don't stack: unused kills are lost at dawn.
 - **Friendly fire on:** evil can kill evil; killing a teammate gives a very long cooldown.
 - **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. (**OPEN**: what happens to a downed player at dawn.)
-- **Arrest:** the Watchman can arrest at night (player goes to the cells, out of the game). Wrong arrest = much longer cooldown. Arresting an Informant counts as right.
+- **Arrest -> trial:** the Watchman can arrest at night. The arrested player sits in the cells (safe from killers) until day, which opens with a quick trial (30 s): the town votes guilty (out) or not guilty (released; the Watchman gets a very long cooldown). Arresting an Informant counts as right.
 - Finding a body at night doesn't stop the night; the finder gets task charge and the body is a big clue for the board.
 
 ## 5. Abilities
@@ -67,6 +67,6 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
 
 ## 9. Roles so far
-- **Good heads:** Inspector (lantern beam), Physician (revive, once per night), Watchman (arrest, being reworked). Good abilities are visible when used; being seen makes you a target. 7 supports: **OPEN**.
+- **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. 7 supports: **OPEN**.
 - **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (plants fake clues; **OPEN**: who can spot the flaw). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on 8 players; any Informant can publish it at a press (~20 s, loud).
