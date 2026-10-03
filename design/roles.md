@@ -53,4 +53,6 @@ Supports (3):
 |---|---|---|---|---|
 | **Footpad** (killing support) | **Mug**: knocks a player out (~10 s) and steals one clue from their journal. Once BOTH killing heads are out, the mug becomes a KILL (downs the victim) and still steals a clue. Leaves a clear clue for the victim (e.g. "they had a cane"). | (draft) Shorter cooldown | (draft) Chooses which clue to steal (e.g. the newest) | Decided (levels draft) |
 
-Other support ideas (2 slots left): Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
+| **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks. | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
+
+Other support ideas (1 slot left, being designed as an Among Us-style SABOTAGE role, working name Arsonist): Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
