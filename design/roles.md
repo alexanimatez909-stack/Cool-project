@@ -29,7 +29,16 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 
 Visible abilities (decided, for now): good abilities can be seen when used (e.g. someone reviving a player). Being seen is a risk (killers learn who to hunt), so players figure it out themselves. Revisit after playtests (ideas: look-alike actions, hidden results).
 
-Supports (7): to design.
+Supports (7 slots; types can appear more than once so claims can be checked):
+
+| Role | Main ability | Level 2 | Level 3 | Status |
+|---|---|---|---|---|
+| **Foreman** (task role) | Sees which task spots were done tonight and roughly when (checks alibis) | Also learns the district | Can give someone else a task | Chosen (draft levels) |
+| **Lamplighter** | Relights dark lamps and fixes sabotages alone and faster (even the two-person fire) | Sees roughly where a sabotage was set off from | Protects one district from the gas main for the night | Chosen (draft levels) |
+| **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Chosen (draft levels; OPEN: limit to one escort per night?) |
+| **Scientist-style role** (Among Us Scientist) | Being designed | | | Chosen |
+
+Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler and Clerk not picked (Clerk may come back as the Forger counter).
 
 ## Evil team (6: 3 heads + 3 supports)
 
