@@ -39,7 +39,7 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 | **Registrar** (Among Us Scientist) | **Death register**: shows who is alive, downed or dead right now. Uses a battery that tasks recharge. | Also shows the district where someone is downed/dead | Also shows when they went down | Decided |
 | **Handyman** (task role) | Does tasks twice as fast and can finish another player's task for them (that player still gets the charge) | Carrying doesn't stop them sprinting | Each task they finish adds a little charge to everyone nearby | Decided |
 
-| **Clerk** | Forgery counter. BEING REWORKED (Alexander's ideas: check a suspicion over the next night; remove fake clues from the board; see how many clues someone picked up last round; see how many clues someone has contributed to the board) | | | Being reworked |
+| **Clerk** | **Investigate a clue**: during the DAY marks one clue on the board; that NIGHT does a short records task at the Courthouse to investigate it; the next day learns if it's real or forged and CHOOSES whether to strike it off the board or keep it. Forgeries get a day or two to cause trouble before they're caught. | **The ledger**: also looks up how many clues a player has contributed to the board in total | **Yesterday's haul**: also sees how many clues a player picked up last night (holding more than you picked up = stolen, catches the Footpad) | Decided |
 
 | **Civilian** | **Take up the trade**: at full task charge (about every 2 nights), kneels at a dead player's body and gets ONE use of that player's ability. Can't be used on the living (so it's never a lie detector). | | | Decided |
 
