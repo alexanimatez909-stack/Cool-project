@@ -27,6 +27,19 @@ New tasks can be added at any time; each new task gets a row here.
 | 10 | Tend a grave | Churchyard | Find the headstone with the name on your card among many, then lay flowers | 2 | 1 | 3 (lots of cover) | 3 |
 | 11 | Hoist a crate | Docks crane | One cranks the winch, one guides the hook; teamwork required (very slow alone) | 3 | 3 | 2 | 3 |
 
+## Mistake traces
+Only some tasks can leave a clue, and only when the assigned player makes a mistake (you can't slip up at a task you don't have).
+A mistake costs you (redo the step, less charge). The trace is vague about time and ages like any trace.
+World clues anyone can find; marks on clothing only the Inspector can analyse.
+
+| Task | Mistake | World clue (anyone) | Mark on clothing (Inspector only) |
+|---|---|---|---|
+| Fetch water | Spill the bucket | Puddle at the pump, wet footprints leading away | Wet boots / trouser hems |
+| Stoke the boiler | Spill coal | Scattered coal, black footprints | Coal dust on sleeves |
+| Relight a street lamp | Let the flame flare | Scorch mark on the lamp post | Scorched gloves |
+| Tend a grave | Slip on the wet grass | Skid mark and knee prints by the grave | Muddy knees |
+| Weigh the goods, Read the paper, Feed the horses, Wind the clock | none | - | - |
+
 ## Still open
 - Role tasks (per role), and the task-related role.
 - How task records (alibis) are shown to players.
