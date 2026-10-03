@@ -65,9 +65,19 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Head roles leave bigger marks (decided): actions by head (lead) roles leave stronger, longer-lasting traces than ordinary players' actions, so the kill spot keeps a strong mark even if the body is moved.
 - Mini-tasks: can be anything that fits the clue (decided: no fixed list; design per clue type).
 - Forgeries (decided): only ONE evil role can plant fake evidence, and it is one of the evil HEAD roles because it's powerful.
-- Tasks (in discussion): doing tasks charges your role's ability (how much varies by role; some abilities need no charge). Tasks can potentially lead to clues. Alexander wants tasks to do more than that (Among Us-style importance); see the ideas being discussed.
-- Still open: the actual accessory list; which evil head role forges and how; how clues get onto the evidence board; the rest of the task design.
+- Still open: the actual accessory list; which evil head role forges and how; how clues get onto the evidence board.
 - Older draft points still worth keeping: Who clues list a few names including the culprit; clues drop on death; searching only works alone.
+
+## Tasks (agreed with Alexander; being designed, nothing built yet)
+- Tasks do all five jobs: charge your role's ability (most abilities need charge; amount varies by role, some need none), leave a record that can serve as an alibi, can reveal clues, spread players across the map, and add to good-team progress that pays off at dawn.
+- Everyone does tasks: good, evil and Informants (Informants' copy abilities need charge too). There will be a task-related role.
+- Handed out as a short personal list each night (shown in the journal), like Among Us. Some tasks are common to everyone, some belong to specific roles.
+- Each task has fixed spots in the districts, and a player's task spots are their own (different players are sent to different places). Some tasks need teamwork between players (proximity chat).
+- Every task is graded on 4 factors: disruption (how much noise/attention it makes), helpfulness (reward), danger (where/how exposed you are) and time to complete. Riskier tasks give higher rewards. Some make noise, some are silent.
+- No "just hold a button" tasks: each one is a short puzzle or activity, Among Us-like but different, with lots of variety so nights don't repeat. Multi-step tasks keep finished steps if you're interrupted or leave, so players aren't discouraged.
+- No "visual" tasks that prove innocence (unlike Among Us): what it means to see someone doing a task is left to the players' interpretation.
+- Lists must be planned so travel between tasks doesn't eat the whole night but still moves players around the map. The night may need to be longer (most of the action and the game's selling point is the night).
+- Still open: night length; how many tasks per list; what the task-related role does; the actual task list with each task's 4 grades; how good-team progress pays off; how a task reveals a clue.
 
 ## Map plan files (source of truth for the greybox)
 - map-plan.png: to-scale plan for humans. map-plan.json: exact coordinates for building. map-plan-generator.py: the Python script that produced both (edit and rerun to change the layout).
