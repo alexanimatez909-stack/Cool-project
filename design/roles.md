@@ -20,7 +20,16 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 - Still open: report size for smaller lobbies.
 
 ## Good team (10: 3 heads + 7 supports)
-To design.
+
+| Role | Main ability | Level 2 | Level 3 | Status |
+|---|---|---|---|---|
+| **Inspector** (head) | Lantern beam reveals hidden traces; analyses accessories up close. | Exact age of a trace | Accessory category of whoever left a footprint | ON HOLD (to discuss separately; incl. dropping the daytime interrogation) |
+| **Physician** (head) | **Revive**: fully revives a downed player, once per night. | Revived player gives "last words" (a clue about the attacker) | Senses roughly where downed players are (heartbeat) | Decided |
+| **Watchman** (head) | **Arrest**: takes a player to the cells (out of the game). Wrong arrest = very long cooldown. Arresting an Informant counts as RIGHT. | Whistle first: freezes the target a few seconds | Shorter cooldown after a correct arrest | Decided |
+
+OPEN: good abilities are visible when used (e.g. seeing someone revive a player), like Among Us visual tasks. Being discussed.
+
+Supports (7): to design.
 
 ## Evil team (6: 3 heads + 3 supports)
 
@@ -34,8 +43,8 @@ Killing rules (decided):
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
-| **Cutthroat** (head) | Fast, silent knife kill on a cooldown; can travel through the sewers. Every kill leaves a How and a Who clue. | Shorter cooldown | Fewer traces | Draft |
-| **Apothecary** (head) | Poisons an object (teapot, lantern oil); whoever uses it dies later, scrambling When clues and alibis. | Choose the delay | Poison 2 objects | Draft (delayed death still to confirm) |
-| **Forger** (head, does NOT kill) | Plants a fake clue in the world. | Shorter cooldown | Forgeries age like real ones | Draft (counter: a flaw a good checking role can spot) |
+| **Cutthroat** (head) | **Knife**: fast, silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. | Shorter cooldown | Fewer traces | Decided |
+| **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
+| **Forger** (head, does NOT kill) | Plants a fake clue in the world. | Shorter cooldown | Forgeries age like real ones | ON HOLD (to discuss separately; counter: a flaw someone can spot) |
 
 Support ideas (3 needed, nothing decided): killing support (locked until a head is out), Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.

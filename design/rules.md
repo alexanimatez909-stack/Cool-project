@@ -34,7 +34,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Kills don't stack: unused kills are lost at dawn.
 - **Friendly fire on:** evil can kill evil; killing a teammate gives a very long cooldown.
 - **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. (**OPEN**: what happens to a downed player at dawn.)
-- **Arrest:** a good role can arrest at night (player goes to the cells, out of the game). Wrong arrest = much longer cooldown. (**OPEN**: which role.)
+- **Arrest:** the Watchman can arrest at night (player goes to the cells, out of the game). Wrong arrest = much longer cooldown. Arresting an Informant counts as right.
 - Finding a body at night doesn't stop the night; the finder gets task charge and the body is a big clue for the board.
 
 ## 5. Abilities
@@ -67,6 +67,6 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
 
 ## 9. Roles so far
-- **Good heads:** Inspector, Physician (fully revives downed players), Watchman. 7 supports: **OPEN**.
-- **Evil heads:** Cutthroat, Apothecary, Forger. 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
+- **Good heads:** Inspector (on hold), Physician (revive, once per night), Watchman (arrest). 7 supports: **OPEN**.
+- **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (on hold). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on 8 players; any Informant can publish it at a press (~20 s, loud).
