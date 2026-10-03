@@ -9,13 +9,15 @@ Shared report (decided): the Informants build ONE shared report. Once it is comp
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
 | **Editor** (head, 1 only) | **Lead story**: mark one player as "the story". All Informants get dirt on that player faster, and the Editor briefly hears roughly where that player is. | Shorter cooldown | Two stories at once | Decided |
-| **Eavesdropper** | Hears proximity voice/chat from further away, even through doors. Standing near two players who are talking gives dirt on both. | (to design) | (to design) | Decided (role), levels open |
-| **Stringer** | **Tail**: shadowing gives dirt faster, with quieter footsteps. | Shadowing works from further away | Also learns where the target goes next | Draft |
-| **Photographer** | **Snapshot**: gets dirt from a distance, but the flash lights up the street for anyone nearby. | Shorter cooldown | Weaker flash, harder to spot | Draft |
+| **Eavesdropper** | Hears proximity voice/chat from further away, even through doors. Standing near two players who are talking gives dirt on both. | Longer hearing range | Can toggle on to see nearby footsteps through walls for a limited time | Decided |
+| **Stringer** | **Tail**: shadowing gives dirt faster, with quieter footsteps. | Shadowing works from further away | Also learns where the target goes next | Decided |
+| **Photographer** | **Snapshot**: gets dirt from a distance, but the flash lights up the street for anyone nearby. | Shorter cooldown | Weaker flash, harder to spot | Decided |
 
 Rejected: Newsboy (depended on randomly getting the "Read the evening paper" task).
 
-Still open: one of each role or duplicates allowed; report size with 4 Informants (doc said 6-7 names for 3); Eavesdropper levels.
+- One of each role (decided): no duplicate Informant roles.
+- Report size (decided, tune in playtests): dirt on 8 different players at 20 players. It should be HARD: the dirt must be specific evidence about that player, not vague.
+- Still open: report size for smaller lobbies.
 
 ## Good team (8: 3 heads + 5 supports)
 To design.
