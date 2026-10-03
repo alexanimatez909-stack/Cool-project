@@ -5,12 +5,13 @@ Danger = how exposed/isolated the spot is, Reward = charge earned (riskier tasks
 New tasks can be added at any time; each new task gets a row here.
 
 ## Rules for tasks
-- There are two kinds: normal tasks (anyone can get them, any role, any team, any night) and role tasks (only for a specific role).
-- Each night, a normal task is only handed out to a few players (about 3), so lists stay varied.
+- There are two kinds: common tasks (anyone can get them, any role, any team, any night; NOT the Among Us meaning) and role tasks (only for a specific role).
+- Every player gets common tasks every night; most of each list is common tasks, with only a small number of role tasks (too many role tasks would be bad).
+- Each night, a common task is only handed out to a limited number of players so lists stay varied (the exact number is a Config value, tuned in playtests).
 - Carrying anything (bucket, letter, crate...) stops you sprinting.
 - Multi-step tasks keep finished steps if you're interrupted or leave.
 
-## Normal tasks
+## Common tasks
 
 | # | Task | Where | What you do (the puzzle) | Time | Noise | Danger | Reward |
 |---|---|---|---|---|---|---|---|
