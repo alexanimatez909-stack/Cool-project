@@ -35,10 +35,13 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 |---|---|---|---|---|
 | **Foreman** (task role) | Sees which task spots were done tonight and roughly when (checks alibis) | Also learns the district | Can give someone else a task | Chosen (draft levels) |
 | **Lamplighter** | Relights dark lamps and fixes sabotages alone and faster (even the two-person fire) | Sees roughly where a sabotage was set off from | Protects one district from the gas main for the night | Chosen (draft levels) |
-| **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Chosen (draft levels; OPEN: limit to one escort per night?) |
-| **Scientist-style role** (Among Us Scientist) | Being designed | | | Chosen |
+| **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Decided: ONE escort per night |
+| **Registrar** (Among Us Scientist) | **Death register**: shows who is alive, downed or dead right now. Uses a battery that tasks recharge. | Also shows the district where someone is downed/dead | Also shows when they went down | Decided |
+| **Handyman** (task role) | Does tasks twice as fast and can finish another player's task for them (that player still gets the charge) | Carrying doesn't stop them sprinting | Each task they finish adds a little charge to everyone nearby | Decided |
 
-Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler and Clerk not picked (Clerk may come back as the Forger counter).
+Good support slots (decided, 7 at 20 players): 1 Registrar (never duplicated) + 6 slots shared by Foreman, Lamplighter, Constable and Handyman (each at least once, the 2 extra slots are duplicates, max 2 of a role).
+
+Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler and Clerk not picked. OPEN: who spots the Forger's flaw.
 
 ## Evil team (6: 3 heads + 3 supports)
 
@@ -56,12 +59,14 @@ Killing rules (decided):
 | **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
 | **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (OPEN: who can spot a forgery's flaw) |
 
-Supports (3):
+Supports (3 slots, decided): the Footpad is ALWAYS in; the other 2 are drawn at random each game from Cleaner, Arsonist and Swindler.
+
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
 | **Footpad** (killing support) | **Mug**: knocks a player out (~10 s) and steals one clue from their journal. Once BOTH killing heads are out, the mug becomes a KILL (downs the victim) and still steals a clue. Leaves a clear clue for the victim (e.g. "they had a cane"). | (draft) Shorter cooldown | (draft) Chooses which clue to steal (e.g. the newest) | Decided (levels draft) |
 
+| **Swindler** (task role) | Reads one player's task list (knows where they'll go tonight) | Reads two lists | Swaps one task on a player's list, sending them to a spot of the Swindler's choosing (a lure) | Decided |
 | **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks. | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
 
 | **Arsonist** (working name) | **Sabotage** (Among Us-style): picks one sabotage from a menu; all share one cooldown and only one can be active at a time. Fixing a sabotage gives task charge (anyone can fix, evil too). | Shorter cooldown | Can sabotage from ANYWHERE (level 1-2 must go to the sabotage point) | Decided |

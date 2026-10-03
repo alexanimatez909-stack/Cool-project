@@ -29,6 +29,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 ## 4. Killing
 - Killers: the **Cutthroat** and the **Apothecary** (heads). The **Forger** (head) does not kill.
 - **Footpad** (evil killing support): mugs players (knocks them out ~10 s, steals one clue). Its mug only becomes a kill once BOTH killing heads (Cutthroat and Apothecary) are out.
+- **Evil supports (3):** Footpad always; the other 2 drawn at random from Cleaner, Arsonist and Swindler (task role: reads task lists, level 3 swaps a task to lure someone).
 - **Arsonist** (evil support, working name): Among Us-style sabotage menu (gas main, fire, cut telegraph, lock gates), one shared cooldown, one active at a time; fixing gives task charge; fire never downs players. Each sabotage has fixed places (fire only in Soho; gas main: the Arsonist picks the district). Level 1: must be at the sabotage point. Level 2: shorter cooldown. Level 3: sabotage from anywhere.
 - **Cleaner** (evil support): drags bodies, can dump them in the river at the Docks. Level 2: notified of kills with a general direction. Level 3: drag trails fade faster.
 - **Team kill limit:** at most 2 kills per night for the whole evil team (12 players: 1). After that, all evil kills lock until dawn.
@@ -69,6 +70,6 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
 
 ## 9. Roles so far
-- **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports chosen so far: Foreman, Lamplighter, Constable, a Scientist-style role (Among Us); **OPEN**: duplicates to fill 7 slots.
+- **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports (7): 1 Registrar (death register, like the Among Us Scientist) + 6 shared by Foreman, Lamplighter, Constable (one escort per night) and Handyman (task role), each at least once.
 - **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (plants fake clues; **OPEN**: who can spot the flaw). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on 8 players; any Informant can publish it at a press (~20 s, loud).
