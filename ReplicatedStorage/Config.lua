@@ -8,10 +8,10 @@ local Config = {}
 ---------------------------------------------------------------------
 -- NIGHT: three bells start three stages of different lengths (seconds)
 ---------------------------------------------------------------------
-Config.NIGHT_STAGES = {
-	{ name = "Dusk", length = 60 },      -- bell 1: lamps on, light fog, everyone spreads out
-	{ name = "DeepNight", length = 75 }, -- bell 2: some districts go dark, main hunting time
-	{ name = "LastHour", length = 30 },  -- bell 3: short, tense final push
+Config.NIGHT_STAGES = {               -- 4.5 minutes in total (never more than 7)
+	{ name = "Dusk", length = 75 },      -- bell 1: lamps on, light fog, everyone spreads out
+	{ name = "DeepNight", length = 135 }, -- bell 2: some districts go dark, main hunting time
+	{ name = "LastHour", length = 60 },  -- bell 3: short, tense final push
 }
 Config.DARK_FROM_STAGE = 2           -- districts go dark when this bell rings
 Config.DARK_DISTRICT_CHOICES = { "Market", "Terraces", "Soho", "CathedralQtr", "Docks" } -- Courthouse Square never goes dark
