@@ -33,15 +33,17 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
-| **Foreman** (task role) | Sees which task spots were done tonight and roughly when (checks alibis) | Also learns the district | Can give someone else a task | Chosen (draft levels) |
-| **Lamplighter** | Relights dark lamps and fixes sabotages alone and faster (even the two-person fire) | Sees roughly where a sabotage was set off from | Protects one district from the gas main for the night | Chosen (draft levels) |
-| **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Decided: ONE escort per night |
+| **Foreman** (task role) | Sees which task spots were done tonight and roughly when (checks alibis) | Also learns the district | Can give someone else a task | Decided (max 1 per game) |
+| **Lamplighter** | Relights dark lamps and fixes sabotages alone and faster (even the two-person fire) | Sees roughly where a sabotage was set off from | Protects one district from the gas main for the night | Decided |
+| **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Decided: ONE escort per night, max 1 Constable per game |
 | **Registrar** (Among Us Scientist) | **Death register**: shows who is alive, downed or dead right now. Uses a battery that tasks recharge. | Also shows the district where someone is downed/dead | Also shows when they went down | Decided |
 | **Handyman** (task role) | Does tasks twice as fast and can finish another player's task for them (that player still gets the charge) | Carrying doesn't stop them sprinting | Each task they finish adds a little charge to everyone nearby | Decided |
 
-Good support slots (decided, 7 at 20 players): 1 Registrar (never duplicated) + 6 slots shared by Foreman, Lamplighter, Constable and Handyman (each at least once, the 2 extra slots are duplicates, max 2 of a role).
+| **Clerk** | **Check**: tests one clue (in a journal or on the board): real or forged? This is how the Forger's flaw is spotted. | Shorter cooldown | Also learns how old the clue is | Decided |
 
-Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler and Clerk not picked. OPEN: who spots the Forger's flaw.
+Good support slots (decided, 7 at 20 players): 1 each of Registrar, Constable and Foreman (never duplicated) + 4 slots shared by Clerk, Lamplighter and Handyman (each at least once, the extra slot is a duplicate).
+
+Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler not picked. The Clerk spots forgeries.
 
 ## Evil team (6: 3 heads + 3 supports)
 
@@ -57,7 +59,7 @@ Killing rules (decided):
 |---|---|---|---|---|
 | **Cutthroat** (head) | **Knife**: fast, silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. | Shorter cooldown | Fewer traces | Decided |
 | **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
-| **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (OPEN: who can spot a forgery's flaw) |
+| **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (the Clerk can spot forgeries) |
 
 Supports (3 slots, decided): the Footpad is ALWAYS in; the other 2 are drawn at random each game from Cleaner, Arsonist and Swindler.
 
