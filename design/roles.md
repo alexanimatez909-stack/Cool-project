@@ -38,7 +38,7 @@ Win (decided): evil is out when its 3 heads + 1 support are out (4 of 6 at 20 pl
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.
 - B: team kill limit per night by lobby size (Config.EVIL_KILLS_PER_NIGHT: 12 = 1, 16 = 2, 20 = 2). After the last allowed kill, all evil kills lock until dawn.
-- C: one killing support role, weaker than the heads; its kill unlocks only once an evil head is out.
+- C: one killing support role, the Footpad, weaker than the heads; its kill unlocks only once BOTH killing heads (Cutthroat and Apothecary) are out.
 - Contracts (decided): each night every killer secretly gets one target guaranteed NOT evil (evil players can't recognise each other). Killing someone else is allowed. A contract can become a clue. Unused kills are lost at dawn.
 
 | Role | Main ability | Level 2 | Level 3 | Status |
@@ -47,4 +47,10 @@ Killing rules (decided):
 | **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
 | **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (OPEN: who can spot a forgery's flaw) |
 
-Support ideas (3 needed, nothing decided): killing support (locked until a head is out), Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
+Supports (3):
+
+| Role | Main ability | Level 2 | Level 3 | Status |
+|---|---|---|---|---|
+| **Footpad** (killing support) | **Mug**: knocks a player out (~10 s) and steals one clue from their journal. Once BOTH killing heads are out, the mug becomes a KILL (downs the victim) and still steals a clue. Leaves a clear clue for the victim (e.g. "they had a cane"). | (draft) Shorter cooldown | (draft) Chooses which clue to steal (e.g. the newest) | Decided (levels draft) |
+
+Other support ideas (2 slots left): Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
