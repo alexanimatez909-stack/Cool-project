@@ -1,4 +1,4 @@
-# Roles (being designed for a 20-player server: 8 good / 8 evil / 4 Informants)
+# Roles (being designed for a 20-player server: 10 good / 6 evil / 4 Informants)
 
 Every role has ONE main ability (cooldown or charges). Task charge upgrades it from level 1 to level 3; the level carries over between nights.
 
@@ -19,10 +19,10 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 - Report size (decided, tune in playtests): dirt on 8 different players at 20 players. It should be HARD: the dirt must be specific evidence about that player, not vague.
 - Still open: report size for smaller lobbies.
 
-## Good team (8: 3 heads + 5 supports)
+## Good team (10: 3 heads + 7 supports)
 To design.
 
-## Evil team (8: 3 heads + 5 supports)
+## Evil team (6: 3 heads + 3 supports)
 
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.
@@ -36,4 +36,4 @@ Killing rules (decided):
 | **Apothecary** (head) | Poisons an object (teapot, lantern oil); whoever uses it dies later, scrambling When clues and alibis. | Choose the delay | Poison 2 objects | Draft (delayed death still to confirm) |
 | **Forger** (head, does NOT kill) | Plants a fake clue in the world. | Shorter cooldown | Forgeries age like real ones | Draft (counter: a flaw a good checking role can spot) |
 
-Support ideas (5 needed, nothing decided): killing support (locked until a head is out), Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.
+Support ideas (3 needed, nothing decided): killing support (locked until a head is out), Cleaner (moves bodies / wipes traces; took over from the Undertaker), Saboteur (tampers with task spots to cause mistake traces), Pickpocket (steals a clue from a journal), lamp/fire sabotage. Watch out: too many evidence-messing roles make clues pointless.

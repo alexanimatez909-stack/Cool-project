@@ -203,7 +203,7 @@ Config.MIN_PLAYERS = 12             -- a match never starts with fewer players t
 Config.LOBBY_SPLITS = {
 	[12] = { Good = 5, Evil = 5, Informants = 2 },
 	[16] = { Good = 7, Evil = 7, Informants = 2 },
-	[20] = { Good = 8, Evil = 8, Informants = 4 },
+	[20] = { Good = 10, Evil = 6, Informants = 4 },
 }
 
 -- The most kills the WHOLE evil team can make in one night, by lobby size.
