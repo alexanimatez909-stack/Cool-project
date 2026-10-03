@@ -219,11 +219,10 @@ Config.EVIL_KILLS_PER_NIGHT = {
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {
 	[20] = 1,   -- evil: 4 of 6 out
 }
--- Good is out when this many good players are out, OR when good players alive <= evil players alive.
+-- Good is out when this many good players are out.
 Config.GOOD_OUT_TO_LOSE = {
 	[20] = 8,   -- 8 of 10 out
 }
-Config.GOOD_LOSES_AT_EQUAL_NUMBERS = true
 
 ---------------------------------------------------------------------
 -- RULES

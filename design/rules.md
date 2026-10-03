@@ -13,7 +13,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 2. How to win
 - **Evil loses** when its 3 heads + 1 support are out (4 of 6).
-- **Good loses** when 8 of 10 are out, OR as soon as good alive = evil alive.
+- **Good loses** when 8 of 10 are out.
 - **Informants win** by publishing their report; they lose if all 4 are out, or if good or evil wins first.
 - Death/vote-out only announces the name, never the role. A counter shows how many heads each side has left.
 

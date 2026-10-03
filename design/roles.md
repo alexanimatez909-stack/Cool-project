@@ -24,7 +24,7 @@ To design.
 
 ## Evil team (6: 3 heads + 3 supports)
 
-Win (decided): evil is out when its 3 heads + 1 support are out (4 of 6 at 20 players). Good is out after 8 of 10 are out, or when good alive = evil alive.
+Win (decided): evil is out when its 3 heads + 1 support are out (4 of 6 at 20 players). Good is out after 8 of 10 are out.
 
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.
