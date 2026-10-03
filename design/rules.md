@@ -29,6 +29,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 ## 4. Killing
 - Killers: the **Cutthroat** and the **Apothecary** (heads). The **Forger** (head) does not kill.
 - **Footpad** (evil killing support): mugs players (knocks them out ~10 s, steals one clue). Its mug only becomes a kill once BOTH killing heads (Cutthroat and Apothecary) are out.
+- **Arsonist** (evil support, working name): Among Us-style sabotage menu (gas main, fire, cut telegraph, lock gates), one shared cooldown, one active at a time; fixing gives task charge; fire never downs players. Level 2: shorter cooldown. Level 3: **OPEN**.
 - **Cleaner** (evil support): drags bodies, can dump them in the river at the Docks. Level 2: notified of kills with a general direction. Level 3: drag trails fade faster.
 - **Team kill limit:** at most 2 kills per night for the whole evil team (12 players: 1). After that, all evil kills lock until dawn.
 - **Contracts:** each night every killer secretly gets one target guaranteed NOT evil. They may kill someone else instead. A contract can become a clue (**OPEN**: how).

@@ -55,4 +55,11 @@ Supports (3):
 
 | **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks. | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
 
-3rd support (1 slot left): an Among Us-style SABOTAGE role, working name Arsonist (being designed). Pickpocket was folded into the Footpad; Saboteur's task-tampering may become one of its sabotages. Watch out: too many evidence-messing roles make clues pointless.
+| **Arsonist** (working name) | **Sabotage** (Among Us-style): picks one sabotage from a menu; all share one cooldown and only one can be active at a time. Fixing a sabotage gives task charge (anyone can fix, evil too). | Shorter cooldown | OPEN (should be powerful) | Decided (level 3 + name open) |
+
+Sabotage menu (decided):
+- **Gas main** (like Lights): all lamps in one district go out, even lit ones. Fix: turn the valve back on at that district's gas main. Unfixed: dark until the next bell.
+- **Fire** (like Reactor): a building catches fire; loud, everyone hears it. Fix: TWO players pump water at two spots at the same time. Unfixed: all traces/clues in that district burn away and the district closes for the rest of the night. Players are NOT downed by fire (decided).
+- **Cut telegraph** (like Comms): task lists vanish and the alarm bell can't be rung. Fix: splice the wire at the telegraph office. Unfixed: fixed automatically at the next bell.
+- **Lock gates** (like Doors): one district's gates or sewer grates lock for ~20 s, trapping people. Can't be fixed; opens by itself.
+- Cut: Tamper (task-spot tampering). Pickpocket was folded into the Footpad. Watch out: too many evidence-messing roles make clues pointless.
