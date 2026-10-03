@@ -44,8 +44,8 @@ Milestones, in order:
 Hidden-role mystery in a Victorian London–inspired city. Nights are a first-person hunt; days are a debate over an evidence board in the Courthouse (third-person).
 - Teams: Good and Evil roughly even; Informants (2–3) in lobbies of 12+. 8 players = 4/4/0, 12 = 5/5/2, 16 = 7/7/2, 20 = 9/8/3.
 - Nobody knows their teammates. Evil players recognise each other only up close (subtle mark). No team chat for good/evil; Informants have private chat.
-- Only evil head roles can kill. Friendly fire on (killing a teammate = very long cooldown).
-- Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report (how they lose: being killed/voted out, to confirm).
+- Only evil head roles can kill, plus ONE evil killing support role that is weaker than the heads (decided), so evil can still kill if its heads are out. Friendly fire on (killing a teammate = very long cooldown).
+- Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report and lose if they're all killed/voted out (decided).
 - On death/vote-out only the name is announced; roles stay hidden. A head-role counter shows both sides' remaining heads.
 - Dawn: church bell tolls once per death; missing players named, never where/when/how. Bodies must be found.
 - Roles are NOT finalised yet. Draft heads: Inspector, Physician, Watchman (good); Cutthroat, Apothecary, Shade (evil); Editor (Informants).
@@ -79,7 +79,9 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Lists must be planned so travel between tasks doesn't eat the whole night but still moves players around the map. The night may need to be longer (most of the action and the game's selling point is the night).
 - List size depends on task length (decided): each list adds up to a similar amount of task time, e.g. 2 long tasks or 5 short ones.
 - Roles must stay the heart of the night (Alexander's concern): tasks must not eat the night; abilities should get used during the night, not saved up forever.
-- Night length (decided): about 5 minutes to start (up from 2¾), tuned in full playtests with friends before release.
+- Night length (decided): about 5 minutes to start (up from 2¾), never more than 7 minutes, tuned in full playtests with friends before release.
+- Day length (decided): 1 minute of discussion, then 30 seconds of voting. Days stay short so the night is the star.
+- Match length goal (decided): most games should finish in about 30 minutes (roughly 4-5 night+day cycles). Problem found: if the good team can only remove evil players by voting (one per day, often wrong), games could run past 50 minutes; the good team needs another way to remove evil players (being designed).
 - Early end (decided): an alarm bell in the Courthouse Square that each player can ring ONCE per match to call an early inquest. No Among Us-style "report body" for now: bodies are still only revealed at dawn, because a lot of the design builds on that; what finding a body at night does is to be rethought. Nights must not get stopped often (frustrating).
 - Abilities (decided): every role has ONE main ability that mostly runs on a cooldown (some roles use charges instead). There are no separate perks: task charge fills a bar that upgrades the main ability, level 1 (start) to level 3 (Apex Legends Evo-style). Your level carries over between nights for the whole match.
 - Upgrade rule (decided): upgrades make an ability smarter, not just stronger: shorter cooldown, more information, fewer traces left, a little more range. Good roles upgrade too, so evil can't snowball. Examples: Inspector reads footprints, then gets their exact age, then the accessory category; Physician gets time of death, then cause, then the killer's direction; Cutthroat kills, then has a shorter cooldown, then leaves fewer traces.
