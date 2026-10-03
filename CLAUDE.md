@@ -79,7 +79,10 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Lists must be planned so travel between tasks doesn't eat the whole night but still moves players around the map. The night may need to be longer (most of the action and the game's selling point is the night).
 - List size depends on task length (decided): each list adds up to a similar amount of task time, e.g. 2 long tasks or 5 short ones.
 - Roles must stay the heart of the night (Alexander's concern): tasks must not eat the night; abilities should get used during the night, not saved up forever.
-- Still open: night length (7 min suggested; Alexander thinks that's a big jump); an Among Us-style "emergency meeting" way to cut the night short; how much of the night tasks should take; what the task-related role does; the actual task list with each task's 4 grades; how good-team progress pays off; how a task reveals a clue.
+- Night length (decided): about 5 minutes to start (up from 2¾), tuned in full playtests with friends before release.
+- Early end (decided): an alarm bell in the Courthouse Square that each player can ring ONCE per match to call an early inquest. No Among Us-style "report body" for now: bodies are still only revealed at dawn, because a lot of the design builds on that; what finding a body at night does is to be rethought. Nights must not get stopped often (frustrating).
+- Abilities (decided direction): every role has a MAIN ability that mostly runs on a cooldown (some roles use charges instead), plus PERKS powered by task charge. Idea being discussed: an Apex Legends Evo-style upgrade system where task charge fills a bar that unlocks perk upgrades.
+- Still open: how much of the night tasks should take; whether perk upgrades are Evo-style levels (and if they carry over between nights); what finding a body at night does; what the task-related role does; the actual task list with each task's 4 grades; how good-team progress pays off; how a task reveals a clue.
 
 ## Map plan files (source of truth for the greybox)
 - map-plan.png: to-scale plan for humans. map-plan.json: exact coordinates for building. map-plan-generator.py: the Python script that produced both (edit and rerun to change the layout).
