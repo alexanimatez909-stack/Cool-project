@@ -70,6 +70,6 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
 
 ## 9. Roles so far
-- **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports (7): 1 each of Registrar (death register, like the Among Us Scientist), Constable (one escort per night) and Foreman + 4 shared by Clerk (spots forgeries), Lamplighter and Handyman (task role), each at least once.
+- **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports (7): Registrar (death register, like the Among Us Scientist), Constable (one escort per night), Foreman, Clerk (spots forgeries), Lamplighter, Handyman (task role) and 1 Civilian (no ability). No role ever appears twice.
 - **Evil heads:** Cutthroat (knife, downs the victim), Apothecary (poison downs the victim later; counts toward the kill limit when planted), Forger (plants fake clues; the Clerk can spot them). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on 8 players; any Informant can publish it at a press (~20 s, loud).

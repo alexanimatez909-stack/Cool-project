@@ -41,7 +41,9 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 
 | **Clerk** | **Check**: tests one clue (in a journal or on the board): real or forged? This is how the Forger's flaw is spotted. | Shorter cooldown | Also learns how old the clue is | Decided |
 
-Good support slots (decided, 7 at 20 players): 1 each of Registrar, Constable and Foreman (never duplicated) + 4 slots shared by Clerk, Lamplighter and Handyman (each at least once, the extra slot is a duplicate).
+| **Civilian** | No ability: an ordinary citizen who does tasks and investigates | | | Decided |
+
+Good support slots (decided, 7 at 20 players): Registrar, Constable, Foreman, Clerk, Lamplighter, Handyman and 1 Civilian. NO role ever appears twice (decided: duplicates cause unnecessary confusion).
 
 Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhound handler not picked. The Clerk spots forgeries.
 
