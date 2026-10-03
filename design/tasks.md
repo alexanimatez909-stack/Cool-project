@@ -6,7 +6,7 @@ New tasks can be added at any time; each new task gets a row here.
 
 ## Rules for tasks
 - There are two kinds: common tasks (anyone can get them, any role, any team, any night; NOT the Among Us meaning) and role tasks (only for a specific role).
-- Every player gets common tasks every night; most of each list is common tasks, with only a small number of role tasks (too many role tasks would be bad).
+- Every player gets common tasks every night. Role tasks are rare: they only show up every 2 nights, or randomly with a base amount and a limit (Config values), so we don't need hundreds of role tasks per role to keep them interesting.
 - Each night, a common task is only handed out to a limited number of players so lists stay varied (the exact number is a Config value, tuned in playtests).
 - Carrying anything (bucket, letter, crate...) stops you sprinting.
 - Multi-step tasks keep finished steps if you're interrupted or leave.
