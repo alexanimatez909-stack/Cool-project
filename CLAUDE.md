@@ -43,12 +43,13 @@ Milestones, in order:
 ## The game in brief
 Hidden-role mystery in a Victorian London–inspired city. Nights are a first-person hunt; days are a debate over an evidence board in the Courthouse (third-person).
 - Teams: Good and Evil roughly even, plus Informants. Minimum lobby is 12 players (decided): a match never starts with fewer (Config.MIN_PLAYERS). 12 = 5/5/2, 16 = 7/7/2, 20 = 8/8/4 (decided: 4 Informants and 8 per team at 20; roles are being built for a 20-player server first, smaller splits to be re-checked). Config.LOBBY_SPLITS. Every lobby always has all 3 heads per team; smaller lobbies lose support roles first.
-- Nobody knows their teammates. Evil players recognise each other only up close (subtle mark). No team chat for good/evil; Informants have private chat.
+- Nobody knows their teammates. NO mark on evil players (decided, replaces the old 'red thread' idea): evil players can't recognise each other either, so killers must also decide from evidence who to kill. No team chat for good/evil; Informants have private chat. (Open: how to stop killers freezing up and never killing; options being discussed.)
 - Killing (decided, so evil can't wipe out half the good team in one night):
   - A: not every evil head can kill. The Forger (head) only forges; the Cutthroat and the Apothecary are the head killers.
   - B: a team kill limit per night that scales with lobby size (Config.EVIL_KILLS_PER_NIGHT: 12 = 1, 16 = 2, 20 = 2). After the last allowed kill, every evil kill locks until dawn ("the city is on alert"). Evil players don't know each other, so they race for the kills.
   - C: ONE evil killing support role, weaker than the heads, whose kill is LOCKED until an evil head is out, so evil can still kill once its heads fall.
-  - Friendly fire on (killing a teammate = very long cooldown).
+  - Friendly fire on (decided, kept): killing a teammate = very long cooldown.
+  - Downed, not instantly dead (decided): an attacked player is DOWNED for 2 minutes (Config), then dies. The Physician can FULLY revive a downed player.
 - Win (decided): a team is out when all 3 of its head roles AND a number of its support players are out (2 supports at 20 players; the number scales with lobby size, Config). So at 20 players a team loses after 5 of its players are out. Informants win by publishing their report and lose if they're all killed/voted out (decided).
 - On death/vote-out only the name is announced; roles stay hidden. A head-role counter shows both sides' remaining heads.
 - Dawn: church bell tolls once per death; missing players named, never where/when/how. Bodies must be found.
