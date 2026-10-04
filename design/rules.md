@@ -62,7 +62,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Everyone wears 3 random Victorian accessories (head, neck, carried), each shared by 3-4 players. Only the Inspector can analyse marks on them.
 - Only the Forger (evil head) can plant fake evidence.
 - **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die. Anyone can read its notes page for free; its clues stay hidden until someone picks it up, which means taking all of them. If the Cleaner dumps the body in the river, the journal sinks and its clues are lost. How many clues each player holds is shown during the day.
-- **Board:** at day, in the voting room, your journal opens and you choose which clues to pin, **at most 2 per day**. No automatic pinning. Pins show your **name**. To give an **alibi**, show a clue from your own journal (never one off the board); it's shown to everyone and then used up. **OPEN**: whether board clues fade off after a few days.
+- **Board:** at day, in the voting room, your journal opens and you choose which clues to pin, **at most 2 per day**. No automatic pinning. Pins show your **name**. To give an **alibi**, show a clue from your own journal (never one off the board); it's shown to everyone and then used up (max 1 alibi per day; doesn't use a pin). Pinned clues leave the board after **2 days** and go back into the pinner's journal.
 - **OPEN**: accessory list.
 
 ## 8. Movement and the night

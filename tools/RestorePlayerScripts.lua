@@ -232,6 +232,8 @@ Config.REPORT_MIN = 3               -- but never fewer names than this
 
 -- EVIDENCE BOARD
 Config.PINS_PER_DAY = 2             -- each player can pin at most this many clues from their journal each day
+Config.PIN_DAYS = 2                 -- a pinned clue stays on the board this many days, then goes back into the pinner's journal
+Config.ALIBIS_PER_DAY = 1           -- clues a player can show (and use up) as an alibi each day; doesn't count as a pin
 
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
