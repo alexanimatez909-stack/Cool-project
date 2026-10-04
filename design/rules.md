@@ -59,11 +59,10 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Sherlock Holmes, not CSI: one clue never convicts; you need about 3 pieces of evidence about a person.
 - Any action can leave traces. Traces fade: old traces give vaguer clues. Head roles leave stronger traces.
 - Clues glint in lantern light and make a small sound; hold E to investigate (only alone).
-- Everyone wears 3 random Victorian accessories (head, neck, carried), each shared by 3-4 players. Only the Inspector can analyse marks on them.
+- Everyone wears 3 random Victorian accessories: **headwear, neckwear and footwear**, each shared by 3-4 players. Accessory clues are obvious: they show or name the item ("red scarf wool", "hobnail boot prints"). Only the Inspector can analyse marks on them. Full list: design/accessories.md.
 - Only the Forger (evil head) can plant fake evidence.
 - **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die. Anyone can read its notes page for free; its clues stay hidden until someone picks it up, which means taking all of them. If the Cleaner dumps the body in the river, the journal sinks and its clues are lost. How many clues each player holds is shown during the day.
 - **Board:** at day, in the voting room, your journal opens and you choose which clues to pin, **at most 2 per day**. No automatic pinning. Pins show your **name**. To give an **alibi**, show a clue from your own journal (never one off the board); it's shown to everyone and then used up (max 1 alibi per day; doesn't use a pin). Pinned clues leave the board after **2 days** and go back into the pinner's journal.
-- **OPEN**: accessory list.
 
 ## 8. Movement and the night
 - Walk, sprint (stamina, loud, clear footprints), crouch (quiet, faint prints). Killers are no faster.

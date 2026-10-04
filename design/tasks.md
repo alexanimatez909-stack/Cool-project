@@ -36,7 +36,7 @@ World clues anyone can find; marks on clothing only the Inspector can analyse.
 |---|---|---|---|
 | Fetch water | Spill the bucket | Puddle at the pump, wet footprints leading away | Wet boots / trouser hems |
 | Stoke the boiler | Spill coal | Scattered coal, black footprints | Coal dust on sleeves |
-| Relight a street lamp | Let the flame flare | Scorch mark on the lamp post | Scorched gloves |
+| Relight a street lamp | Let the flame flare | Scorch mark on the lamp post | Scorched sleeve |
 | Tend a grave | Slip on the wet grass | Skid mark and knee prints by the grave | Muddy knees |
 | Weigh the goods, Read the paper, Feed the horses, Wind the clock | none | - | - |
 
