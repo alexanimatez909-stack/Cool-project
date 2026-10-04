@@ -1,4 +1,4 @@
-# Interactable buildings (DRAFT list, waiting for Alexander's feedback)
+# Interactable buildings (decided)
 
 Rules (decided):
 - Three levels of building (option A). Most buildings stay solid blocks.
