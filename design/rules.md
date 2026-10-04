@@ -39,6 +39,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. (**OPEN**: what happens to a downed player at dawn.)
 - **Arrest -> trial:** the Watchman can arrest at night. The arrested player sits in the cells (safe from killers) until day, which opens with a quick trial (30 s): the town votes guilty (out) or not guilty (released; the Watchman gets a very long cooldown). Arresting an Informant counts as right.
 - Finding a body at night doesn't stop the night; the finder gets task charge and the body is a big clue for the board.
+- **Bodies stay where they fell for the whole match** (only the Cleaner can move them). The clues a body gives fade over time: fresh = detailed, old = only the basics, but never nothing.
 
 ## 5. Abilities
 - Every role has ONE main ability (cooldown, some use charges).
