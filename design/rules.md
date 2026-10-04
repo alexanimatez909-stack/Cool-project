@@ -54,6 +54,8 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Each common task is handed to a limited number of players per night; your task spots are your own.
 - Each task is graded on noise, reward, danger and time. No "hold a button" tasks. Multi-step tasks keep progress.
 - Carrying something stops you sprinting.
+- Every role has its own role task: 2 short steps at 2 spots, never sharing a spot with another role task.
+- All tasks use about 6 reusable minigame types (sort, match, timing, order, steady hand, listen/find) with different pictures and words.
 - Tasks don't leave a record automatically. Some tasks can leave a **mistake trace** if you slip up (e.g. spilled water -> wet footprints). You can only slip up on a task you were assigned.
 - **Town bar:** good players' tasks fill a shared bar. When it's full at dawn, a **police report** pins one true clue to the board.
 - Task roles: Handyman (good) and Swindler (evil); the Foreman (good) reads finished task spots.
@@ -76,5 +78,5 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 9. Roles so far
 - **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports (7): Registrar (death register, like the Among Us Scientist), Constable (one escort per night), Foreman, Clerk (marks a board clue by day, investigates it at night, next day learns real/forged and chooses to strike it or keep it; L2 clues contributed, L3 clues picked up last night), Lamplighter, Handyman (task role) and 1 Civilian (at full charge, about every 2 nights, copies a DEAD player's ability for one use). No role ever appears twice.
-- **Evil heads:** Cutthroat (knife, downs the victim; second ability Shadow: camouflage in darkness, dash up to 25 studs between dark spots to down a passer-by, and sees outlines of players in the dark), Apothecary (poison downs the victim later; counts toward the kill limit when planted; second ability Smoke vial: a cloud that blocks sight and lanterns, to escape), Forger (plants fake clues; the Clerk can spot them). 3 supports: killing support + 2 **OPEN** (ideas: Cleaner, Saboteur, Pickpocket, Arsonist).
+- **Evil heads:** Cutthroat (knife, downs the victim; second ability Shadow: camouflage in darkness, dash up to 25 studs between dark spots to down a passer-by, and sees outlines of players in the dark), Apothecary (poison downs the victim later; counts toward the kill limit when planted; second ability Smoke vial: a cloud that blocks sight and lanterns, to escape), Forger (plants fake clues; the Clerk can spot them). 3 supports: Footpad always, plus 2 drawn at random from Cleaner, Swindler and Arsonist.
 - **Informants:** Editor (head, Lead story), Stringer, Photographer, Eavesdropper. Shared report needs specific dirt on half of the living non-Informant players (min 3, recalculated each dawn; 8 at the start of a 20-player game); any Informant can publish it at a press (~20 s, loud).

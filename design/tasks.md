@@ -11,6 +11,18 @@ New tasks can be added at any time; each new task gets a row here.
 - Each night, a common task is only handed out to a limited number of players so lists stay varied (the exact number is a Config value, tuned in playtests).
 - Carrying anything (bucket, letter, crate...) stops you sprinting.
 - Multi-step tasks keep finished steps if you're interrupted or leave.
+- Minigame types (decided): we build about 6 reusable minigame TYPES once, and every task step (common and role) is one of them with its own text, picture and spot. A new task is just new settings, not new code. Build one type first, test it, then add the rest.
+
+## Minigame types
+
+| Type | What you do | Example steps |
+|---|---|---|
+| Sort | Drag items into the right slots | Sort pills, file papers, pick the right tools, copy names into the ledger |
+| Match | Find the one that matches a sample | Case file vs coroner's notes, carve the stamp, mark the cards, deliver to the right house, check the cargo |
+| Timing | Press when a moving marker is in the zone | Sharpen the blade, develop plates, pump water, fix the cart wheel |
+| Order | Visit or click things in the right order | Walk the beat, trim 3 wicks, try the door handles, chalk the tally |
+| Steady hand | Keep a pointer inside a moving/narrow area | Fill the oil can, mix tinctures, fill the lye bucket, cut paper, relight a lamp, stoke the boiler |
+| Listen / find | Pick out the right sound or spot in a scene | Listen at the bar, gossip, confessional grille, hide loot, tend a grave |
 
 ## Common tasks
 
@@ -42,7 +54,7 @@ World clues anyone can find; marks on clothing only the Inspector can analyse.
 | Weigh the goods, Read the paper, Feed the horses, Wind the clock | none | - | - |
 
 ## Still open
-- Role tasks (per role), and the task-related role.
+- Which minigame type each role task step uses (filled in when the list is final).
 - How task records (alibis) are shown to players.
 
 ## Role tasks (DRAFT, waiting for Alexander's feedback)
