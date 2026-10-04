@@ -48,7 +48,7 @@ Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhou
 
 Win (decided): evil is out when its 3 heads + 1 support are out (12: 4 of 4, 16: 4 of 5, 20: 4 of 6). Good is out when about 80% are out (12: 5 of 6, 16: 6 of 8, 20: 8 of 10).
 
-Lobby sizes: 12 = 6/4/2 (evil support = Footpad only), 16 = 8/5/3 (Footpad + 1 random), 20 = 10/6/4.
+Lobby sizes: 12 = 6/4/2 (evil support = Footpad only), 16 = 8/5/3 (Footpad + 1 random), 20 = 10/6/4. Smaller lobbies (decided, smart random draw): heads always in; Good supports: the Clerk is ALWAYS in (counters the Forger and Footpad, who are always in); the Lamplighter is only in if the Arsonist was drawn; the Civilian only at 20; the remaining seats are drawn at random from Registrar, Constable, Foreman, Handyman (20: all 7; 16: 5; 12: 3). Evil supports: Footpad always + random (20: 2, 16: 1, 12: none) from Cleaner, Arsonist, Swindler. Informants: Editor + random from Stringer, Photographer, Eavesdropper (20: 3, 16: 2, 12: 1).
 
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.

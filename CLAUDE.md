@@ -47,7 +47,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 
 ### Players and teams
 - Minimum lobby 12 players, or the match doesn't start (Config.MIN_PLAYERS). Roles are built for 20 first.
-- Splits (Config.LOBBY_SPLITS, decided), same proportions at every size (about half good, a third evil, a fifth Informants): 12 = 6 good (3 heads + 3 supports) / 4 evil (3 heads + Footpad) / 2 Informants (Editor + 1); 16 = 8 good (3 + 5) / 5 evil (3 + Footpad + 1) / 3 Informants (Editor + 2); 20 = 10 / 6 / 4. OPEN: which good supports and Informant roles are left out in smaller lobbies.
+- Splits (Config.LOBBY_SPLITS, decided), same proportions at every size (about half good, a third evil, a fifth Informants): 12 = 6 good (3 heads + 3 supports) / 4 evil (3 heads + Footpad) / 2 Informants (Editor + 1); 16 = 8 good (3 + 5) / 5 evil (3 + Footpad + 1) / 3 Informants (Editor + 2); 20 = 10 / 6 / 4. Smaller lobbies (decided, smart random draw): heads always in; Good supports: the Clerk is ALWAYS in (counters the Forger and Footpad, who are always in); the Lamplighter is only in if the Arsonist was drawn; the Civilian only at 20; the remaining seats are drawn at random from Registrar, Constable, Foreman, Handyman (20: all 7; 16: 5; 12: 3). Evil supports: Footpad always + random (20: 2, 16: 1, 12: none) from Cleaner, Arsonist, Swindler. Informants: Editor + random from Stringer, Photographer, Eavesdropper (20: 3, 16: 2, 12: 1).
 - At 20: Good = 3 heads + 7 supports, Evil = 3 heads + 3 supports, Informants = 1 head + 3 supports. Every lobby always has all 3 heads per team; smaller lobbies lose supports first.
 - NO role ever appears twice in a game.
 - Nobody knows anyone's team, not even evil players (no mark). Only the Informants know each other and have a private chat. No team chat for good/evil.
@@ -178,4 +178,4 @@ Informants (4, one of each):
 - Avatars: everyone gets the same animations (Config.AVATAR_ANIMATIONS, Rthro walk/run for now) and the same body scale and standard body parts, forced by ServerScriptService.AvatarRules. Keeps the first-person camera identical for all players and stops small avatars hiding more easily. R15 only. First person shows only the legs by default (Config.FIRST_PERSON_BODY) so torso and arms never block the view.
 - Movement: sprint (loud, clear footprints), walk, crouch (quiet, faint prints). Ground types change noise. Hiding spots have a time limit. Killers are no faster than anyone else.
 - Built: StarterPlayerScripts.Footsteps plays everyone's footsteps on each client (3D, from their position), sound chosen by the floor's Material or a "FootstepSound" attribute on the part (Config.FOOTSTEP_SOUNDS); sprint is loudest and heard furthest, crouch barely. Roblox's default Running sound is muted.
-- Smaller lobbies close off districts with gates.
+- Districts are NOT closed in smaller lobbies for now (decided; revisit after playtests).

@@ -6,6 +6,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 ## 1. Players and teams
 - Minimum 12 players, or the match doesn't start. Built for 20 first.
 - Teams (good / evil / Informants): **12 = 6 / 4 / 2**, **16 = 8 / 5 / 3**, **20 = 10 / 6 / 4**. At 12 the only evil support is the Footpad.
+- Smaller lobbies: the Clerk is always in; the Lamplighter only if the Arsonist is in; the Civilian only at 20; other good supports, evil supports (besides the Footpad) and Informants (besides the Editor) are drawn at random. All districts stay open.
 - Good: 3 heads + 7 supports. Evil: 3 heads + 3 supports. Informants: 1 head + 3 supports.
 - Nobody knows anyone's team, not even evil (no mark). Only the Informants know each other and have a private chat.
 - Closed lobbies: only players from the match can rejoin it.
