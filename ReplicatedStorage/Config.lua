@@ -210,6 +210,10 @@ Config.SHADOW_DASH_RANGE = 25       -- studs: the furthest the Cutthroat can das
 Config.SHADOW_REVEAL_DISTANCE = 4   -- studs: someone holding a lit lantern this close can see a camouflaged Cutthroat
 Config.SHADOW_SIGHT_RANGE = 40      -- studs: in darkness the Cutthroat sees outlines of players this far away (no details)
 
+-- APOTHECARY: Smoke vial (escape tool)
+Config.SMOKE_DURATION = 15          -- seconds the smoke cloud lasts
+Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight and lantern light)
+
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {
