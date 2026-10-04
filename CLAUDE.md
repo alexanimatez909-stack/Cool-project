@@ -72,7 +72,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Contracts: each night every killer secretly gets one target guaranteed NOT evil (because evil can't recognise each other). They may kill someone else instead. OPEN: how a contract becomes a clue.
 - Kills don't stack: unused kills are lost at dawn.
 - Friendly fire on: evil can kill evil; killing a teammate = very long cooldown.
-- Downed: an attacked player is DOWNED for 2 minutes (Config), then dies. The Physician can fully revive them. OPEN: what happens to a downed player at dawn.
+- Downed: an attacked player is DOWNED for 2 minutes (Config), then dies. The Physician can fully revive them. A player still downed when dawn comes DIES at dawn (decided), so late attacks are deadly and the Physician must act fast.
 - Good abilities are visible when used (e.g. someone reviving a player); being seen makes you a target. Players figure it out (revisit after playtests).
 - Finding a body does NOT end the night; the finder gets task charge and the body is a big clue for the board.
 - Bodies (decided): an UNFOUND body stays where it fell for the whole match (never removed at dawn; only the Cleaner can move it or dump it in the river). Once a body is FOUND it is removed (like reporting a body in Among Us), leaving a chalk outline; the body clue goes to the finder/board. The dead player's journal STAYS on the ground at the chalk outline (decided) until someone picks it up. The evidence a body gives FADES over time like any trace: a fresh body gives detailed clues (time, wound, direction), an old one only the basics. It never fades to nothing: every kill keeps at least one basic clue (e.g. 'stabbed here'). The first player to find a body gets task charge.
