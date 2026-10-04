@@ -62,7 +62,8 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Everyone wears 3 random Victorian accessories (head, neck, carried), each shared by 3-4 players. Only the Inspector can analyse marks on them.
 - Only the Forger (evil head) can plant fake evidence.
 - **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die. Anyone can read its notes page for free; its clues stay hidden until someone picks it up, which means taking all of them. If the Cleaner dumps the body in the river, the journal sinks and its clues are lost. How many clues each player holds is shown during the day.
-- **OPEN**: accessory list, how the Forger forges, how clues get onto the board.
+- **Board:** at day, in the voting room, your journal opens and you choose which clues to pin. Clues held 2 nights are pinned automatically. **OPEN**: pin limits, whether pins show your name.
+- **OPEN**: accessory list.
 
 ## 8. Movement and the night
 - Walk, sprint (stamina, loud, clear footprints), crouch (quiet, faint prints). Killers are no faster.
