@@ -54,7 +54,7 @@ Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.
 - B: team kill limit per night by lobby size (Config.EVIL_KILLS_PER_NIGHT: 12 = 1, 16 = 2, 20 = 2). After the last allowed kill, all evil kills lock until dawn.
 - C: one killing support role, the Footpad, weaker than the heads; its kill unlocks only once BOTH killing heads (Cutthroat and Apothecary) are out.
-- Contracts (decided): each night every killer secretly gets one target guaranteed NOT evil (evil players can't recognise each other). Killing someone else is allowed. Killing your contract target gives a reward but leaves an EXTRA trace. Unused kills are lost at dawn.
+- Contracts (decided): on the FIRST night only, every killer secretly gets one target guaranteed NOT evil (evil players can't recognise each other). Killing someone else is allowed. Killing your contract target gives a reward but leaves an EXTRA trace. Unused kills are lost at dawn.
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|

@@ -33,7 +33,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - **Arsonist** (evil support, working name): Among Us-style sabotage menu (gas main, fire, cut telegraph, lock gates), one shared cooldown, one active at a time; fixing gives task charge; fire never downs players. Each sabotage has fixed places (fire only in Soho; gas main: the Arsonist picks the district). Level 1: must be at the sabotage point. Level 2: shorter cooldown. Level 3: sabotage from anywhere.
 - **Cleaner** (evil support): drags bodies, can dump them in the river at the Docks. Level 2: notified of kills with a general direction. Level 3: drag trails fade faster.
 - **Team kill limit:** at most 2 kills per night for the whole evil team (12 players: 1). After that, all evil kills lock until dawn.
-- **Contracts:** each night every killer secretly gets one target guaranteed NOT evil. They may kill someone else instead. Killing your contract gives a reward but leaves an extra trace.
+- **Contracts (first night only):** every killer secretly gets one target guaranteed NOT evil. They may kill someone else instead. Killing your contract gives a reward but leaves an extra trace.
 - Kills don't stack: unused kills are lost at dawn.
 - **Friendly fire on:** evil can kill evil; killing a teammate gives a very long cooldown.
 - **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. A player still downed at dawn dies.

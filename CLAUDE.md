@@ -69,7 +69,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 ### Killing and saving
 - Killers: Cutthroat and Apothecary (evil heads). The Forger (head) never kills. The Footpad (support) can only kill once BOTH killing heads are out.
 - Team kill limit: the whole evil team gets at most Config.EVIL_KILLS_PER_NIGHT kills per night (12 = 1, 16 = 2, 20 = 2). After the last one, every evil kill locks until dawn.
-- Contracts: each night every killer secretly gets one target guaranteed NOT evil (because evil can't recognise each other). They may kill someone else instead. Contract kills (decided): killing your contract target gives a reward (e.g. task charge) but leaves an EXTRA, stronger trace; killing someone else is riskier to choose but leaves fewer traces.
+- Contracts: ONLY on the first night (decided), every killer secretly gets one target guaranteed NOT evil (because evil can't recognise each other). They may kill someone else instead. Contract kills (decided): killing your contract target gives a reward (e.g. task charge) but leaves an EXTRA, stronger trace; killing someone else is riskier to choose but leaves fewer traces.
 - Kills don't stack: unused kills are lost at dawn.
 - Friendly fire on: evil can kill evil; killing a teammate = very long cooldown.
 - Downed: an attacked player is DOWNED for 2 minutes (Config), then dies. The Physician can fully revive them. A player still downed when dawn comes DIES at dawn (decided), so late attacks are deadly and the Physician must act fast.
