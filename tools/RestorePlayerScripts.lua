@@ -226,6 +226,8 @@ Config.SHADOW_SIGHT_RANGE = 40      -- studs: in darkness the Cutthroat sees out
 Config.SMOKE_DURATION = 15          -- seconds the smoke cloud lasts
 Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight and lantern light)
 Config.SMOKE_COOLDOWN = 180         -- seconds; tasks and assists make it shorter (starting value, tune in playtests)
+Config.SMOKE_CUT_POISON_USED = 20   -- seconds taken off the cooldown when someone uses your poisoned object
+Config.SMOKE_CUT_POISON_KILL = 60   -- seconds taken off when your poison victim dies
 
 -- INFORMANTS: how much dirt the shared report needs (recalculated at every dawn)
 Config.REPORT_SHARE = 0.5           -- dirt on this share of the living non-Informant players (rounded up)
