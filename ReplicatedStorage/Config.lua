@@ -219,6 +219,9 @@ Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight an
 Config.REPORT_SHARE = 0.5           -- dirt on this share of the living non-Informant players (rounded up)
 Config.REPORT_MIN = 3               -- but never fewer names than this
 
+-- EVIDENCE BOARD
+Config.PINS_PER_DAY = 2             -- each player can pin at most this many clues from their journal each day
+
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {
