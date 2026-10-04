@@ -215,6 +215,11 @@ Config.EVIL_KILLS_PER_NIGHT = {
 	[20] = 2,
 }
 
+-- CUTTHROAT: Shadow (camouflage in darkness + dash-kill between dark spots)
+Config.SHADOW_MAX_LIGHT = 0.25      -- camouflage and dash only work where the light level is below this (0 = pitch black, 1 = fully lit)
+Config.SHADOW_DASH_RANGE = 25       -- studs: the furthest the Cutthroat can dash from one dark spot to another
+Config.SHADOW_REVEAL_DISTANCE = 4   -- studs: someone holding a lit lantern this close can see a camouflaged Cutthroat
+
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {
