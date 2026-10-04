@@ -214,6 +214,7 @@ Config.SHADOW_SIGHT_RANGE = 40      -- studs: in darkness the Cutthroat sees out
 -- APOTHECARY: Smoke vial (escape tool)
 Config.SMOKE_DURATION = 15          -- seconds the smoke cloud lasts
 Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight and lantern light)
+Config.SMOKE_COOLDOWN = 180         -- seconds; tasks and assists make it shorter (starting value, tune in playtests)
 
 -- INFORMANTS: how much dirt the shared report needs (recalculated at every dawn)
 Config.REPORT_SHARE = 0.5           -- dirt on this share of the living non-Informant players (rounded up)
