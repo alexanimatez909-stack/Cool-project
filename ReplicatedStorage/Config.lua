@@ -214,6 +214,10 @@ Config.SHADOW_SIGHT_RANGE = 40      -- studs: in darkness the Cutthroat sees out
 Config.SMOKE_DURATION = 15          -- seconds the smoke cloud lasts
 Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight and lantern light)
 
+-- INFORMANTS: how much dirt the shared report needs (recalculated at every dawn)
+Config.REPORT_SHARE = 0.5           -- dirt on this share of the living non-Informant players (rounded up)
+Config.REPORT_MIN = 3               -- but never fewer names than this
+
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {

@@ -16,8 +16,7 @@ Shared report (decided): the Informants build ONE shared report. Once it is comp
 Rejected: Newsboy (depended on randomly getting the "Read the evening paper" task).
 
 - One of each role (decided): no duplicate Informant roles.
-- Report size (decided, tune in playtests): dirt on 8 different players at 20 players. It should be HARD: the dirt must be specific evidence about that player, not vague.
-- Still open: report size for smaller lobbies.
+- Report size (decided, tune in playtests): scales with players still alive: half of the living non-Informant players, rounded up, minimum 3, recalculated each dawn (8 at the start of a 20-player game). Dirt on players who later die still counts. The dirt must be specific evidence about that player, not vague.
 
 ## Good team (10: 3 heads + 7 supports)
 
