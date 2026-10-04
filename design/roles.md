@@ -57,7 +57,7 @@ Killing rules (decided):
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
-| **Cutthroat** (head) | **Knife**: fast, silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. | Shorter cooldown | Fewer traces | Decided |
+| **Cutthroat** (head) | **Knife**: fast, silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. PLUS a second ability, **Shadow**: camouflaged while standing in darkness (e.g. under a lamp that is out); can dash from one dark spot to another (e.g. two broken lamps diagonal across a lit street), downing a passer-by during the dash animation and staying camouflaged at the far end (uses the Knife's cooldown and the night kill limit). | Shorter cooldown | Fewer traces | Decided (Shadow details OPEN: how lamps break, what reveals him, dash range, traces) |
 | **Apothecary** (head) | **Poison**: poisons an object (teapot, lantern oil); whoever uses it is DOWNED a while later, wherever they are (so the Physician can still save them). Counts toward the night's kill limit when PLANTED. | Choose the delay | The poisoned object leaves no trace | Decided |
 | **Forger** (head, does NOT kill) | **Forge**: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). | Shorter cooldown | Forgeries fade over time like real clues | Decided (the Clerk can spot forgeries) |
 

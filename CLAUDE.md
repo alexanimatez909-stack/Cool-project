@@ -76,7 +76,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Finding a body does NOT end the night; the finder gets task charge and the body is a big clue for the board.
 
 ### Abilities
-- Every role has ONE main ability (cooldown; some use charges/battery). Only exception: the Inspector's level 3 adds a daytime examination.
+- Every role has ONE main ability (cooldown; some use charges/battery). Exceptions: the Inspector's level 3 adds a daytime examination; the Cutthroat also has Shadow (camouflage in darkness, see Roles).
 - Doing tasks fills a charge bar that upgrades the ability: level 1 → 2 → 3 (Apex Legends Evo-style). The level is kept all match.
 - Upgrades make abilities smarter, not just stronger (shorter cooldown, more info, fewer traces, a bit more range). Good roles upgrade too.
 
@@ -95,6 +95,7 @@ Good supports (all 7 in every 20-player game):
 - Civilian — No normal ability. At full charge (about every 2 nights) kneels at a DEAD player's body and gets ONE use of that player's ability (never the living, so it's never a lie detector).
 Evil heads:
 - Cutthroat — Knife: fast silent attack that downs the victim; can travel through the sewers. Every kill leaves a How and a Who clue. L2: shorter cooldown. L3: fewer traces.
+  - Second ability, Shadow (decided: killing alone isn't enough of a kit): standing in darkness (e.g. under a lamp that is out) the Cutthroat becomes camouflaged. When someone walks between two dark spots (e.g. two broken lamps diagonal to each other on a lit street), the Cutthroat can dash from one dark spot to the other, downing the victim during the dash animation and staying camouflaged at the far end. The dash-kill uses the Knife (same cooldown and night kill limit). OPEN: how lamps get broken, what reveals a camouflaged Cutthroat, dash range, traces left.
 - Apothecary — Poison: poisons an object (teapot, lantern oil); whoever uses it is downed a while later, wherever they are. Counts toward the kill limit when PLANTED. L2: chooses the delay. L3: the object leaves no trace.
 - Forger (no kill) — Forge: plants a fake clue in the world (fake footprints, a thread from someone's scarf...). The only role that forges. L2: shorter cooldown. L3: forgeries fade over time like real clues. Counter: the Clerk.
 Evil supports (3 per game: the Footpad ALWAYS, plus 2 drawn at random from Cleaner, Arsonist, Swindler):
