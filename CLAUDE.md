@@ -46,7 +46,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 
 ### Players and teams
 - Minimum lobby 12 players, or the match doesn't start (Config.MIN_PLAYERS). Roles are built for 20 first.
-- Splits (Config.LOBBY_SPLITS): 12 = 5/5/2, 16 = 7/7/2, 20 = 10 good / 6 evil / 4 Informants. OPEN: re-check 12 and 16.
+- Splits (Config.LOBBY_SPLITS, decided), same proportions at every size (about half good, a third evil, a fifth Informants): 12 = 6 good (3 heads + 3 supports) / 4 evil (3 heads + Footpad) / 2 Informants (Editor + 1); 16 = 8 good (3 + 5) / 5 evil (3 + Footpad + 1) / 3 Informants (Editor + 2); 20 = 10 / 6 / 4. OPEN: which good supports and Informant roles are left out in smaller lobbies.
 - At 20: Good = 3 heads + 7 supports, Evil = 3 heads + 3 supports, Informants = 1 head + 3 supports. Every lobby always has all 3 heads per team; smaller lobbies lose supports first.
 - NO role ever appears twice in a game.
 - Nobody knows anyone's team, not even evil players (no mark). Only the Informants know each other and have a private chat. No team chat for good/evil.
@@ -54,8 +54,8 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - Later: experimental modes (e.g. Among Us-style, ~3 evil who know each other).
 
 ### Winning
-- Evil loses when its 3 heads + 1 support are out (4 of 6 at 20; Config.EVIL_SUPPORTS_OUT_TO_LOSE).
-- Good loses when 8 of its 10 are out (Config.GOOD_OUT_TO_LOSE). (An "equal numbers" rule was tried and removed.)
+- Evil loses when its 3 heads + 1 support are out (12: 4 of 4, 16: 4 of 5, 20: 4 of 6; Config.EVIL_SUPPORTS_OUT_TO_LOSE).
+- Good loses when about 80% are out (12: 5 of 6, 16: 6 of 8, 20: 8 of 10; Config.GOOD_OUT_TO_LOSE). (An "equal numbers" rule was tried and removed.)
 - Informants win by publishing their report; they lose if all are out, or if good or evil wins first.
 - On death/vote-out only the name is announced, never the role. A counter shows each side's remaining heads.
 

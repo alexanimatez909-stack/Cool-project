@@ -47,7 +47,9 @@ Rejected: Spiritualist (won't work if the dead player leaves the game). Bloodhou
 
 ## Evil team (6: 3 heads + 3 supports)
 
-Win (decided): evil is out when its 3 heads + 1 support are out (4 of 6 at 20 players). Good is out after 8 of 10 are out.
+Win (decided): evil is out when its 3 heads + 1 support are out (12: 4 of 4, 16: 4 of 5, 20: 4 of 6). Good is out when about 80% are out (12: 5 of 6, 16: 6 of 8, 20: 8 of 10).
+
+Lobby sizes: 12 = 6/4/2 (evil support = Footpad only), 16 = 8/5/3 (Footpad + 1 random), 20 = 10/6/4.
 
 Killing rules (decided):
 - A: not every head kills. Killers at the start: Cutthroat and Apothecary.

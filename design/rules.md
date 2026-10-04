@@ -5,15 +5,15 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 1. Players and teams
 - Minimum 12 players, or the match doesn't start. Built for 20 first.
-- 20 players = **10 good / 6 evil / 4 Informants**. (12 = 5/5/2, 16 = 7/7/2: **OPEN**, to re-check.)
+- Teams (good / evil / Informants): **12 = 6 / 4 / 2**, **16 = 8 / 5 / 3**, **20 = 10 / 6 / 4**. At 12 the only evil support is the Footpad.
 - Good: 3 heads + 7 supports. Evil: 3 heads + 3 supports. Informants: 1 head + 3 supports.
 - Nobody knows anyone's team, not even evil (no mark). Only the Informants know each other and have a private chat.
 - Closed lobbies: only players from the match can rejoin it.
 - Later: experimental modes (e.g. Among Us-style, ~3 evil who know each other).
 
 ## 2. How to win
-- **Evil loses** when its 3 heads + 1 support are out (4 of 6).
-- **Good loses** when 8 of 10 are out.
+- **Evil loses** when its 3 heads + 1 support are out (12: all 4, 16: 4 of 5, 20: 4 of 6).
+- **Good loses** when about 80% are out (12: 5 of 6, 16: 6 of 8, 20: 8 of 10).
 - **Informants win** by publishing their report; they lose if all 4 are out, or if good or evil wins first.
 - Death/vote-out only announces the name, never the role. A counter shows how many heads each side has left.
 

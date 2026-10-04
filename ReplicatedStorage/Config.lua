@@ -191,8 +191,8 @@ Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell
 ---------------------------------------------------------------------
 Config.MIN_PLAYERS = 12             -- a match never starts with fewer players than this
 Config.LOBBY_SPLITS = {
-	[12] = { Good = 5, Evil = 5, Informants = 2 },
-	[16] = { Good = 7, Evil = 7, Informants = 2 },
+	[12] = { Good = 6, Evil = 4, Informants = 2 },
+	[16] = { Good = 8, Evil = 5, Informants = 3 },
 	[20] = { Good = 10, Evil = 6, Informants = 4 },
 }
 
@@ -217,10 +217,14 @@ Config.SMOKE_RADIUS = 12            -- studs: size of the cloud (blocks sight an
 -- WIN
 -- Evil is out when ALL 3 of its head roles AND this many of its support players are out.
 Config.EVIL_SUPPORTS_OUT_TO_LOSE = {
+	[12] = 1,   -- evil: 4 of 4 out
+	[16] = 1,   -- evil: 4 of 5 out
 	[20] = 1,   -- evil: 4 of 6 out
 }
 -- Good is out when this many good players are out.
 Config.GOOD_OUT_TO_LOSE = {
+	[12] = 5,   -- 5 of 6 out
+	[16] = 6,   -- 6 of 8 out
 	[20] = 8,   -- 8 of 10 out
 }
 
