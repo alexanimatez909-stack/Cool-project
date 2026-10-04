@@ -55,30 +55,30 @@ World clues anyone can find; marks on clothing only the Inspector can analyse.
 
 ## Role tasks (decided)
 
-Rules (decided): every role has its own role task; medium length, split into 2 short steps (~10 s each) at 2 different spots; finished steps are kept if interrupted; more charge than common tasks; being seen doing one hints at your role. No two role tasks share a spot (checked when assigning). Spots also avoid sabotage points (gas mains, telegraph office, the Soho fire) and the printing presses. District names are placeholders until the v10 map files are in the repo.
+Rules (decided): every role has its own role task; medium length, split into 2 short steps (~10 s each) at 2 different spots; finished steps are kept if interrupted; more charge than common tasks; being seen doing one hints at your role. No two role tasks share a spot (checked when assigning). Spots also avoid sabotage points (gas mains, telegraph office, the Soho fire) and the printing presses. District names follow the v11 map; exact buildings are picked in Studio.
 
 | Role | Step 1 (spot) | Type | Step 2 (spot) | Type |
 |---|---|---|---|---|
-| Inspector | Pull the right case file by its number (Courthouse, detective's office) | Match | Compare it with the coroner's notes (Church quarter, coroner's office) | Match |
+| Inspector | Pull the right case file by its number (Courthouse, detective's office) | Match | Compare it with the coroner's notes (Cathedral quarter, coroner's office) | Match |
 | Physician | Sort pills into the right bottles (Terraces, doctor's surgery) | Sort | Restock the first-aid kit (Docks, sailors' mission) | Sort |
 | Watchman | Collect lantern and rattle (Soho, watch house) | Sort | Walk the beat: check 3 lamp posts in order (Market) | Order |
-| Registrar | Copy names into the ledger (Terraces, register office) | Sort | Check the burials list (Church quarter, parish records) | Listen / find |
+| Registrar | Copy names into the ledger (Terraces, register office) | Sort | Check the burials list (Cathedral quarter, parish records) | Listen / find |
 | Constable | Sign in (Courthouse Square, police box) | Match | Try the door handles along a mews (Terraces) | Order |
 | Foreman | Read the work rota (Docks, warehouse office) | Listen / find | Chalk the tally on crates (Goods yard) | Order |
 | Clerk | File papers in order (Courthouse, archive) | Sort | Collect the court letters (Market, post office) | Match |
-| Lamplighter | Fill the oil can (Soho, lamplighter's store) | Steady hand | Trim the wicks on 3 lamps (Church quarter) | Order |
+| Lamplighter | Fill the oil can (Soho, lamplighter's store) | Steady hand | Trim the wicks on 3 lamps (Cathedral quarter) | Order |
 | Handyman | Pick the right tools (Soho, workshop) | Sort | Fix a broken cart wheel (Market piazza) | Timing |
 | Civilian | Collect a parcel (Soho, pub) | Match | Deliver it to the right house (Terraces) | Match |
 | Cutthroat | Sharpen the blade in rhythm (Docks, knife-grinder's) | Timing | Stash it on a sewer ledge (River sewer) | Listen / find |
-| Apothecary | Mix tinctures from a recipe (Market, chemist's back room) | Steady hand | Pick nightshade (Church quarter, physic garden) | Listen / find |
+| Apothecary | Mix tinctures from a recipe (Market, chemist's back room) | Steady hand | Pick nightshade (Cathedral quarter, physic garden) | Listen / find |
 | Forger | Cut paper to size (Terraces, stationer's) | Steady hand | Carve a fake stamp (Soho, engraver's) | Match |
 | Footpad | Haggle over stolen goods (Soho, pawnbroker) | Timing | Hide the loot under a loose cobble (Docks alley) | Listen / find |
-| Cleaner | Fetch a sack (Church quarter, undertaker's yard) | Listen / find | Fill a bucket of lye (Docks, tannery) | Steady hand |
+| Cleaner | Fetch a sack (Cathedral quarter, undertaker's yard) | Listen / find | Fill a bucket of lye (Docks, tannery) | Steady hand |
 | Swindler | Mark the cards (Soho, music hall card table) | Match | Rig the ledger (Market, auction house) | Sort |
 | Arsonist | Fill a flask with lamp oil (Docks, oil depot) | Steady hand | Buy matches (Market, tobacconist) | Match |
 | Editor | Check the headlines (Courthouse Square, newsstand) | Listen / find | Proof-read the draft (Market, newspaper office) | Match |
 | Stringer | Listen for gossip (Market, coffee house) | Listen / find | Tip the cabbie for news (Terraces, cab rank) | Timing |
 | Photographer | Load the plates (Terraces, photographer's studio) | Steady hand | Develop them in time (Soho, darkroom) | Timing |
-| Eavesdropper | Listen at the bar (Docks, pub) | Listen / find | Listen at the confessional grille (Church quarter) | Listen / find |
+| Eavesdropper | Listen at the bar (Docks, pub) | Listen / find | Listen at the confessional grille (Cathedral quarter) | Listen / find |
 
-Minigame types per step are a first pass; swap any that feel wrong after testing. Spots get matched to the v10 map once its files are in the repo.
+Minigame types per step are a first pass; swap any that feel wrong after testing. Spots get matched to the v11 map's buildings.
