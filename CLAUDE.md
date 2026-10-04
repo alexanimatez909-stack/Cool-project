@@ -17,7 +17,7 @@ Milestones, in order:
    Map edges are SOFT: streets visibly carry on into a low-detail backdrop city (BackdropData.lua: blocks, fake_streets, passenger viaduct, south-bank skyline across the river), blocked at the edge by props (`edge_blockers`: police cordons, locked gates, road-works hoardings). Behind the props, an invisible collidable safety wall runs along playable_boundary. Add fog so the backdrop fades out. The workhouse & brewery (west) and road works (east) are still solid.
 2. Movement: first-person lock at night, sprint + stamina, crouch.
 3. DOORS-style camera: head bob, tilt on turns/strafe, sprint FOV, crouch lowers camera, exhaustion shake, visible body, "reduce motion" setting.
-4. Night cycle (redesigned, see "Night design" below): 3 church bells start 3 stages of different lengths (Dusk 60 s, Deep night 120 s, Last hour 60 s, all in Config). Light fog all night. At Deep night 2–3 random districts lose their lamps (never the Courthouse Square). Everyone has a lantern.
+4. Night cycle (redesigned, see "Night design" below): 3 church bells start 3 stages of different lengths (Dusk 75 s, Deep night 120 s, Last hour 45 s, all in Config). Light fog all night. At Deep night 2–3 random districts lose their lamps (never the Courthouse Square). Everyone has a lantern.
 5. NEXT: the smallest playable loop: one kill (downs a player), one clue, the evidence board, anonymous vote. Then roles one at a time.
 
 ## Night design (agreed with Alexander; tune after playtests)
@@ -61,10 +61,10 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 - On death/vote-out only the name is announced, never the role. A counter shows each side's remaining heads.
 
 ### One cycle (about 5½ min; a game is about 5–6 cycles ≈ 30 min)
-- Night 4:00 (Config.NIGHT_STAGES): Dusk 1:00, Deep night 2:00, Last hour 1:00 (never more than 7 min). Measured: running crosses the v10 map in ~60 s, walking ~90 s.
+- Night 4:00 (Config.NIGHT_STAGES): Dusk 1:15, Deep night 2:00, Last hour 0:45 (never more than 7 min). Measured: running crosses the v10 map in ~60 s, walking ~90 s.
 - Dawn: a bell tolls once per death; missing players are named, never where/when/how. Bodies must be found.
 - Day (third person): trial 0:30 (only if the Watchman arrested someone; Config.DAY_TRIAL_LENGTH), discussion 1:00 (DAY_DISCUSSION_LENGTH), anonymous vote 0:30 (DAY_VOTE_LENGTH).
-- Alarm bell in the Courthouse Square: each player can ring it ONCE per match to end the night early. No "report body" button.
+- Alarm bell in the Courthouse Square: each player can ring it ONCE per match. It doesn't end the night instantly: it jumps the clock to the last 15 seconds of the Last hour (Config.ALARM_BELL_SECONDS_LEFT), so nobody is annoyed by a sudden cut. No "report body" button: finding a body does NOT end the night.
 
 ### Killing and saving
 - Killers: Cutthroat and Apothecary (evil heads). The Forger (head) never kills. The Footpad (support) can only kill once BOTH killing heads are out.

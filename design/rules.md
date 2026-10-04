@@ -19,12 +19,12 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 3. One cycle (about 5½ minutes, a game is about 5-6 cycles / 30 min)
 - **Night, 4 minutes, first person:** everyone starts in the Courthouse Square.
-  - Dusk 1:00 (lamps on, light fog, spread out)
+  - Dusk 1:15 (lamps on, light fog, spread out)
   - Deep night 2:00 (2-3 random districts go dark, never the Square; main hunting time)
-  - Last hour 1:00 (tense final push, fog lifts toward dawn)
+  - Last hour 0:45 (tense final push, fog lifts toward dawn)
 - **Dawn:** a bell tolls once per death; missing players are named, never where/when/how.
 - **Day, third person:** (0:30 trial if someone was arrested), 1:00 discussion at the evidence board, then 0:30 anonymous vote.
-- **Alarm bell:** each player can ring it ONCE per match to end the night early (early inquest). No "report body" button.
+- **Alarm bell:** each player can ring it ONCE per match. It jumps the night to its last 15 seconds (early inquest). No "report body" button: finding a body doesn't end the night.
 
 ## 4. Killing
 - Killers: the **Cutthroat** and the **Apothecary** (heads). The **Forger** (head) does not kill.
