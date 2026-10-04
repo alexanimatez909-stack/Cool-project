@@ -45,7 +45,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 5. Abilities
 - Every role has ONE main ability (cooldown, some use charges).
-- Doing tasks fills a charge bar that upgrades the ability: level 1 -> 2 -> 3. The level is kept all match.
+- Doing tasks fills a charge bar that upgrades the ability: level 1 -> 2 -> 3. The level is kept all match and is **hidden** from other players.
 - Upgrades make it smarter, not just stronger (shorter cooldown, more info, fewer traces, a bit more range).
 
 ## 6. Tasks
@@ -55,6 +55,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Each task is graded on noise, reward, danger and time. No "hold a button" tasks. Multi-step tasks keep progress.
 - Carrying something stops you sprinting.
 - Tasks don't leave a record automatically. Some tasks can leave a **mistake trace** if you slip up (e.g. spilled water -> wet footprints). You can only slip up on a task you were assigned.
+- **Town bar:** good players' tasks fill a shared bar. When it's full at dawn, a **police report** pins one true clue to the board.
 - Task roles: Handyman (good) and Swindler (evil); the Foreman (good) reads finished task spots.
 
 ## 7. Clues and evidence

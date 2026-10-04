@@ -138,7 +138,9 @@ Informants (4, one of each):
 - Graded on noise/disruption, reward, danger and time. Riskier = more reward. No "hold a button" tasks; each is a short activity, lots of variety. Multi-step tasks keep finished steps. Carrying anything stops you sprinting. Lamps in dark districts: only specific ones can be relit.
 - No visual tasks that prove innocence; what seeing someone at a task means is up to players.
 - Mistake traces (instead of automatic records): some tasks can leave a clue when the player slips up (spilled water → wet footprints). Anti-faking: (1) mistakes cost you (redo, less charge); (2) the trace cuts both ways (puts you at the spot and leaves world clues pointing to you); (3) mistake traces are vague about time like any trace; (4) you can only slip up on a task you were assigned. design/tasks.md lists the 11 drafted common tasks, their grades and mistake traces.
-- OPEN: role tasks themselves; how good-team progress pays off; whether others can see someone's ability level.
+- Good-team progress (decided): good players' tasks fill a shared town bar (evil and Informant tasks don't count, and nobody can see whose tasks counted). When it is full at dawn, a POLICE REPORT pins one TRUE clue to the board (e.g. 'One of the killers wears hobnail boots'): strong, unforgeable, but never enough alone. Then the bar resets (Config).
+- Ability levels are HIDDEN (decided): only you know your own level (showing them would act like proof of being busy/helpful).
+- OPEN: the role tasks themselves.
 
 ## Map plan files (source of truth for the greybox)
 - NOTE: Alexander redesigned the map to v10 in another session (playable area about 1,729 × 1,190 studs; Cathedral quarter moved onto the Embankment with its long side along the river; east side cut off; Market = one covered market hall + piazza; Courthouse next to Soho). The v10 files are not in this repo yet; the details below are still v6 until he uploads them.
