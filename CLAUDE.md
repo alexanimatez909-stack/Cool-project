@@ -40,6 +40,7 @@ Milestones, in order:
 - Put every tuning number in one config ModuleScript (bell length, day phase lengths, lobby splits, stamina, cooldowns, friendly fire on/off) so balance changes are one edit.
 - Use ModuleScripts for shared logic; keep scripts small and named clearly.
 - Voice/chat: night = proximity (Roblox default spatial voice + nearby-only text bubbles); day = everyone. Ghosts get their own channel. Plan for text-only players.
+- Ghosts (decided): dead players NEVER talk to the living (they know who killed them). They can (B) do ghost tasks for their own team (good ghosts add to good-team progress, evil ghosts help charge evil abilities, Informant ghosts add a little dirt progress) and (C) haunt ONCE per night: one small spooky effect (flicker a lamp, a cold breath, a knock on a door), never words or names. Evil ghosts can haunt to mislead, so a haunting is never proof. No ghost vote.
 
 ## The game in brief
 Hidden-role mystery in a Victorian London–inspired city. Nights are a first-person hunt; days are a debate over an evidence board in the Courthouse (third-person). Everything below is DECIDED with Alexander unless marked OPEN. Numbers are starting points for playtests and live in Config. Clean player-facing summary: design/rules.md. Full role tables: design/roles.md.

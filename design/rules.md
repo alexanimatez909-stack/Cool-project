@@ -68,6 +68,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Lantern: on = see clues but be seen; off = hidden but can't search well.
 - Paper map (M) shows landmarks only, never players.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
+- **Ghosts** never talk to the living. They do ghost tasks for their team and can haunt once per night (flicker a lamp, cold breath, a knock; never words). Evil ghosts can haunt to mislead.
 
 ## 9. Roles so far
 - **Good heads:** Inspector (lantern beam; level 3 adds a once-per-game daytime examination), Physician (revive, once per night), Watchman (arrest -> trial). Good abilities are visible when used; being seen makes you a target. Supports (7): Registrar (death register, like the Among Us Scientist), Constable (one escort per night), Foreman, Clerk (marks a board clue by day, investigates it at night, next day learns real/forged and chooses to strike it or keep it; L2 clues contributed, L3 clues picked up last night), Lamplighter, Handyman (task role) and 1 Civilian (at full charge, about every 2 nights, copies a DEAD player's ability for one use). No role ever appears twice.
