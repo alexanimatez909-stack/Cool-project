@@ -10,7 +10,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Good: 3 heads + 7 supports. Evil: 3 heads + 3 supports. Informants: 1 head + 3 supports.
 - Nobody knows anyone's team, not even evil (no mark). Only the Informants know each other and have a private chat.
 - Closed lobbies: only players from the match can rejoin it.
-- **Disconnects:** your character stays asleep where you were and can be killed or arrested. Rejoin at night = wake up there; at day = the Courthouse. Leave at night and you have until the next Dusk to come back, or you count as out (only your name is announced; your journal drops).
+- **Disconnects:** your character stays asleep where you were and can be killed or arrested. Rejoin at night = wake up there; at day = the Courthouse. Leave at night and you have until the next Dusk to come back; leave during the day and you have until the Dusk after the following night. If you don't come back, you count as out (only your name is announced; your journal drops). While away you can't vote but can be voted for.
 - Later: experimental modes (e.g. Among Us-style, ~3 evil who know each other).
 
 ## 2. How to win
