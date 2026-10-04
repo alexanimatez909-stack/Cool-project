@@ -29,7 +29,7 @@ Rejected: Newsboy (depended on randomly getting the "Read the evening paper" tas
 
 Visible abilities (decided, for now): good abilities can be seen when used (e.g. someone reviving a player). Being seen is a risk (killers learn who to hunt), so players figure it out themselves. Revisit after playtests (ideas: look-alike actions, hidden results).
 
-Supports (7 slots; types can appear more than once so claims can be checked):
+Supports (7 slots, no role ever appears twice):
 
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
@@ -38,9 +38,7 @@ Supports (7 slots; types can appear more than once so claims can be checked):
 | **Constable** | **Escort**: stays close to a player; if that player is attacked, the attack fails and the Constable sees the attacker's accessory | Lasts longer | Sees the attacker's full description | Decided: ONE escort per night, max 1 Constable per game |
 | **Registrar** (Among Us Scientist) | **Death register**: shows who is alive, downed or dead right now. Uses a battery that tasks recharge. | Also shows the district where someone is downed/dead | Also shows when they went down | Decided |
 | **Handyman** (task role) | Does tasks twice as fast and can finish another player's task for them (that player still gets the charge) | Carrying doesn't stop them sprinting | Each task they finish adds a little charge to everyone nearby | Decided |
-
 | **Clerk** | **Investigate a clue**: during the DAY marks one clue on the board; that NIGHT does a short records task at the Courthouse to investigate it; the next day learns if it's real or forged and CHOOSES whether to strike it off the board or keep it. Forgeries get a day or two to cause trouble before they're caught. | **The ledger**: also looks up how many clues a player has contributed to the board in total | **Yesterday's haul**: also sees how many clues a player picked up last night (holding more than you picked up = stolen, catches the Footpad) | Decided |
-
 | **Civilian** | **Take up the trade**: at full task charge (about every 2 nights), kneels at a dead player's body and gets ONE use of that player's ability. Can't be used on the living (so it's never a lie detector). | | | Decided |
 
 Good support slots (decided, 7 at 20 players): Registrar, Constable, Foreman, Clerk, Lamplighter, Handyman and 1 Civilian. NO role ever appears twice (decided: duplicates cause unnecessary confusion).
@@ -65,14 +63,11 @@ Killing rules (decided):
 
 Supports (3 slots, decided): the Footpad is ALWAYS in; the other 2 are drawn at random each game from Cleaner, Arsonist and Swindler.
 
-
 | Role | Main ability | Level 2 | Level 3 | Status |
 |---|---|---|---|---|
 | **Footpad** (killing support) | **Mug**: knocks a player out (~10 s) and steals one clue from their journal. Once BOTH killing heads are out, the mug becomes a KILL (downs the victim) and still steals a clue. Leaves a clear clue for the victim (e.g. "they had a cane"). | (draft) Shorter cooldown | (draft) Chooses which clue to steal (e.g. the newest) | Decided (levels draft) |
-
 | **Swindler** (task role) | Reads one player's task list (knows where they'll go tonight) | Reads two lists | Swaps one task on a player's list, sending them to a spot of the Swindler's choosing (a lure) | Decided |
 | **Cleaner** | **Drag**: drags a body somewhere else; can dump bodies in the river at the Docks (the dropped journal sinks with it and its clues are LOST, decided). | Gets notified when someone is killed, with the general direction of the kill | Drag trails fade faster | Decided |
-
 | **Arsonist** (working name) | **Sabotage** (Among Us-style): picks one sabotage from a menu; all share one cooldown and only one can be active at a time. Fixing a sabotage gives task charge (anyone can fix, evil too). | Shorter cooldown | Can sabotage from ANYWHERE (level 1-2 must go to the sabotage point) | Decided |
 
 Sabotage menu (decided). Each sabotage has FIXED places on the map, like Among Us (e.g. the fire can only happen in Soho), so players learn where to run:
