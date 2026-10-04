@@ -53,9 +53,6 @@ World clues anyone can find; marks on clothing only the Inspector can analyse.
 | Tend a grave | Slip on the wet grass | Skid mark and knee prints by the grave | Muddy knees |
 | Weigh the goods, Read the paper, Feed the horses, Wind the clock | none | - | - |
 
-## Still open
-- How task records (alibis) are shown to players.
-
 ## Role tasks (decided)
 
 Rules (decided): every role has its own role task; medium length, split into 2 short steps (~10 s each) at 2 different spots; finished steps are kept if interrupted; more charge than common tasks; being seen doing one hints at your role. No two role tasks share a spot (checked when assigning). Spots also avoid sabotage points (gas mains, telegraph office, the Soho fire) and the printing presses. District names are placeholders until the v10 map files are in the repo.
