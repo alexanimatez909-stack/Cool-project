@@ -53,7 +53,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Each task is graded on noise, reward, danger and time. No "hold a button" tasks. Multi-step tasks keep progress.
 - Carrying something stops you sprinting.
 - Tasks don't leave a record automatically. Some tasks can leave a **mistake trace** if you slip up (e.g. spilled water -> wet footprints). You can only slip up on a task you were assigned.
-- There are task/clue roles on both teams (**OPEN**: which).
+- Task roles: Handyman (good) and Swindler (evil); the Foreman (good) reads finished task spots.
 
 ## 7. Clues and evidence
 - Sherlock Holmes, not CSI: one clue never convicts; you need about 3 pieces of evidence about a person.
