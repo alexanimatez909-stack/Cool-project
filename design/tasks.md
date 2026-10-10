@@ -1,4 +1,4 @@
-# Tasks list (draft, agreed with Alexander; nothing built yet)
+# Tasks list (decided with Alexander; nothing built yet)
 
 Grades are 1 (low) to 3 (high). Time = how long it takes, Noise = disruption (how much it draws attention),
 Danger = how exposed/isolated the spot is, Reward = charge earned (riskier tasks pay more).

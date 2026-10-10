@@ -9,6 +9,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Smaller lobbies: the Clerk is always in; the Lamplighter only if the Arsonist is in; the Civilian only at 20; other good supports, evil supports (besides the Footpad) and Informants (besides the Editor) are drawn at random. All districts stay open.
 - Good: 3 heads + 7 supports. Evil: 3 heads + 3 supports. Informants: 1 head + 3 supports.
 - Nobody knows anyone's team, not even evil (no mark). Only the Informants know each other and have a private chat.
+- Players join the game into a **lobby** (never straight into the city) and join matches from there, like Among Us.
 - Closed lobbies: only players from the match can rejoin it.
 - **Disconnects:** your character stays asleep where you were and can be killed or arrested. Rejoin at night = wake up there; at day = the Courthouse. Leave at night and you have until the next Dusk to come back; leave during the day and you have until the Dusk after the following night. If you don't come back, you count as out (only your name is announced; your journal drops). While away you can't vote but can be voted for.
 - Later: experimental modes (e.g. Among Us-style, ~3 evil who know each other).
@@ -25,7 +26,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
   - Deep night 2:00 (2-3 random districts go dark, never the Square; main hunting time)
   - Last hour 0:45 (tense final push, fog lifts toward dawn)
 - **Dawn:** a bell tolls once per death; missing players are named, never where/when/how.
-- **Day, third person:** (0:30 trial if someone was arrested), 1:00 discussion at the evidence board, then 0:30 anonymous vote.
+- **Day, third person:** (0:30 trial if someone was arrested), 1:00 discussion at the evidence board, then 0:30 anonymous vote. You can skip. The player with the most votes is out; a tie (or skip on top) means nobody is out.
 - **Alarm bell:** each player can ring it ONCE per match. It jumps the night to its last 15 seconds (early inquest). No "report body" button: finding a body doesn't end the night.
 
 ## 4. Killing

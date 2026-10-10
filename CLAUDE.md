@@ -32,7 +32,7 @@ Milestones, in order:
 
 ## Matches and lobbies
 - Closed lobbies (decided): once a match starts, only the players who were in it can join back (e.g. after a disconnect). Nobody else can join a running match.
-- Planned structure (not built yet): a Lobby place where players gather, and a Match place (the city) that each group is sent into as a private reserved server; disconnected players are sent back into their match, anyone else goes to the lobby. Studio testing works in the single place until then.
+- Lobby (decided): players NEVER spawn into the city when they join the game; they arrive in a separate Lobby and join matches from there, like Among Us. Planned structure (not built yet): a Lobby place where players gather, and a Match place (the city) that each group is sent into as a private reserved server; disconnected players are sent back into their match, anyone else goes to the lobby. Studio testing works in the single place until then.
 - Disconnects (decided): a returning player keeps their role, journal clues and accessories. While away, their character STAYS where it was, slumped asleep, and CAN be killed or arrested (so leaving can't be used to escape). Coming back at night: they wake up in that body. Coming back at day: teleported to the Courthouse. Someone who leaves at night has until the NEXT Dusk starts to rejoin; if they don't, they count as out (name announced as having left town, role hidden, journal drops where they were). Someone who leaves during the DAY has until the Dusk after the following night (about one full cycle). Absent players can't vote but CAN be voted for, so leaving never makes you vote-proof.
 
 ## Engineering rules
@@ -63,7 +63,7 @@ Hidden-role mystery in a Victorian London–inspired city. Nights are a first-pe
 ### One cycle (about 5½ min; a game is about 5–6 cycles ≈ 30 min)
 - Night 4:00 (Config.NIGHT_STAGES): Dusk 1:15, Deep night 2:00, Last hour 0:45 (never more than 7 min). Measured: running crosses the map in ~60 s, walking ~90 s.
 - Dawn: a bell tolls once per death; missing players are named, never where/when/how. Bodies must be found.
-- Day (third person): trial 0:30 (only if the Watchman arrested someone; Config.DAY_TRIAL_LENGTH), discussion 1:00 (DAY_DISCUSSION_LENGTH), anonymous vote 0:30 (DAY_VOTE_LENGTH).
+- Day (third person): trial 0:30 (only if the Watchman arrested someone; Config.DAY_TRIAL_LENGTH), discussion 1:00 (DAY_DISCUSSION_LENGTH), anonymous vote 0:30 (DAY_VOTE_LENGTH). Vote rules (decided): players can SKIP (vote for nobody); the player with the MOST votes is voted out (no majority needed); a TIE for the top means nobody is voted out. Skip counts like a candidate: if skip gets the most votes, or ties for the top, nobody is out.
 - Alarm bell in the Courthouse Square: each player can ring it ONCE per match. It doesn't end the night instantly: it jumps the clock to the last 15 seconds of the Last hour (Config.ALARM_BELL_SECONDS_LEFT), so nobody is annoyed by a sudden cut. No "report body" button: finding a body does NOT end the night.
 
 ### Killing and saving
