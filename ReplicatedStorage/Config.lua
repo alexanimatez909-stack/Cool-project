@@ -160,7 +160,7 @@ Config.MOVEMENT_ANIMATIONS = {
 	CrouchIdle = 0,
 	CrouchWalk = 0,
 	OutOfBreath = 0,
-	LanternHold = 0,
+	LanternToggle = 0, -- plays once when the lantern is switched on or off
 }
 Config.ALLOW_JUMP = false           -- decided: no jumping
 -- While tweaking: in Studio, play the latest drafts from tools/MakeMovementAnimations.lua instead of the

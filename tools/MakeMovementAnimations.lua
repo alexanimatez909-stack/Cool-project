@@ -9,8 +9,9 @@
 --     swing up across the view (the camera doesn't follow the body's lean, so the hunch never tilts your view).
 --   * Moving sideways or backwards is handled by the MovementAnimations script (it turns the hips toward
 --     where you're going and plays the walk backwards), so these are all forward animations.
---   * The lantern hangs from the belt when it's off; LanternHold raises it in the LEFT hand when it's on.
---     LanternHold only moves the left arm, so it plays ON TOP of any movement animation.
+--   * The lantern ALWAYS hangs from the belt at your LEFT hip (on or off). Switching it on or off plays
+--     LanternToggle once: you reach down to your left side and turn the knob, then your arm goes back.
+--     It only moves the left arm (and a small lean/glance down), so it plays ON TOP of any movement animation.
 --   * No jumping, so there is no jump/fall animation.
 -- Speeds: the loops are timed to the footstep rhythm in Config (walk 8 studs per step at 18, sprint 7 at 28),
 -- so legs, head bob and footstep sounds land together. The game speeds them up/down to match how fast you move.
@@ -160,12 +161,18 @@ local function breathlessPose(breath)
 	}
 end
 
--- ---------------------------------------------------------------- Lantern held up (left arm only)
-local function lanternPose(sway)
-	return {
-		LeftUpperArm = j(40 + sway * 2, 0, 10 - sway), LeftLowerArm = j(55), LeftHand = j(-45),
-	}
-end
+-- ---------------------------------------------------------------- Lantern switch (left arm, plays once)
+-- The lantern hangs at the left hip. Reach down to it, turn the knob, let go.
+-- (Left arm: negative z moves it OUT from the body. Hand: y turns the wrist like turning a knob.)
+local lanternRest = { LeftUpperArm = j(0, 0, -6), LeftLowerArm = j(10) }
+local lanternReach = {
+	UpperTorso = j(-8, 10, 0), Head = j(-20, 10, 0),
+	LeftUpperArm = j(-8, 0, -14), LeftLowerArm = j(30), LeftHand = j(-20, 0, 0),
+}
+local lanternTurn = {
+	UpperTorso = j(-8, 10, 0), Head = j(-20, 10, 0),
+	LeftUpperArm = j(-8, 0, -14), LeftLowerArm = j(30), LeftHand = j(-20, 60, 0),
+}
 
 -- Each animation: length in seconds, keyframes as { time, joints }, priority, and whether it only moves
 -- some joints (partial = the other joints are left to whatever else is playing).
@@ -234,8 +241,11 @@ local ANIMATIONS = {
 			{ 0.9, mirror(crouchPassing) }, { 1.2, crouchContact } } },
 	{ name = "OutOfBreath", priority = Enum.AnimationPriority.Movement, length = 0.8,
 		keys = { { 0, breathlessPose(0) }, { 0.4, breathlessPose(1) }, { 0.8, breathlessPose(0) } } },
-	{ name = "LanternHold", priority = Enum.AnimationPriority.Action, length = 2, partial = true,
-		keys = { { 0, lanternPose(0) }, { 1, lanternPose(1) }, { 2, lanternPose(0) } } },
+	-- plays ONCE (not a loop); marker "Switch" = the moment the knob turns (when the light should change)
+	{ name = "LanternToggle", priority = Enum.AnimationPriority.Action, length = 0.9, partial = true, once = true,
+		keys = { { 0, lanternRest }, { 0.3, lanternReach }, { 0.45, lanternTurn }, { 0.6, lanternTurn },
+			{ 0.9, lanternRest } },
+		markers = { { 0.45, "Switch" } } },
 }
 
 -- The R15 joint tree: each part's pose sits inside its parent's pose.
@@ -317,7 +327,7 @@ end
 for _, anim in ipairs(ANIMATIONS) do
 	local seq = Instance.new("KeyframeSequence")
 	seq.Name = anim.name
-	seq.Loop = true
+	seq.Loop = not anim.once
 	seq.Priority = anim.priority
 	local keys = anim.stepping and smoothLoop(anim.keys, anim.length) or anim.keys
 	for _, key in ipairs(keys) do
@@ -325,6 +335,15 @@ for _, anim in ipairs(ANIMATIONS) do
 		kf.Time = key[1]
 		-- the smooth loops are already full of in-between poses, so they just go straight from one to the next
 		addPose(kf, "HumanoidRootPart", key[2], anim.partial, anim.stepping and "linear" or nil)
+		kf.Parent = seq
+	end
+	for _, m in ipairs(anim.markers or {}) do
+		-- a marker sits on its own empty keyframe, so it doesn't change the motion
+		local kf = Instance.new("Keyframe")
+		kf.Time = m[1]
+		local marker = Instance.new("KeyframeMarker")
+		marker.Name = m[2]
+		kf:AddMarker(marker)
 		kf.Parent = seq
 	end
 	seq.Parent = folder

@@ -73,7 +73,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 
 ## 8. Movement and the night
 - Walk, sprint (stamina, loud, clear footprints), crouch (quiet, faint prints). Killers are no faster. No jumping.
-- The lantern hangs from your belt when it's off and is held up in your left hand when it's on.
+- The lantern always hangs from your belt at your left hip; switching it on or off, you reach down and turn the knob.
 - Lantern: on = see clues but be seen; off = hidden but can't search well.
 - Paper map (M) shows landmarks only, never players.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.

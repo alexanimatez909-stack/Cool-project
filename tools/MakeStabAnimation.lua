@@ -143,7 +143,7 @@ end
 local seq = Instance.new("KeyframeSequence")
 seq.Name = "CutthroatStab"
 seq.Loop = false
-seq.Priority = Enum.AnimationPriority.Action2 -- above LanternHold (Action), so the stab wins
+seq.Priority = Enum.AnimationPriority.Action2 -- above LanternToggle (Action), so the stab wins
 
 for _, p in ipairs(POSES) do
 	local kf = Instance.new("Keyframe")

@@ -171,7 +171,7 @@ Config.MOVEMENT_ANIMATIONS = {
 	CrouchIdle = 0,
 	CrouchWalk = 0,
 	OutOfBreath = 0,
-	LanternHold = 0,
+	LanternToggle = 0, -- plays once when the lantern is switched on or off
 }
 Config.ALLOW_JUMP = false           -- decided: no jumping
 -- While tweaking: in Studio, play the latest drafts from tools/MakeMovementAnimations.lua instead of the
@@ -1779,7 +1779,7 @@ do
 	s.Source = [=[
 -- MovementAnimations (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Plays OUR movement animations (Config.MOVEMENT_ANIMATIONS) instead of Roblox's default ones:
--- idle, walk, sprint, crouch, crouch-walk, out of breath, and the lantern held up on top.
+-- idle, walk, sprint, crouch, crouch-walk, out of breath, and reaching down to switch the lantern on/off.
 -- It reads what your body is doing from MovementState (written by the Movement script), picks one animation,
 -- and speeds it up or slows it down to match how fast you're really moving, so your feet don't slide.
 -- Runs on your own computer: Roblox automatically shows your character's animations to everyone else.
@@ -1802,6 +1802,7 @@ local State = require(script.Parent:WaitForChild("MovementState"))
 local player = Players.LocalPlayer
 
 local FADE = 0.2 -- seconds to blend from one animation into the next
+local ONCE = { LanternToggle = true } -- these play once instead of looping
 
 local tracks = {}     -- name -> loaded animation
 local current = nil   -- the movement animation playing now
@@ -1840,7 +1841,7 @@ local function load(animator, name)
 		warn("[MovementAnimations] Couldn't load " .. name .. ": " .. tostring(track))
 		return nil
 	end
-	track.Looped = true
+	track.Looped = not ONCE[name]
 	return track
 end
 
@@ -1865,6 +1866,16 @@ local function onCharacter(character)
 	for name in Config.MOVEMENT_ANIMATIONS do
 		tracks[name] = load(animator, name)
 	end
+
+	-- the lantern hangs at your left hip; switching it on or off (the lantern sets "LanternOn" on your
+	-- character) plays the reach-down-and-turn-the-knob animation once, on top of whatever the legs are doing
+	local myTracks, myHumanoid = tracks, humanoid
+	character:GetAttributeChangedSignal("LanternOn"):Connect(function()
+		local toggle = myTracks.LanternToggle
+		if toggle and myHumanoid.Health > 0 then
+			toggle:Play(0.1)
+		end
+	end)
 end
 player.CharacterAdded:Connect(onCharacter)
 if player.Character then
@@ -1902,17 +1913,6 @@ RunService.Heartbeat:Connect(function()
 		local localMove = root.CFrame:VectorToObjectSpace(velocity)
 		local backwards = -localMove.Z < -0.2 * speed
 		track:AdjustSpeed(math.clamp(speed / madeFor, 0.5, 1.5) * (backwards and -1 or 1))
-	end
-
-	-- the lantern arm plays on top of whatever the legs are doing (the lantern sets "LanternOn" on your character)
-	local lantern = tracks.LanternHold
-	if lantern then
-		local on = humanoid.Parent and humanoid.Parent:GetAttribute("LanternOn") == true
-		if on and not lantern.IsPlaying then
-			lantern:Play(FADE)
-		elseif not on and lantern.IsPlaying then
-			lantern:Stop(FADE)
-		end
 	end
 end)
 
