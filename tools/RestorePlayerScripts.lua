@@ -168,6 +168,10 @@ Config.MOVEMENT_ANIMATIONS = {
 	LanternHold = 0,
 }
 Config.ALLOW_JUMP = false           -- decided: no jumping
+-- Moving sideways/diagonally turns the hips toward where you're going (chest stays forward), with a small lean
+Config.STRAFE_HIP_TURN = 40         -- most the hips turn (degrees)
+Config.STRAFE_LEAN = 6              -- sideways lean into the direction you're moving (degrees)
+Config.STRAFE_SMOOTHING = 10        -- how quickly the body turns into a new direction (higher = snappier)
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
@@ -1737,6 +1741,9 @@ do
 -- Runs on your own computer: Roblox automatically shows your character's animations to everyone else.
 -- Until the Walk ID is filled in, it does nothing and Roblox's default animations keep playing.
 -- It also turns jumping off (Config.ALLOW_JUMP).
+-- Direction (like DOORS, the body changes shape with direction): walking backwards plays the walk in reverse,
+-- and moving sideways or diagonally turns the hips toward where you're going (the chest stays facing forward)
+-- with a slight lean. That twist is added on every player's computer for every character, so everyone sees it.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -1817,7 +1824,10 @@ RunService.Heartbeat:Connect(function()
 		current = track
 	end
 	if track and madeFor then
-		track:AdjustSpeed(math.clamp(speed / madeFor, 0.5, 1.5))
+		-- walking backwards plays the step in reverse
+		local localMove = root.CFrame:VectorToObjectSpace(velocity)
+		local backwards = -localMove.Z < -0.2 * speed
+		track:AdjustSpeed(math.clamp(speed / madeFor, 0.5, 1.5) * (backwards and -1 or 1))
 	end
 
 	-- the lantern arm plays on top of whatever the legs are doing (the lantern sets "LanternOn" on your character)
@@ -1828,6 +1838,45 @@ RunService.Heartbeat:Connect(function()
 			lantern:Play(FADE)
 		elseif not on and lantern.IsPlaying then
 			lantern:Stop(FADE)
+		end
+	end
+end)
+
+-- Hips turn toward the direction of travel; chest stays forward. Worked out from each character's own
+-- velocity, so it runs here for EVERY player (joint changes made by a script aren't shared automatically).
+local twist = {} -- character -> { yaw, lean } (eased)
+RunService.PreSimulation:Connect(function(dt)
+	local ease = 1 - math.exp(-Config.STRAFE_SMOOTHING * dt)
+	for _, other in Players:GetPlayers() do
+		local character = other.Character
+		local hrp = character and character:FindFirstChild("HumanoidRootPart")
+		local lower = character and character:FindFirstChild("LowerTorso")
+		local upper = character and character:FindFirstChild("UpperTorso")
+		local rootJoint = lower and lower:FindFirstChild("Root")
+		local waist = upper and upper:FindFirstChild("Waist")
+		if hrp and rootJoint and waist then
+			local v = hrp.CFrame:VectorToObjectSpace(hrp.AssemblyLinearVelocity)
+			local forward, side = -v.Z, v.X
+			local targetYaw, targetLean = 0, 0
+			if math.sqrt(forward * forward + side * side) > 1 then
+				local maxTurn = math.rad(Config.STRAFE_HIP_TURN)
+				targetYaw = math.clamp(math.atan2(side, math.abs(forward)), -maxTurn, maxTurn)
+				if forward < 0 then targetYaw = -targetYaw end -- walking backwards: the hips turn the other way
+				targetYaw = -targetYaw -- positive turns left, and moving right should turn the hips right
+				targetLean = -math.clamp(side / Config.WALK_SPEED, -1, 1) * math.rad(Config.STRAFE_LEAN)
+			end
+			local t = twist[character]
+			if not t then
+				t = { yaw = 0, lean = 0 }
+				twist[character] = t
+				character.AncestryChanged:Connect(function(_, parent)
+					if not parent then twist[character] = nil end
+				end)
+			end
+			t.yaw += (targetYaw - t.yaw) * ease
+			t.lean += (targetLean - t.lean) * ease
+			rootJoint.Transform = rootJoint.Transform * CFrame.Angles(0, t.yaw, t.lean)
+			waist.Transform = waist.Transform * CFrame.Angles(0, -t.yaw, 0)
 		end
 	end
 end)

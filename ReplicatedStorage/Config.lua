@@ -157,6 +157,10 @@ Config.MOVEMENT_ANIMATIONS = {
 	LanternHold = 0,
 }
 Config.ALLOW_JUMP = false           -- decided: no jumping
+-- Moving sideways/diagonally turns the hips toward where you're going (chest stays forward), with a small lean
+Config.STRAFE_HIP_TURN = 40         -- most the hips turn (degrees)
+Config.STRAFE_LEAN = 6              -- sideways lean into the direction you're moving (degrees)
+Config.STRAFE_SMOOTHING = 10        -- how quickly the body turns into a new direction (higher = snappier)
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false

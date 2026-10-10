@@ -4,9 +4,11 @@
 -- named "Dummy" (Avatar tab > Rig Builder > R15). Open each one in the Animation Editor, tweak, and publish it.
 --
 -- Decided with Alexander:
---   * Style: CAUTIOUS - slightly hunched, careful, nervous in the dark.
---   * Made for first person: arms stay low and close to the body so they don't swing across the view
---     (the camera doesn't follow the body's lean, so the hunch never tilts your view).
+--   * Style: CAUTIOUS - slightly hunched, careful, nervous in the dark. Fluid, like DOORS.
+--   * Made for first person: hands are carried low in front (you see them when you look down) but never
+--     swing up across the view (the camera doesn't follow the body's lean, so the hunch never tilts your view).
+--   * Moving sideways or backwards is handled by the MovementAnimations script (it turns the hips toward
+--     where you're going and plays the walk backwards), so these are all forward animations.
 --   * The lantern hangs from the belt when it's off; LanternHold raises it in the LEFT hand when it's on.
 --     LanternHold only moves the left arm, so it plays ON TOP of any movement animation.
 --   * No jumping, so there is no jump/fall animation.
@@ -16,12 +18,13 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 
--- STYLE (decided: R15 body, but STYLISED movement, less lifelike than motion capture).
--- How poses blend into each other: Linear = stylised, puppet-like (default); Cubic = smooth and lifelike;
+-- STYLE (decided): blocky R15 body with FLUID movement, like DOORS (Alexander's reference): smooth blends,
+-- hands carried in front of the body (visible when you look down), arms swinging with the opposite leg.
+-- How poses blend into each other: Cubic = smooth and fluid (default); Linear = stiffer, puppet-like;
 -- Constant = jumps from pose to pose like stop-motion. Change it, run the script again, and compare.
-local EASING_STYLE = Enum.PoseEasingStyle.Linear
+local EASING_STYLE = Enum.PoseEasingStyle.Cubic
 -- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
-local TWIST = 0
+local TWIST = 1
 
 -- Joint angles are in degrees: { x, y, z } and optional py (raise/lower the body, LowerTorso only).
 -- Arms/legs: positive x swings FORWARD, negative BACK. Knees: negative x bends. Feet: positive x lifts the toes.
@@ -46,16 +49,16 @@ local walkContact = { -- right foot lands in front
 	UpperTorso = j(-6, -4 * TWIST), Head = j(6, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-	RightUpperArm = j(-12, 0, 4), RightLowerArm = j(20),
-	LeftUpperArm = j(16, 0, -4), LeftLowerArm = j(30),
+	RightUpperArm = j(0, 0, -4), RightLowerArm = j(45),   -- right leg forward = right arm back
+	LeftUpperArm = j(28, 0, 6), LeftLowerArm = j(55),     -- and the left arm forward
 }
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-6), Head = j(6),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
-	RightUpperArm = j(0, 0, 4), RightLowerArm = j(22),
-	LeftUpperArm = j(2, 0, -4), LeftLowerArm = j(22),
+	RightUpperArm = j(14, 0, -4), RightLowerArm = j(50),
+	LeftUpperArm = j(14, 0, 6), LeftLowerArm = j(50),
 }
 
 -- ---------------------------------------------------------------- Sprint
@@ -77,32 +80,33 @@ local sprintPassing = {
 }
 
 -- ---------------------------------------------------------------- Crouch
--- Body drops about 1.5 studs: thighs forward, knees bent, feet kept flat (thigh + knee + foot = 0).
+-- Like DOORS: one foot planted in front, the other knee down behind, arms held forward together.
+-- Body drops about 1.2 studs. (Planted foot: thigh + knee + foot = 0 keeps it flat on the floor.)
 local function crouchBase(breath)
 	return {
-		LowerTorso = { x = 0, py = -1.45 + breath * 0.03 },
-		UpperTorso = j(-25 + breath * 2), Head = j(25 - breath * 2),
-		RightUpperLeg = j(70), RightLowerLeg = j(-130), RightFoot = j(60),
-		LeftUpperLeg = j(70), LeftLowerLeg = j(-130), LeftFoot = j(60),
-		RightUpperArm = j(20, 0, 5), RightLowerArm = j(40),
-		LeftUpperArm = j(20, 0, -5), LeftLowerArm = j(40),
+		LowerTorso = { x = 0, py = -1.2 + breath * 0.03 },
+		UpperTorso = j(-20 + breath * 2), Head = j(20 - breath * 2),
+		RightUpperLeg = j(85), RightLowerLeg = j(-105), RightFoot = j(20),   -- foot planted in front
+		LeftUpperLeg = j(-5), LeftLowerLeg = j(-95), LeftFoot = j(40),       -- knee down behind
+		RightUpperArm = j(48 + breath * 3, 0, -10), RightLowerArm = j(70),
+		LeftUpperArm = j(48 + breath * 3, 0, 10), LeftLowerArm = j(70),
 	}
 end
-local crouchContact = {
-	LowerTorso = { x = 0, py = -1.5 },
-	UpperTorso = j(-25, -3 * TWIST), Head = j(25, 3 * TWIST),
-	RightUpperLeg = j(85), RightLowerLeg = j(-125), RightFoot = j(40),
-	LeftUpperLeg = j(50), LeftLowerLeg = j(-135), LeftFoot = j(85),
-	RightUpperArm = j(15, 0, 5), RightLowerArm = j(40),
-	LeftUpperArm = j(25, 0, -5), LeftLowerArm = j(40),
+local crouchContact = { -- right foot forward, left leg back and low
+	LowerTorso = { x = 0, py = -1.2 },
+	UpperTorso = j(-20, -3 * TWIST), Head = j(20, 3 * TWIST),
+	RightUpperLeg = j(80), RightLowerLeg = j(-110), RightFoot = j(30),
+	LeftUpperLeg = j(10), LeftLowerLeg = j(-100), LeftFoot = j(60),
+	RightUpperArm = j(44, 0, -10), RightLowerArm = j(70),
+	LeftUpperArm = j(52, 0, 10), LeftLowerArm = j(70),
 }
-local crouchPassing = {
-	LowerTorso = { x = 0, py = -1.4 },
-	UpperTorso = j(-25), Head = j(25),
-	RightUpperLeg = j(65), RightLowerLeg = j(-130), RightFoot = j(65),
-	LeftUpperLeg = j(75), LeftLowerLeg = j(-145), LeftFoot = j(70),
-	RightUpperArm = j(20, 0, 5), RightLowerArm = j(40),
-	LeftUpperArm = j(20, 0, -5), LeftLowerArm = j(40),
+local crouchPassing = { -- left leg swings forward past the right
+	LowerTorso = { x = 0, py = -1.1 },
+	UpperTorso = j(-20), Head = j(20),
+	RightUpperLeg = j(55), RightLowerLeg = j(-115), RightFoot = j(60),
+	LeftUpperLeg = j(65), LeftLowerLeg = j(-140), LeftFoot = j(75),
+	RightUpperArm = j(48, 0, -10), RightLowerArm = j(70),
+	LeftUpperArm = j(48, 0, 10), LeftLowerArm = j(70),
 }
 
 -- ---------------------------------------------------------------- Idle (slow breathing)
@@ -112,8 +116,8 @@ local function idlePose(breath)
 		UpperTorso = j(-6 + breath * 2), Head = j(6 - breath * 2),
 		RightUpperLeg = j(2), RightLowerLeg = j(-4), RightFoot = j(2),
 		LeftUpperLeg = j(2), LeftLowerLeg = j(-4), LeftFoot = j(2),
-		RightUpperArm = j(3 - breath, 0, 4), RightLowerArm = j(12),
-		LeftUpperArm = j(3 - breath, 0, -4), LeftLowerArm = j(12),
+		RightUpperArm = j(12 + breath * 5, 0, -3), RightLowerArm = j(40 + breath * 4),  -- hands in front,
+		LeftUpperArm = j(12 + breath * 5, 0, 3), LeftLowerArm = j(40 + breath * 4),     -- drifting with the breath
 	}
 end
 
