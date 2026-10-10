@@ -20,9 +20,9 @@ local ServerStorage = game:GetService("ServerStorage")
 
 -- STYLE (decided): blocky R15 body with FLUID movement, like DOORS (Alexander's reference): smooth blends,
 -- hands carried in front of the body (visible when you look down), arms swinging with the opposite leg.
--- How poses blend into each other: Sine = smooth and fluid (default); Cubic = a bit snappier; Linear = stiffer;
+-- How poses blend into each other: Cubic = smooth and fluid (default); Linear = stiffer, puppet-like;
 -- Constant = jumps from pose to pose like stop-motion. Change it, run the script again, and compare.
-local EASING_STYLE = Enum.PoseEasingStyle.Sine
+local EASING_STYLE = Enum.PoseEasingStyle.Cubic
 -- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
 local TWIST = 0.5
 -- How far the arms swing (1 = the full DOORS scoop below; 0.5 = half; 0 = arms still halfway).
