@@ -26,6 +26,10 @@ local EASING_STYLE = Enum.PoseEasingStyle.Cubic
 -- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
 local TWIST = 1
 
+-- ARMS (Alexander's DOORS notes): calm swing; the elbow stays at about a RIGHT ANGLE, the upper arm hangs
+-- nearly straight down and only swings a little, so the forearm stays LEVEL (upper arm + elbow = about 90).
+-- At the front of the swing the elbow pushes out/up a bit and the hand scoops gently inward.
+
 -- Joint angles are in degrees: { x, y, z } and optional py (raise/lower the body, LowerTorso only).
 -- Arms/legs: positive x swings FORWARD, negative BACK. Knees: negative x bends. Feet: positive x lifts the toes.
 -- Torso/Head: negative x leans/looks DOWN-forward, positive y turns LEFT.
@@ -49,16 +53,16 @@ local walkContact = { -- right foot lands in front
 	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-	RightUpperArm = j(0, 0, -4), RightLowerArm = j(45),   -- right leg forward = right arm back
-	LeftUpperArm = j(28, 0, 6), LeftLowerArm = j(55),     -- and the left arm forward
+	RightUpperArm = j(-8, 0, 4), RightLowerArm = j(98),                         -- right leg forward = right arm back
+	LeftUpperArm = j(12, 0, -10), LeftLowerArm = j(80, 0, 12), LeftHand = j(0, 0, 8), -- left arm in front: elbow out, hand scoops in
 }
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-4), Head = j(4),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
-	RightUpperArm = j(14, 0, -4), RightLowerArm = j(50),
-	LeftUpperArm = j(14, 0, 6), LeftLowerArm = j(50),
+	RightUpperArm = j(2, 0, 5), RightLowerArm = j(88),
+	LeftUpperArm = j(2, 0, -5), LeftLowerArm = j(88),
 }
 
 -- ---------------------------------------------------------------- Sprint
@@ -67,16 +71,16 @@ local sprintContact = {
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-	RightUpperArm = j(-15, 0, 15), RightLowerArm = j(70), RightHand = j(-10),  -- hands low, elbows out:
-	LeftUpperArm = j(18, 0, -15), LeftLowerArm = j(75), LeftHand = j(-10),     -- the shoulders stay down
+	RightUpperArm = j(-16, 0, 8), RightLowerArm = j(105),                        -- back arm
+	LeftUpperArm = j(20, 0, -14), LeftLowerArm = j(72, 0, 15), LeftHand = j(0, 0, 10), -- front arm: elbow up/out, hand scoops in
 }
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
 	UpperTorso = j(-7), Head = j(7),
 	RightUpperLeg = j(0), RightLowerLeg = j(-10), RightFoot = j(5),
 	LeftUpperLeg = j(30), LeftLowerLeg = j(-100), LeftFoot = j(30),
-	RightUpperArm = j(2, 0, 15), RightLowerArm = j(72), RightHand = j(-10),
-	LeftUpperArm = j(2, 0, -15), LeftLowerArm = j(72), LeftHand = j(-10),
+	RightUpperArm = j(2, 0, 8), RightLowerArm = j(88),
+	LeftUpperArm = j(2, 0, -8), LeftLowerArm = j(88),
 }
 
 -- ---------------------------------------------------------------- Crouch
@@ -88,8 +92,8 @@ local function crouchBase(breath)
 		UpperTorso = j(-20 + breath * 2), Head = j(20 - breath * 2),
 		RightUpperLeg = j(85), RightLowerLeg = j(-105), RightFoot = j(20),   -- foot planted in front
 		LeftUpperLeg = j(-5), LeftLowerLeg = j(-95), LeftFoot = j(40),       -- knee down behind
-		RightUpperArm = j(48 + breath * 3, 0, -10), RightLowerArm = j(70),
-		LeftUpperArm = j(48 + breath * 3, 0, 10), LeftLowerArm = j(70),
+		RightUpperArm = j(35 + breath * 3, 0, -8), RightLowerArm = j(55 - breath * 3, 0, -10),
+		LeftUpperArm = j(35 + breath * 3, 0, 8), LeftLowerArm = j(55 - breath * 3, 0, 10),
 	}
 end
 local crouchContact = { -- right foot forward, left leg back and low
@@ -97,16 +101,16 @@ local crouchContact = { -- right foot forward, left leg back and low
 	UpperTorso = j(-20, -3 * TWIST), Head = j(20, 3 * TWIST),
 	RightUpperLeg = j(80), RightLowerLeg = j(-110), RightFoot = j(30),
 	LeftUpperLeg = j(10), LeftLowerLeg = j(-100), LeftFoot = j(60),
-	RightUpperArm = j(44, 0, -10), RightLowerArm = j(70),
-	LeftUpperArm = j(52, 0, 10), LeftLowerArm = j(70),
+	RightUpperArm = j(32, 0, -8), RightLowerArm = j(58, 0, -10),
+	LeftUpperArm = j(38, 0, 8), LeftLowerArm = j(52, 0, 10),
 }
 local crouchPassing = { -- left leg swings forward past the right
 	LowerTorso = { x = 0, py = -1.1 },
 	UpperTorso = j(-20), Head = j(20),
 	RightUpperLeg = j(55), RightLowerLeg = j(-115), RightFoot = j(60),
 	LeftUpperLeg = j(65), LeftLowerLeg = j(-140), LeftFoot = j(75),
-	RightUpperArm = j(48, 0, -10), RightLowerArm = j(70),
-	LeftUpperArm = j(48, 0, 10), LeftLowerArm = j(70),
+	RightUpperArm = j(35, 0, -8), RightLowerArm = j(55, 0, -10),
+	LeftUpperArm = j(35, 0, 8), LeftLowerArm = j(55, 0, 10),
 }
 
 -- ---------------------------------------------------------------- Idle (slow breathing)
@@ -116,8 +120,8 @@ local function idlePose(breath)
 		UpperTorso = j(-6 + breath * 2), Head = j(6 - breath * 2),
 		RightUpperLeg = j(2), RightLowerLeg = j(-4), RightFoot = j(2),
 		LeftUpperLeg = j(2), LeftLowerLeg = j(-4), LeftFoot = j(2),
-		RightUpperArm = j(12 + breath * 5, 0, -3), RightLowerArm = j(40 + breath * 4),  -- hands in front,
-		LeftUpperArm = j(12 + breath * 5, 0, 3), LeftLowerArm = j(40 + breath * 4),     -- drifting with the breath
+		RightUpperArm = j(5 + breath * 4, 0, 3), RightLowerArm = j(85 - breath * 4),  -- forearms level in front,
+		LeftUpperArm = j(5 + breath * 4, 0, -3), LeftLowerArm = j(85 - breath * 4),   -- drifting with the breath
 	}
 end
 

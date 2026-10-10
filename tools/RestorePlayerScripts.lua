@@ -156,7 +156,7 @@ Config.SHOW_BODY_IN_FIRST_PERSON = true
 Config.FIRST_PERSON_BODY = { Legs = true, Torso = true, Arms = true, UpperArms = true }
 -- Like DOORS: the torso, shoulders and arms only appear when you look DOWN; looking ahead you see no body at all.
 Config.FIRST_PERSON_BODY_FADE_START = 35 -- degrees below level where the upper body starts to appear
-Config.FIRST_PERSON_BODY_FADE_RANGE = 10 -- it's fully shown this many degrees further down (0 = pops in)
+Config.FIRST_PERSON_BODY_FADE_RANGE = 0  -- 0 = appears straight away at that angle, like DOORS; higher = fades in over that many degrees
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 -- Our own movement animations (made with tools/MakeMovementAnimations.lua, then published in the Animation Editor).
