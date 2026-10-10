@@ -52,12 +52,12 @@ local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 -- DOORS-style arms (from Alexander's frame-by-frame screenshots and notes):
 --   * the arms hang slightly OUT from the body;
 --   * the SHOULDER swings back and forth (t: -1 = back, 1 = front);
---   * the ELBOW lags behind it: at the front of the swing the arm still points mostly DOWN, and only on its
---     way BACK does the forearm come up level, so the hand faces flat forward; it then LOWERS SLOWLY over the
+--   * the ELBOW lags behind it: at the front of the swing the arm is only a couple of degrees from STRAIGHT;
+--     the bend happens on the way BACK (a gentle lift, not up to level), then it LOWERS SLOWLY over the
 --     rest of the swing (half a stride down, a quarter up), so it never looks like the hand is thrown down.
 -- e: 0 = elbow nearly straight (arm pointing down), 1 = forearm level (hand flat forward).
-local ARM_BACK  = { up = -10, out = 6, elbow = 15, curve = 0 }
-local ARM_FRONT = { up = 14,  out = 9, elbow = 80, curve = 8 }
+local ARM_BACK  = { up = -10, out = 6, elbow = 5, curve = 0 }
+local ARM_FRONT = { up = 14,  out = 9, elbow = 55, curve = 6 }
 local function arms(rightT, leftT, rightE, leftE, size)
 	-- size: 1 = walk; bigger for sprint. ARM_SWING scales the shoulder swing around the middle.
 	local out = {}
@@ -82,7 +82,7 @@ local walkContact = with({ -- right foot lands in front
 	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-}, arms(-1, 1, 0.45, 0.25, 1)) -- right leg forward = right arm back (still lowering slowly); left arm forward, pointing down
+}, arms(-1, 1, 0.45, 0, 1)) -- right leg forward = right arm back (still lowering slowly); left arm at its furthest forward: almost straight
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-4), Head = j(4),
@@ -97,7 +97,7 @@ local sprintContact = with({
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-}, arms(-1, 1, 0.45, 0.25, 1.6))
+}, arms(-1, 1, 0.45, 0, 1.6))
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
 	UpperTorso = j(-7), Head = j(7),
