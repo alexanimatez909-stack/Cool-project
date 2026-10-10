@@ -159,6 +159,8 @@ Config.FIRST_PERSON_BODY_FADE_START = 35 -- degrees below level where the upper 
 Config.FIRST_PERSON_BODY_FADE_RANGE = 0  -- 0 = appears straight away at that angle, like DOORS; higher = fades in over that many degrees
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
+Config.CAMERA_SIDE_SHIFT = 0.6      -- stepping sideways slides your view this far (studs) toward that shoulder
+Config.CAMERA_SIDE_SMOOTHING = 5    -- how quickly the view slides over and back (higher = snappier)
 -- Our own movement animations (made with tools/MakeMovementAnimations.lua, then published in the Animation Editor).
 -- Paste each published animation's ID number here. 0 = not published yet.
 -- While Walk is 0, Roblox's default animations are used; while CrouchIdle is 0, the body hides when you crouch.
@@ -381,6 +383,7 @@ local shiftHeld = false
 local crouchWanted = false -- toggle mode: flipped by the crouch key; hold mode: true while it's held
 local lastSprintTime = -math.huge -- when you last sprinted (for the refill delay)
 local crouchMix = 0 -- 0 standing .. 1 crouched (eased, so the view sinks smoothly)
+local sideMix = 0   -- -1 stepping left .. 1 stepping right (eased, so the view slides smoothly)
 
 local function onCharacter(character)
 	humanoid = character:WaitForChild("Humanoid")
@@ -453,10 +456,21 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 
 	-- CameraOffset moves the view without moving the body: forward so your eyes sit at the
-	-- front of your head (not behind it), and down while crouching.
+	-- front of your head (not behind it), down while crouching, and a little to the side you're
+	-- stepping toward (walking left puts your view nearer your left shoulder).
 	local target = State.crouching and 1 or 0
 	crouchMix += (target - crouchMix) * (1 - math.exp(-Config.CROUCH_CAMERA_SMOOTHING * dt))
-	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, -Config.CAMERA_FORWARD_OFFSET)
+	local root = humanoid.RootPart
+	local sideTarget = 0
+	if root and moving and not State.reduceMotion then
+		sideTarget = math.clamp(root.CFrame:VectorToObjectSpace(humanoid.MoveDirection).X, -1, 1)
+	end
+	sideMix += (sideTarget - sideMix) * (1 - math.exp(-Config.CAMERA_SIDE_SMOOTHING * dt))
+	humanoid.CameraOffset = Vector3.new(
+		Config.CAMERA_SIDE_SHIFT * sideMix,
+		-Config.CROUCH_CAMERA_DROP * crouchMix,
+		-Config.CAMERA_FORWARD_OFFSET
+	)
 end)
 ]=]
 	s.Parent = parent

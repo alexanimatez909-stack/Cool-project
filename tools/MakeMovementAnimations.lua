@@ -144,8 +144,8 @@ local function idlePose(breath)
 		UpperTorso = j(-6 + breath * 2), Head = j(6 - breath * 2),
 		RightUpperLeg = j(2), RightLowerLeg = j(-4), RightFoot = j(2),
 		LeftUpperLeg = j(2), LeftLowerLeg = j(-4), LeftFoot = j(2),
-		RightUpperArm = j(2 + breath * 2, 0, 3), RightLowerArm = j(88 - breath * 2),  -- forearms level in front,
-		LeftUpperArm = j(2 + breath * 2, 0, -3), LeftLowerArm = j(88 - breath * 2),   -- drifting with the breath
+		RightUpperArm = j(breath * 1.5, 0, 3), RightLowerArm = j(6 + breath * 2),  -- hands hanging by your sides,
+		LeftUpperArm = j(breath * 1.5, 0, -3), LeftLowerArm = j(6 + breath * 2),   -- the gentlest swing with the breath
 	}
 end
 

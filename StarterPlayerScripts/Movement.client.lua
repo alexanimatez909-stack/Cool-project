@@ -16,6 +16,7 @@ local shiftHeld = false
 local crouchWanted = false -- toggle mode: flipped by the crouch key; hold mode: true while it's held
 local lastSprintTime = -math.huge -- when you last sprinted (for the refill delay)
 local crouchMix = 0 -- 0 standing .. 1 crouched (eased, so the view sinks smoothly)
+local sideMix = 0   -- -1 stepping left .. 1 stepping right (eased, so the view slides smoothly)
 
 local function onCharacter(character)
 	humanoid = character:WaitForChild("Humanoid")
@@ -88,8 +89,19 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 
 	-- CameraOffset moves the view without moving the body: forward so your eyes sit at the
-	-- front of your head (not behind it), and down while crouching.
+	-- front of your head (not behind it), down while crouching, and a little to the side you're
+	-- stepping toward (walking left puts your view nearer your left shoulder).
 	local target = State.crouching and 1 or 0
 	crouchMix += (target - crouchMix) * (1 - math.exp(-Config.CROUCH_CAMERA_SMOOTHING * dt))
-	humanoid.CameraOffset = Vector3.new(0, -Config.CROUCH_CAMERA_DROP * crouchMix, -Config.CAMERA_FORWARD_OFFSET)
+	local root = humanoid.RootPart
+	local sideTarget = 0
+	if root and moving and not State.reduceMotion then
+		sideTarget = math.clamp(root.CFrame:VectorToObjectSpace(humanoid.MoveDirection).X, -1, 1)
+	end
+	sideMix += (sideTarget - sideMix) * (1 - math.exp(-Config.CAMERA_SIDE_SMOOTHING * dt))
+	humanoid.CameraOffset = Vector3.new(
+		Config.CAMERA_SIDE_SHIFT * sideMix,
+		-Config.CROUCH_CAMERA_DROP * crouchMix,
+		-Config.CAMERA_FORWARD_OFFSET
+	)
 end)
