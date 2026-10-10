@@ -141,8 +141,10 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 
 -- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
 Config.SHOW_BODY_IN_FIRST_PERSON = true
-Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false } -- which parts you see when you look down
-Config.FIRST_PERSON_ARM_SWING = 0.3 -- how much your arms swing in first person (0 = still at your sides, 1 = full animation)
+-- Which parts you see in first person. Arms = forearms and hands; UpperArms = the shoulders, which sit right
+-- next to the camera and cover the screen when they swing, so they stay hidden (like DOORS).
+Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false, UpperArms = false }
+Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 -- Our own movement animations (made with tools/MakeMovementAnimations.lua, then published in the Animation Editor).
 -- Paste each published animation's ID number here. 0 = not published yet.

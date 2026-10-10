@@ -19,7 +19,8 @@ local camera = workspace.CurrentCamera
 local BODY_GROUPS = {
 	Legs = { "LowerTorso", "LeftUpperLeg", "LeftLowerLeg", "LeftFoot", "RightUpperLeg", "RightLowerLeg", "RightFoot" },
 	Torso = { "UpperTorso" },
-	Arms = { "LeftUpperArm", "LeftLowerArm", "LeftHand", "RightUpperArm", "RightLowerArm", "RightHand" },
+	Arms = { "LeftLowerArm", "LeftHand", "RightLowerArm", "RightHand" }, -- forearms and hands
+	UpperArms = { "LeftUpperArm", "RightUpperArm" }, -- the shoulders: right next to the camera, so they block the view
 }
 
 -- the body parts to show right now, as a set: shown[part] = true
@@ -74,10 +75,11 @@ end)
 
 -- Calmer arms: each frame the animation poses the arms, then (just before physics) this pulls
 -- that pose part of the way back to "arms hanging straight at your sides".
+-- Only for Roblox's default animations: our own (Config.MOVEMENT_ANIMATIONS) are already made for first person.
 local ARM_JOINTS = { "RightShoulder", "LeftShoulder", "RightElbow", "LeftElbow" }
 RunService.PreSimulation:Connect(function()
 	local swing = Config.FIRST_PERSON_ARM_SWING
-	if swing >= 1 then return end
+	if swing >= 1 or (Config.MOVEMENT_ANIMATIONS and (Config.MOVEMENT_ANIMATIONS.Walk or 0) ~= 0) then return end
 	local character = player.Character
 	local head = character and character:FindFirstChild("Head")
 	if not head or not isFirstPerson(head) then return end

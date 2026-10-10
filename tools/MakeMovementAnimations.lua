@@ -46,7 +46,7 @@ local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 -- ---------------------------------------------------------------- Walk (cautious)
 local walkContact = { -- right foot lands in front
 	LowerTorso = { x = 0, py = -0.12 },
-	UpperTorso = j(-6, -4 * TWIST), Head = j(6, 4 * TWIST),
+	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
 	RightUpperArm = j(0, 0, -4), RightLowerArm = j(45),   -- right leg forward = right arm back
@@ -54,7 +54,7 @@ local walkContact = { -- right foot lands in front
 }
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
-	UpperTorso = j(-6), Head = j(6),
+	UpperTorso = j(-4), Head = j(4),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
 	RightUpperArm = j(14, 0, -4), RightLowerArm = j(50),
@@ -64,19 +64,19 @@ local walkPassing = { -- left leg swings past
 -- ---------------------------------------------------------------- Sprint
 local sprintContact = {
 	LowerTorso = { x = 0, py = -0.2 },
-	UpperTorso = j(-15, -6 * TWIST), Head = j(15, 6 * TWIST),
+	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-	RightUpperArm = j(-35, 0, 5), RightLowerArm = j(80), RightHand = j(-10),
-	LeftUpperArm = j(35, 0, -5), LeftLowerArm = j(85), LeftHand = j(-10),
+	RightUpperArm = j(-15, 0, 15), RightLowerArm = j(70), RightHand = j(-10),  -- hands low, elbows out:
+	LeftUpperArm = j(18, 0, -15), LeftLowerArm = j(75), LeftHand = j(-10),     -- the shoulders stay down
 }
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
-	UpperTorso = j(-15), Head = j(15),
+	UpperTorso = j(-7), Head = j(7),
 	RightUpperLeg = j(0), RightLowerLeg = j(-10), RightFoot = j(5),
 	LeftUpperLeg = j(30), LeftLowerLeg = j(-100), LeftFoot = j(30),
-	RightUpperArm = j(0, 0, 5), RightLowerArm = j(80), RightHand = j(-10),
-	LeftUpperArm = j(0, 0, -5), LeftLowerArm = j(80), LeftHand = j(-10),
+	RightUpperArm = j(2, 0, 15), RightLowerArm = j(72), RightHand = j(-10),
+	LeftUpperArm = j(2, 0, -15), LeftLowerArm = j(72), LeftHand = j(-10),
 }
 
 -- ---------------------------------------------------------------- Crouch
