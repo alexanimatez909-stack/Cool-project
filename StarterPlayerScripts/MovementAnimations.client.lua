@@ -39,9 +39,18 @@ local function load(animator, name)
 	local id = Config.MOVEMENT_ANIMATIONS[name]
 	local animation = Instance.new("Animation")
 	local sequence = draft(name)
+	local tempId = nil
 	if sequence then
 		-- a temporary ID for an unpublished animation; only works in Studio
-		animation.AnimationId = KeyframeSequenceProvider:RegisterKeyframeSequence(sequence)
+		local ok, result = pcall(function() return KeyframeSequenceProvider:RegisterKeyframeSequence(sequence) end)
+		if ok then
+			tempId = result
+		else
+			warn("[MovementAnimations] Couldn't use the " .. name .. " draft, using the published one: " .. tostring(result))
+		end
+	end
+	if tempId then
+		animation.AnimationId = tempId
 	elseif id and id ~= 0 then
 		animation.AnimationId = "rbxassetid://" .. id
 	else
