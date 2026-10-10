@@ -72,7 +72,8 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - **Board:** at day, in the voting room, your journal opens and you choose which clues to pin, **at most 2 per day**. No automatic pinning. Pins show your **name**. To give an **alibi**, show a clue from your own journal (never one off the board); it's shown to everyone and then used up (max 1 alibi per day; doesn't use a pin). Pinned clues leave the board after **2 days** and go back into the pinner's journal.
 
 ## 8. Movement and the night
-- Walk, sprint (stamina, loud, clear footprints), crouch (quiet, faint prints). Killers are no faster.
+- Walk, sprint (stamina, loud, clear footprints), crouch (quiet, faint prints). Killers are no faster. No jumping.
+- The lantern hangs from your belt when it's off and is held up in your left hand when it's on.
 - Lantern: on = see clues but be seen; off = hidden but can't search well.
 - Paper map (M) shows landmarks only, never players.
 - Night: proximity voice/chat. Day: everyone. Ghosts have their own channel.
