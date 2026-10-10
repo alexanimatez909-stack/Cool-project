@@ -152,9 +152,11 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 
 -- Visible body: look down to see your torso, arms and legs (the head always stays hidden)
 Config.SHOW_BODY_IN_FIRST_PERSON = true
--- Which parts you see in first person. Arms = forearms and hands; UpperArms = the shoulders, which sit right
--- next to the camera and cover the screen when they swing, so they stay hidden (like DOORS).
-Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false, UpperArms = false }
+-- Which parts you see in first person. Arms = forearms and hands; UpperArms = the shoulders.
+Config.FIRST_PERSON_BODY = { Legs = true, Torso = true, Arms = true, UpperArms = true }
+-- Like DOORS: the torso, shoulders and arms only appear when you look DOWN; looking ahead you see no body at all.
+Config.FIRST_PERSON_BODY_FADE_START = 35 -- degrees below level where the upper body starts to appear
+Config.FIRST_PERSON_BODY_FADE_RANGE = 10 -- it's fully shown this many degrees further down (0 = pops in)
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 -- Our own movement animations (made with tools/MakeMovementAnimations.lua, then published in the Animation Editor).
@@ -916,17 +918,30 @@ end
 
 -- a body part is visible if it's in the shown set; an accessory (belt, jacket, hat...) is visible
 -- if the body part it hangs from is shown. Anything on the head is therefore always hidden.
-local function isVisible(part, shown)
-	if shown[part] then return true end
-	if not part:FindFirstAncestorOfClass("Accessory") then return false end
+-- Returns the body part it belongs to (or nil if hidden).
+local function visibleBodyPart(part, shown)
+	if shown[part] then return part end
+	if not part:FindFirstAncestorOfClass("Accessory") then return nil end
 	for _, attachment in part:GetChildren() do
 		if attachment:IsA("Attachment") then
 			for bodyPart in shown do
-				if bodyPart:FindFirstChild(attachment.Name) then return true end
+				if bodyPart:FindFirstChild(attachment.Name) then return bodyPart end
 			end
 		end
 	end
-	return false
+	return nil
+end
+
+-- Like DOORS: your upper body (torso, shoulders, arms, hands) only appears when you look DOWN.
+-- Looking ahead you see none of your body; it fades in between FIRST_PERSON_BODY_FADE_START degrees below
+-- level and that plus FIRST_PERSON_BODY_FADE_RANGE. (Legs are below your view when you look ahead anyway.)
+local UPPER_BODY = {
+	UpperTorso = true, LeftUpperArm = true, RightUpperArm = true,
+	LeftLowerArm = true, RightLowerArm = true, LeftHand = true, RightHand = true,
+}
+local function upperBodyShown()
+	local lookingDown = -math.deg(math.asin(math.clamp(camera.CFrame.LookVector.Y, -1, 1)))
+	return math.clamp((lookingDown - Config.FIRST_PERSON_BODY_FADE_START) / Config.FIRST_PERSON_BODY_FADE_RANGE, 0, 1)
 end
 
 local function isFirstPerson(head)
@@ -943,9 +958,17 @@ RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value 
 
 	local hideBody = State.crouching and (Config.MOVEMENT_ANIMATIONS.CrouchIdle or 0) == 0
 	local shown = shownParts(character)
+	local upperShown = upperBodyShown()
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then
-			part.LocalTransparencyModifier = (not hideBody and isVisible(part, shown)) and 0 or 1
+			local bodyPart = not hideBody and visibleBodyPart(part, shown)
+			if not bodyPart then
+				part.LocalTransparencyModifier = 1
+			elseif UPPER_BODY[bodyPart.Name] then
+				part.LocalTransparencyModifier = 1 - upperShown
+			else
+				part.LocalTransparencyModifier = 0
+			end
 		end
 	end
 end)
