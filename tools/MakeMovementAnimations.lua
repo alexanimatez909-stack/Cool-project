@@ -53,7 +53,8 @@ local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 --   * the arms hang slightly OUT from the body;
 --   * the SHOULDER swings back and forth (t: -1 = back, 1 = front);
 --   * the ELBOW lags behind it: at the front of the swing the arm still points mostly DOWN, and only on its
---     way BACK does the forearm come up level, so the hand faces flat forward; it drops again behind you.
+--     way BACK does the forearm come up level, so the hand faces flat forward; it then LOWERS SLOWLY over the
+--     rest of the swing (half a stride down, a quarter up), so it never looks like the hand is thrown down.
 -- e: 0 = elbow nearly straight (arm pointing down), 1 = forearm level (hand flat forward).
 local ARM_BACK  = { up = -10, out = 6, elbow = 15, curve = 0 }
 local ARM_FRONT = { up = 14,  out = 9, elbow = 80, curve = 8 }
@@ -81,14 +82,14 @@ local walkContact = with({ -- right foot lands in front
 	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-}, arms(-1, 1, 0.05, 0.3, 1)) -- right leg forward = right arm back by your side; left arm forward, still pointing down
+}, arms(-1, 1, 0.45, 0.25, 1)) -- right leg forward = right arm back (still lowering slowly); left arm forward, pointing down
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-4), Head = j(4),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
 }
-with(walkPassing, arms(0, 0, 0.1, 1, 1)) -- left arm on its way back: forearm level, hand flat forward
+with(walkPassing, arms(0, 0, 0.15, 1, 1)) -- left arm on its way back: forearm level, hand flat forward
 
 -- ---------------------------------------------------------------- Sprint
 local sprintContact = with({
@@ -96,14 +97,14 @@ local sprintContact = with({
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-}, arms(-1, 1, 0.05, 0.3, 1.6))
+}, arms(-1, 1, 0.45, 0.25, 1.6))
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
 	UpperTorso = j(-7), Head = j(7),
 	RightUpperLeg = j(0), RightLowerLeg = j(-10), RightFoot = j(5),
 	LeftUpperLeg = j(30), LeftLowerLeg = j(-100), LeftFoot = j(30),
 }
-with(sprintPassing, arms(0, 0, 0.1, 1, 1.6))
+with(sprintPassing, arms(0, 0, 0.15, 1, 1.6))
 
 -- ---------------------------------------------------------------- Crouch
 -- Like DOORS: one foot planted in front, the other knee down behind, arms held forward together.
