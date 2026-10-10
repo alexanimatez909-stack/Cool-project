@@ -1,6 +1,6 @@
 -- AvatarRules (Script in ServerScriptService)
 -- If StarterPlayer has a model named StarterCharacter, everyone spawns as that body (decided: the blocky R15
--- Block Rig for now), and this script copies each player's own clothes, face and skin colour onto it
+-- "Block Avatar (2012)" from Rig Builder for now), and this script copies each player's own clothes, face and skin colour onto it
 -- (Config.KEEP_PLAYER_LOOK). Their accessories and body shape are never copied.
 -- Without a StarterCharacter it does the old job below:
 -- Makes every player's avatar the same size and gives everyone the same animations

@@ -178,7 +178,7 @@ Config.AVATAR_ANIMATIONS = {
 	Mood = 0,
 }
 Config.FORCE_DEFAULT_BODY_PARTS = true  -- standard body shape (tall or oddly shaped bodies would still differ in size)
--- If a model named StarterCharacter is in StarterPlayer, everyone spawns as THAT body (the blocky R15 Block Rig for now)
+-- If a model named StarterCharacter is in StarterPlayer, everyone spawns as THAT body (Rig Builder > R15 > "Block Avatar (2012)" for now)
 -- and AvatarRules only copies over these parts of each player's own look (the size, body and animation rules above
 -- are then not needed: the StarterCharacter already decides them).
 Config.KEEP_PLAYER_LOOK = { Clothes = true, Face = true, SkinColour = true }
@@ -1853,7 +1853,7 @@ do
 	s.Source = [=[
 -- AvatarRules (Script in ServerScriptService)
 -- If StarterPlayer has a model named StarterCharacter, everyone spawns as that body (decided: the blocky R15
--- Block Rig for now), and this script copies each player's own clothes, face and skin colour onto it
+-- "Block Avatar (2012)" from Rig Builder for now), and this script copies each player's own clothes, face and skin colour onto it
 -- (Config.KEEP_PLAYER_LOOK). Their accessories and body shape are never copied.
 -- Without a StarterCharacter it does the old job below:
 -- Makes every player's avatar the same size and gives everyone the same animations
