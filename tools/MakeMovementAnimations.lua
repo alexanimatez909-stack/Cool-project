@@ -25,7 +25,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local EASING_STYLE = Enum.PoseEasingStyle.Cubic
 -- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
 local TWIST = 0.5
--- How far the arms swing (1 = the default below; 0.5 = half; 0 = arms still). DOORS swings very little.
+-- How far the arms swing (1 = the full DOORS scoop below; 0.5 = half; 0 = arms still halfway).
 local ARM_SWING = 1
 
 -- ARMS (Alexander's DOORS notes): calm swing; the elbow stays at about a RIGHT ANGLE, the upper arm hangs
@@ -49,18 +49,26 @@ end
 
 local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 
--- DOORS-style arms. t goes from -1 (arm fully back) to 1 (fully forward); maxDeg is the biggest swing.
--- The elbow stays at a right angle so the forearm stays LEVEL (upper arm + elbow = 90). Toward the front the
--- elbow eases out/up a little and the hand curves gently inward (the small "scoop").
-local function arms(rightT, leftT, maxDeg)
+-- DOORS-style arms (from Alexander's frame-by-frame screenshots): at the back of the swing the arm hangs BY
+-- YOUR SIDE, nearly straight. Swinging forward, the elbow bends and the forearm SCOOPS UP and slightly inward,
+-- until the hand's skin side faces straight forward; at the very front it lifts ever so slightly more, then
+-- drops back down to your side. t goes from -1 (arm back, by your side) to 1 (front, scooped up).
+-- Each pose: upper arm forward, upper arm out, elbow bend, forearm curve inward, hand turn.
+local ARM_BACK  = { up = -5, out = 3, elbow = 15,  curve = 0,  turn = 0 }
+local ARM_FRONT = { up = 12, out = 6, elbow = 105, curve = 10, turn = 1 }
+-- How far the hand turns at the front so its skin side faces forward (degrees). If it turns the wrong
+-- way in the Animation Editor, make this negative.
+local HAND_TURN = 35
+local function arms(rightT, leftT, size)
+	-- size: 1 = walk; bigger for sprint. ARM_SWING scales everything around the middle of the swing.
 	local out = {}
 	for side, t in { Right = rightT, Left = leftT } do
-		local s = side == "Right" and 1 or -1 -- z sign that points this arm OUTWARD
-		local swing = t * maxDeg * ARM_SWING
-		local front = math.max(t, 0) * ARM_SWING
-		out[side .. "UpperArm"] = j(swing, 0, s * (3 + front * 3))
-		out[side .. "LowerArm"] = j(90 - swing, 0, -s * front * 4)
-		out[side .. "Hand"] = j(0, 0, -s * front * 3)
+		local sgn = side == "Right" and 1 or -1 -- z sign that points this arm OUTWARD
+		local u = 0.5 + (t / 2) * ARM_SWING     -- 0 = back, 1 = front
+		local function mix(key) return ARM_BACK[key] + (ARM_FRONT[key] - ARM_BACK[key]) * u end
+		out[side .. "UpperArm"] = j(mix("up") * size, 0, sgn * mix("out"))
+		out[side .. "LowerArm"] = j(mix("elbow"), 0, -sgn * mix("curve"))
+		out[side .. "Hand"] = j(0, sgn * mix("turn") * HAND_TURN, 0)
 	end
 	return out
 end
@@ -75,14 +83,14 @@ local walkContact = with({ -- right foot lands in front
 	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-}, arms(-1, 1, 4)) -- right leg forward = right arm back, left arm forward
+}, arms(-1, 1, 1)) -- right leg forward = right arm back (by your side), left arm scooped forward
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-4), Head = j(4),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
 }
-with(walkPassing, arms(0, 0, 4))
+with(walkPassing, arms(0, 0, 1))
 
 -- ---------------------------------------------------------------- Sprint
 local sprintContact = with({
@@ -90,14 +98,14 @@ local sprintContact = with({
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-}, arms(-1, 1, 8))
+}, arms(-1, 1, 1.6))
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
 	UpperTorso = j(-7), Head = j(7),
 	RightUpperLeg = j(0), RightLowerLeg = j(-10), RightFoot = j(5),
 	LeftUpperLeg = j(30), LeftLowerLeg = j(-100), LeftFoot = j(30),
 }
-with(sprintPassing, arms(0, 0, 8))
+with(sprintPassing, arms(0, 0, 1.6))
 
 -- ---------------------------------------------------------------- Crouch
 -- Like DOORS: one foot planted in front, the other knee down behind, arms held forward together.
