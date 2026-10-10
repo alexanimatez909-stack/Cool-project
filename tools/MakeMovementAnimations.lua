@@ -16,6 +16,13 @@
 
 local ServerStorage = game:GetService("ServerStorage")
 
+-- STYLE (decided: R15 body, but STYLISED movement, less lifelike than motion capture).
+-- How poses blend into each other: Linear = stylised, puppet-like (default); Cubic = smooth and lifelike;
+-- Constant = jumps from pose to pose like stop-motion. Change it, run the script again, and compare.
+local EASING_STYLE = Enum.PoseEasingStyle.Linear
+-- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
+local TWIST = 0
+
 -- Joint angles are in degrees: { x, y, z } and optional py (raise/lower the body, LowerTorso only).
 -- Arms/legs: positive x swings FORWARD, negative BACK. Knees: negative x bends. Feet: positive x lifts the toes.
 -- Torso/Head: negative x leans/looks DOWN-forward, positive y turns LEFT.
@@ -36,7 +43,7 @@ local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 -- ---------------------------------------------------------------- Walk (cautious)
 local walkContact = { -- right foot lands in front
 	LowerTorso = { x = 0, py = -0.12 },
-	UpperTorso = j(-6, -4), Head = j(6, 4),
+	UpperTorso = j(-6, -4 * TWIST), Head = j(6, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
 	RightUpperArm = j(-12, 0, 4), RightLowerArm = j(20),
@@ -54,7 +61,7 @@ local walkPassing = { -- left leg swings past
 -- ---------------------------------------------------------------- Sprint
 local sprintContact = {
 	LowerTorso = { x = 0, py = -0.2 },
-	UpperTorso = j(-15, -6), Head = j(15, 6),
+	UpperTorso = j(-15, -6 * TWIST), Head = j(15, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
 	RightUpperArm = j(-35, 0, 5), RightLowerArm = j(80), RightHand = j(-10),
@@ -83,7 +90,7 @@ local function crouchBase(breath)
 end
 local crouchContact = {
 	LowerTorso = { x = 0, py = -1.5 },
-	UpperTorso = j(-25, -3), Head = j(25, 3),
+	UpperTorso = j(-25, -3 * TWIST), Head = j(25, 3 * TWIST),
 	RightUpperLeg = j(85), RightLowerLeg = j(-125), RightFoot = j(40),
 	LeftUpperLeg = j(50), LeftLowerLeg = j(-135), LeftFoot = j(85),
 	RightUpperArm = j(15, 0, 5), RightLowerArm = j(40),
@@ -172,7 +179,7 @@ local function addPose(parent, name, joints, partial)
 	end
 	-- the root never moves; in a partial animation, joints it doesn't mention are left alone (weight 0)
 	pose.Weight = (name == "HumanoidRootPart" or (partial and not a)) and 0 or 1
-	pose.EasingStyle = Enum.PoseEasingStyle.Cubic
+	pose.EasingStyle = EASING_STYLE
 	pose.EasingDirection = Enum.PoseEasingDirection.InOut
 	pose.Parent = parent
 	for _, child in ipairs(TREE[name] or {}) do
