@@ -170,6 +170,55 @@ end
 
 -- Each animation: length in seconds, keyframes as { time, joints }, priority, and whether it only moves
 -- some joints (partial = the other joints are left to whatever else is playing).
+-- SMOOTH LOOPS: for walking/running, instead of 4 poses with easing between them (which made the arms
+-- "bounce" from pose to pose), we draw one smooth curve through the 4 poses and cut it into many small
+-- in-between poses, so every joint MOVES continuously - like a pendulum, never snapping or pausing.
+local SMOOTH_SAMPLES = 24 -- in-between poses per loop (more = smoother)
+
+local function catmull(p0, p1, p2, p3, u)
+	local u2, u3 = u * u, u * u * u
+	return 0.5 * ((2 * p1) + (-p0 + p2) * u + (2 * p0 - 5 * p1 + 4 * p2 - p3) * u2 + (-p0 + 3 * p1 - 3 * p2 + p3) * u3)
+end
+
+-- keys: { {time, joints}, ... } with the last key repeating the first (a loop)
+local function smoothLoop(keys, length)
+	local points = {}
+	for i = 1, #keys - 1 do points[i] = keys[i] end
+	local n = #points
+	local names = {}
+	for _, key in ipairs(points) do
+		for name in pairs(key[2]) do names[name] = true end
+	end
+	local function value(k, name, field)
+		local a = points[((k - 1) % n) + 1][2][name]
+		return a and (a[field] or 0) or 0
+	end
+	local result = {}
+	for step = 0, SMOOTH_SAMPLES - 1 do
+		local t = length * step / SMOOTH_SAMPLES
+		local k = n
+		for i = 1, n do
+			local nextTime = (i < n) and points[i + 1][1] or length
+			if t >= points[i][1] and t < nextTime then k = i break end
+		end
+		local startTime = points[k][1]
+		local endTime = (k < n) and points[k + 1][1] or length
+		local u = (t - startTime) / (endTime - startTime)
+		local joints = {}
+		for name in pairs(names) do
+			local a = {}
+			for _, field in ipairs({ "x", "y", "z", "py" }) do
+				a[field] = catmull(value(k - 1, name, field), value(k, name, field),
+					value(k + 1, name, field), value(k + 2, name, field), u)
+			end
+			joints[name] = a
+		end
+		table.insert(result, { t, joints })
+	end
+	table.insert(result, { length, result[1][2] })
+	return result
+end
+
 local ANIMATIONS = {
 	{ name = "Idle", priority = Enum.AnimationPriority.Idle, length = 4,
 		keys = { { 0, idlePose(0) }, { 2, idlePose(1) }, { 4, idlePose(0) } } },
@@ -211,8 +260,13 @@ local function addPose(parent, name, joints, partial, direction)
 	end
 	-- the root never moves; in a partial animation, joints it doesn't mention are left alone (weight 0)
 	pose.Weight = (name == "HumanoidRootPart" or (partial and not a)) and 0 or 1
-	pose.EasingStyle = EASING_STYLE
-	pose.EasingDirection = direction or Enum.PoseEasingDirection.InOut
+	if direction == "linear" then
+		pose.EasingStyle = Enum.PoseEasingStyle.Linear
+		pose.EasingDirection = Enum.PoseEasingDirection.InOut
+	else
+		pose.EasingStyle = EASING_STYLE
+		pose.EasingDirection = direction or Enum.PoseEasingDirection.InOut
+	end
 	pose.Parent = parent
 	for _, child in ipairs(TREE[name] or {}) do
 		addPose(pose, child, joints, partial, direction)
@@ -266,17 +320,12 @@ for _, anim in ipairs(ANIMATIONS) do
 	seq.Name = anim.name
 	seq.Loop = true
 	seq.Priority = anim.priority
-	for i, key in ipairs(anim.keys) do
+	local keys = anim.stepping and smoothLoop(anim.keys, anim.length) or anim.keys
+	for _, key in ipairs(keys) do
 		local kf = Instance.new("Keyframe")
 		kf.Time = key[1]
-		-- Smooth steps: in a stepping loop the body slows down only at the ends of each stride (the odd keys)
-		-- and keeps moving through the middle (the even keys), like a pendulum, instead of pausing at every key.
-		local direction = nil
-		if anim.stepping then
-			-- (Roblox animations use In/Out the opposite way round to tweens: "Out" here = slow start.)
-			direction = (i % 2 == 1) and Enum.PoseEasingDirection.Out or Enum.PoseEasingDirection.In
-		end
-		addPose(kf, "HumanoidRootPart", key[2], anim.partial, direction)
+		-- the smooth loops are already full of in-between poses, so they just go straight from one to the next
+		addPose(kf, "HumanoidRootPart", key[2], anim.partial, anim.stepping and "linear" or nil)
 		kf.Parent = seq
 	end
 	seq.Parent = folder
