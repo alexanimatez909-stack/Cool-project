@@ -5,7 +5,7 @@
 -- them. The head always stays hidden, because the camera sits inside it.
 -- Your arms also swing less in first person (Config.FIRST_PERSON_ARM_SWING) so they stay low and
 -- close to your body instead of swinging into view. Only you see that; others see the full animation.
--- Until there's a crouch animation (Config.CROUCH_ANIMATION_ID), the body hides while you crouch,
+-- Until there's a crouch animation (Config.MOVEMENT_ANIMATIONS.CrouchIdle), the body hides while you crouch,
 -- because the lowered camera would otherwise end up inside your chest.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -63,7 +63,7 @@ RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value 
 	-- only in first person (in third person Roblox shows everything anyway)
 	if not head or not isFirstPerson(head) then return end
 
-	local hideBody = State.crouching and Config.CROUCH_ANIMATION_ID == 0
+	local hideBody = State.crouching and (Config.MOVEMENT_ANIMATIONS.CrouchIdle or 0) == 0
 	local shown = shownParts(character)
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then

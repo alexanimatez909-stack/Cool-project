@@ -144,7 +144,19 @@ Config.SHOW_BODY_IN_FIRST_PERSON = true
 Config.FIRST_PERSON_BODY = { Legs = true, Torso = false, Arms = false } -- which parts you see when you look down
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- how much your arms swing in first person (0 = still at your sides, 1 = full animation)
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
-Config.CROUCH_ANIMATION_ID = 0      -- your crouch animation's ID number (0 = none yet: the body hides while crouched)
+-- Our own movement animations (made with tools/MakeMovementAnimations.lua, then published in the Animation Editor).
+-- Paste each published animation's ID number here. 0 = not published yet.
+-- While Walk is 0, Roblox's default animations are used; while CrouchIdle is 0, the body hides when you crouch.
+Config.MOVEMENT_ANIMATIONS = {
+	Idle = 0,
+	Walk = 0,
+	Sprint = 0,
+	CrouchIdle = 0,
+	CrouchWalk = 0,
+	OutOfBreath = 0,
+	LanternHold = 0,
+}
+Config.ALLOW_JUMP = false           -- decided: no jumping
 
 -- Reduce motion: turns off bob, tilt, shake and the sprint FOV change
 Config.REDUCE_MOTION_DEFAULT = false
