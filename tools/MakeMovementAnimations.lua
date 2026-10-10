@@ -49,26 +49,24 @@ end
 
 local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 
--- DOORS-style arms (from Alexander's frame-by-frame screenshots): at the back of the swing the arm hangs BY
--- YOUR SIDE, nearly straight. Swinging forward, the elbow bends and the forearm SCOOPS UP and slightly inward,
--- until the hand's skin side faces straight forward; at the very front it lifts ever so slightly more, then
--- drops back down to your side. t goes from -1 (arm back, by your side) to 1 (front, scooped up).
--- Each pose: upper arm forward, upper arm out, elbow bend, forearm curve inward, hand turn.
-local ARM_BACK  = { up = -10, out = 3, elbow = 20, curve = 0, turn = 0 }
-local ARM_FRONT = { up = 14,  out = 5, elbow = 70, curve = 8, turn = 1 }
--- How far the hand turns at the front so its skin side faces forward (degrees). If it turns the wrong
--- way in the Animation Editor, make this negative.
-local HAND_TURN = 0 -- decided: no hand twist
-local function arms(rightT, leftT, size)
-	-- size: 1 = walk; bigger for sprint. ARM_SWING scales everything around the middle of the swing.
+-- DOORS-style arms (from Alexander's frame-by-frame screenshots and notes):
+--   * the arms hang slightly OUT from the body;
+--   * the SHOULDER swings back and forth (t: -1 = back, 1 = front);
+--   * the ELBOW lags behind it: at the front of the swing the arm still points mostly DOWN, and only on its
+--     way BACK does the forearm come up level, so the hand faces flat forward; it drops again behind you.
+-- e: 0 = elbow nearly straight (arm pointing down), 1 = forearm level (hand flat forward).
+local ARM_BACK  = { up = -10, out = 6, elbow = 15, curve = 0 }
+local ARM_FRONT = { up = 14,  out = 9, elbow = 80, curve = 8 }
+local function arms(rightT, leftT, rightE, leftE, size)
+	-- size: 1 = walk; bigger for sprint. ARM_SWING scales the shoulder swing around the middle.
 	local out = {}
 	for side, t in { Right = rightT, Left = leftT } do
+		local e = side == "Right" and rightE or leftE
 		local sgn = side == "Right" and 1 or -1 -- z sign that points this arm OUTWARD
-		local u = 0.5 + (t / 2) * ARM_SWING     -- 0 = back, 1 = front
-		local function mix(key) return ARM_BACK[key] + (ARM_FRONT[key] - ARM_BACK[key]) * u end
-		out[side .. "UpperArm"] = j(mix("up") * size, 0, sgn * mix("out"))
-		out[side .. "LowerArm"] = j(mix("elbow"), 0, -sgn * mix("curve"))
-		out[side .. "Hand"] = j(0, sgn * mix("turn") * HAND_TURN, 0)
+		local u = 0.5 + (t / 2) * ARM_SWING     -- shoulder: 0 = back, 1 = front
+		local function mix(key, f) return ARM_BACK[key] + (ARM_FRONT[key] - ARM_BACK[key]) * f end
+		out[side .. "UpperArm"] = j(mix("up", u) * size, 0, sgn * mix("out", e))
+		out[side .. "LowerArm"] = j(mix("elbow", e), 0, -sgn * mix("curve", e))
 	end
 	return out
 end
@@ -83,14 +81,14 @@ local walkContact = with({ -- right foot lands in front
 	UpperTorso = j(-4, -4 * TWIST), Head = j(4, 4 * TWIST),
 	RightUpperLeg = j(28), RightLowerLeg = j(-8), RightFoot = j(-10),
 	LeftUpperLeg = j(-22), LeftLowerLeg = j(-25), LeftFoot = j(30),
-}, arms(-1, 1, 1)) -- right leg forward = right arm back (by your side), left arm scooped forward
+}, arms(-1, 1, 0.05, 0.3, 1)) -- right leg forward = right arm back by your side; left arm forward, still pointing down
 local walkPassing = { -- left leg swings past
 	LowerTorso = { x = 0, py = 0.04 },
 	UpperTorso = j(-4), Head = j(4),
 	RightUpperLeg = j(2), RightLowerLeg = j(-5), RightFoot = j(3),
 	LeftUpperLeg = j(15), LeftLowerLeg = j(-55), LeftFoot = j(25),
 }
-with(walkPassing, arms(0, 0, 1))
+with(walkPassing, arms(0, 0, 0.1, 1, 1)) -- left arm on its way back: forearm level, hand flat forward
 
 -- ---------------------------------------------------------------- Sprint
 local sprintContact = with({
@@ -98,14 +96,14 @@ local sprintContact = with({
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
 	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
 	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
-}, arms(-1, 1, 1.6))
+}, arms(-1, 1, 0.05, 0.3, 1.6))
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
 	UpperTorso = j(-7), Head = j(7),
 	RightUpperLeg = j(0), RightLowerLeg = j(-10), RightFoot = j(5),
 	LeftUpperLeg = j(30), LeftLowerLeg = j(-100), LeftFoot = j(30),
 }
-with(sprintPassing, arms(0, 0, 1.6))
+with(sprintPassing, arms(0, 0, 0.1, 1, 1.6))
 
 -- ---------------------------------------------------------------- Crouch
 -- Like DOORS: one foot planted in front, the other knee down behind, arms held forward together.
