@@ -39,6 +39,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - **Contracts (first night only):** every killer secretly gets one target guaranteed NOT evil. They may kill someone else instead. Killing your contract gives a reward but leaves an extra trace.
 - Kills don't stack: unused kills are lost at dawn.
 - **Friendly fire on:** evil can kill evil; killing a teammate gives a very long cooldown.
+- **Knife attack:** about 2.5 s. When the Cutthroat presses kill, the victim is grabbed and frozen until the stab, so it can't be escaped; the Cutthroat is stuck in place and visible to anyone watching.
 - **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. A player still downed at dawn dies.
 - **Arrest -> trial:** the Watchman can arrest at night. The arrested player sits in the cells (safe from killers) until day, which opens with a quick trial (30 s): the town votes guilty (out) or not guilty (released; the Watchman gets a very long cooldown). Arresting an Informant counts as right.
 - Finding a body at night doesn't stop the night; the finder gets task charge and the body is a big clue for the board.
