@@ -154,9 +154,8 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 Config.SHOW_BODY_IN_FIRST_PERSON = true
 -- Which parts you see in first person. Arms = forearms and hands; UpperArms = the shoulders.
 Config.FIRST_PERSON_BODY = { Legs = true, Torso = true, Arms = true, UpperArms = true }
--- Like DOORS: the torso, shoulders and arms only appear when you look DOWN; looking ahead you see no body at all.
-Config.FIRST_PERSON_BODY_FADE_START = 35 -- degrees below level where the upper body starts to appear
-Config.FIRST_PERSON_BODY_FADE_RANGE = 0  -- 0 = appears straight away at that angle, like DOORS; higher = fades in over that many degrees
+-- Like DOORS: the whole body is always there, just below your view; tilt down and it comes into sight naturally.
+Config.FIRST_PERSON_NEAR_HIDE = 0.5 -- studs: body parts this close to the camera are hidden (they'd fill the screen); the rest is always shown and simply sits below your view
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 Config.CAMERA_SIDE_SHIFT = 0.6      -- stepping sideways slides your view this far (studs) toward that shoulder
@@ -173,6 +172,12 @@ Config.MOVEMENT_ANIMATIONS = {
 	OutOfBreath = 0,
 	LanternToggle = 0, -- plays once when the lantern is switched on or off
 }
+-- Lantern (decided): always hangs from the belt at the LEFT hip; switching it plays a reach-down animation
+Config.LANTERN_KEY = "F"            -- switches the lantern on/off
+Config.LANTERN_SWITCH_DELAY = 0.45  -- seconds after pressing until the light changes (when the hand turns the knob)
+Config.LANTERN_COOLDOWN = 1         -- seconds between switches (the animation is 0.9 s)
+Config.LANTERN_HIP_OFFSET = Vector3.new(-1.15, -0.2, 0) -- where it hangs, from the hips: X = left(-)/right(+), Y = up/down, Z = back(+)/front(-)
+Config.LANTERN_HIP_TURN = 0         -- turns the lantern on its hook (degrees)
 Config.ALLOW_JUMP = false           -- decided: no jumping
 -- While tweaking: in Studio, play the latest drafts from tools/MakeMovementAnimations.lua instead of the
 -- published IDs (no publishing needed). Only works in Studio; set false to check the published versions.
@@ -898,7 +903,7 @@ do
 -- Lets you see your own body when you look down in first person.
 -- Every frame Roblox hides your whole character in first person; straight after that, this shows
 -- the body parts chosen in Config.FIRST_PERSON_BODY (legs / torso / arms) and anything worn on
--- them. The head always stays hidden, because the camera sits inside it.
+-- them, plus the lantern on your belt. The head always stays hidden, because the camera sits inside it.
 -- Your arms also swing less in first person (Config.FIRST_PERSON_ARM_SWING) so they stay low and
 -- close to your body instead of swinging into view. Only you see that; others see the full animation.
 -- Until there's a crouch animation (Config.MOVEMENT_ANIMATIONS.CrouchIdle), the body hides while you crouch,
@@ -938,6 +943,11 @@ end
 -- Returns the body part it belongs to (or nil if hidden).
 local function visibleBodyPart(part, shown)
 	if shown[part] then return part end
+	-- the lantern hangs on your belt, so it shows with your hips (LanternBelt)
+	local lantern = part:FindFirstAncestor("Lantern")
+	if lantern and lantern.Parent == player.Character then
+		return shown[player.Character:FindFirstChild("LowerTorso")] and part or nil
+	end
 	if not part:FindFirstAncestorOfClass("Accessory") then return nil end
 	for _, attachment in part:GetChildren() do
 		if attachment:IsA("Attachment") then
@@ -949,16 +959,15 @@ local function visibleBodyPart(part, shown)
 	return nil
 end
 
--- Like DOORS: your upper body (torso, shoulders, arms, hands) only appears when you look DOWN.
--- Looking ahead you see none of your body; it fades in between FIRST_PERSON_BODY_FADE_START degrees below
--- level and that plus FIRST_PERSON_BODY_FADE_RANGE. (Legs are below your view when you look ahead anyway.)
-local UPPER_BODY = {
-	UpperTorso = true, LeftUpperArm = true, RightUpperArm = true,
-	LeftLowerArm = true, RightLowerArm = true, LeftHand = true, RightHand = true,
-}
-local function upperBodyShown()
-	local lookingDown = -math.deg(math.asin(math.clamp(camera.CFrame.LookVector.Y, -1, 1)))
-	return math.clamp((lookingDown - Config.FIRST_PERSON_BODY_FADE_START) / Config.FIRST_PERSON_BODY_FADE_RANGE, 0, 1)
+-- Like DOORS: the body is ALWAYS there, it just sits below your view. Look straight ahead and you see none
+-- of it; tilt the camera down a little and the edge of a hand creeps in; look right down and you see your chest,
+-- arms and legs. Nothing pops in at a set angle. The only parts hidden are ones almost touching the camera
+-- (closer than Config.FIRST_PERSON_NEAR_HIDE studs), which would otherwise fill the screen.
+local function nearCamera(part)
+	local p = part.CFrame:PointToObjectSpace(camera.CFrame.Position)
+	local half = part.Size / 2
+	local closest = Vector3.new(math.clamp(p.X, -half.X, half.X), math.clamp(p.Y, -half.Y, half.Y), math.clamp(p.Z, -half.Z, half.Z))
+	return (p - closest).Magnitude < Config.FIRST_PERSON_NEAR_HIDE
 end
 
 local function isFirstPerson(head)
@@ -975,14 +984,11 @@ RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value 
 
 	local hideBody = State.crouching and (Config.MOVEMENT_ANIMATIONS.CrouchIdle or 0) == 0
 	local shown = shownParts(character)
-	local upperShown = upperBodyShown()
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then
 			local bodyPart = not hideBody and visibleBodyPart(part, shown)
-			if not bodyPart then
+			if not bodyPart or nearCamera(part) then
 				part.LocalTransparencyModifier = 1
-			elseif UPPER_BODY[bodyPart.Name] then
-				part.LocalTransparencyModifier = 1 - upperShown
 			else
 				part.LocalTransparencyModifier = 0
 			end
@@ -1957,6 +1963,163 @@ end)
 ]=]
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.MovementAnimations")
+end
+do
+	local parent = game
+	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("LanternControl")
+	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	s = s or Instance.new("LocalScript")
+	s.Name = "LanternControl"
+	s.Source = [=[
+-- LanternControl (LocalScript in StarterPlayer > StarterPlayerScripts)
+-- Press the lantern key (Config.LANTERN_KEY) to switch the lantern on your belt on or off.
+-- It only asks the server (LanternBelt), which decides and switches it for everyone.
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+local remote = ReplicatedStorage:WaitForChild("LanternToggle")
+
+UserInputService.InputBegan:Connect(function(input, typing)
+	if typing then return end -- e.g. typing in the chat
+	if input.KeyCode == Enum.KeyCode[Config.LANTERN_KEY] then
+		remote:FireServer()
+	end
+end)
+]=]
+	s.Parent = parent
+	table.insert(done, "StarterPlayer.StarterPlayerScripts.LanternControl")
+end
+do
+	local parent = game
+	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
+	local s = parent:FindFirstChild("LanternBelt")
+	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	s = s or Instance.new("Script")
+	s.Name = "LanternBelt"
+	s.Source = [=[
+-- LanternBelt (Script in ServerScriptService)
+-- Everyone's lantern hangs from their belt at the LEFT hip, all the time (decided with Alexander).
+-- Pressing the lantern key (Config.LANTERN_KEY) asks this script to switch it on or off. The server decides,
+-- sets the character attribute "LanternOn" (MovementAnimations then plays the reach-down-and-turn animation),
+-- and turns the light on/off a moment later, when the hand turns the knob (Config.LANTERN_SWITCH_DELAY).
+--
+-- YOUR LANTERN MODEL: put it in ServerStorage and name it "Lantern". It can be a Model or a Tool.
+--   * It hangs by its pivot (for a Tool: its Handle), so put the pivot where the hook/handle is.
+--   * Every light inside it (PointLight, SpotLight, SurfaceLight) is switched on and off.
+--   * Without one, a plain grey placeholder lantern is used.
+-- Don't leave a lantern Tool in StarterPack, or players will still get one in their RIGHT hand.
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
+
+local Config = require(ReplicatedStorage:WaitForChild("Config"))
+
+local remote = ReplicatedStorage:FindFirstChild("LanternToggle") or Instance.new("RemoteEvent")
+remote.Name = "LanternToggle"
+remote.Parent = ReplicatedStorage
+
+-- a simple stand-in until there's a real lantern model
+local function placeholder()
+	local model = Instance.new("Model")
+	model.Name = "Lantern"
+	local body = Instance.new("Part")
+	body.Name = "Handle"
+	body.Size = Vector3.new(0.5, 0.8, 0.5)
+	body.Color = Color3.fromRGB(90, 80, 60)
+	body.Material = Enum.Material.Metal
+	body.Parent = model
+	local light = Instance.new("PointLight")
+	light.Color = Color3.fromRGB(255, 190, 110)
+	light.Range = 16
+	light.Brightness = 1.5
+	light.Parent = body
+	model.PrimaryPart = body
+	return model
+end
+
+-- a copy of the lantern as a Model (a Tool is turned into a plain Model so Roblox won't put it in the hand)
+local function makeLantern()
+	local template = ServerStorage:FindFirstChild("Lantern")
+	if not template then return placeholder() end
+	local copy = template:Clone()
+	if copy:IsA("Tool") then
+		local model = Instance.new("Model")
+		model.Name = "Lantern"
+		for _, child in copy:GetChildren() do
+			if not child:IsA("Script") and not child:IsA("LocalScript") then child.Parent = model end
+		end
+		model.PrimaryPart = model:FindFirstChild("Handle")
+		copy:Destroy()
+		copy = model
+	end
+	return copy
+end
+
+local function lightsOf(lantern)
+	local lights = {}
+	for _, d in lantern:GetDescendants() do
+		if d:IsA("Light") then table.insert(lights, d) end
+	end
+	return lights
+end
+
+local function onCharacter(character)
+	local hips = character:WaitForChild("LowerTorso", 10)
+	if not hips then return end
+	local lantern = makeLantern()
+	local o = Config.LANTERN_HIP_OFFSET
+	lantern:PivotTo(hips.CFrame * CFrame.new(o.X, o.Y, o.Z) * CFrame.Angles(0, math.rad(Config.LANTERN_HIP_TURN), 0))
+	for _, part in lantern:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.Anchored = false
+			part.CanCollide = false
+			part.CanTouch = false
+			part.CanQuery = false
+			part.Massless = true
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = hips
+			weld.Part1 = part
+			weld.Parent = part
+		end
+	end
+	for _, light in lightsOf(lantern) do light.Enabled = false end
+	lantern.Parent = character
+	character:SetAttribute("LanternOn", false)
+end
+
+local lastSwitch = {} -- player -> time of their last switch
+remote.OnServerEvent:Connect(function(player)
+	local character = player.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local lantern = character and character:FindFirstChild("Lantern")
+	if not humanoid or humanoid.Health <= 0 or not lantern then return end
+	-- one switch at a time: the animation has to finish first
+	if os.clock() - (lastSwitch[player] or 0) < Config.LANTERN_COOLDOWN then return end
+	lastSwitch[player] = os.clock()
+
+	local on = not character:GetAttribute("LanternOn")
+	character:SetAttribute("LanternOn", on) -- starts the reach-down animation
+	task.delay(Config.LANTERN_SWITCH_DELAY, function()
+		-- the hand has reached the knob: now the light changes (unless it was switched again meanwhile)
+		if character:GetAttribute("LanternOn") ~= on or not lantern.Parent then return end
+		for _, light in lightsOf(lantern) do light.Enabled = on end
+	end)
+end)
+
+Players.PlayerAdded:Connect(function(player)
+	player.CharacterAdded:Connect(onCharacter)
+	if player.Character then onCharacter(player.Character) end
+end)
+for _, player in Players:GetPlayers() do
+	player.CharacterAdded:Connect(onCharacter)
+	if player.Character then task.spawn(onCharacter, player.Character) end
+end
+Players.PlayerRemoving:Connect(function(player) lastSwitch[player] = nil end)
+]=]
+	s.Parent = parent
+	table.insert(done, "ServerScriptService.LanternBelt")
 end
 do
 	local parent = game

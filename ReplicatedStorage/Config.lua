@@ -143,9 +143,8 @@ Config.BREATH_SOUND_SMOOTHING = 2   -- how quickly the sound follows your stamin
 Config.SHOW_BODY_IN_FIRST_PERSON = true
 -- Which parts you see in first person. Arms = forearms and hands; UpperArms = the shoulders.
 Config.FIRST_PERSON_BODY = { Legs = true, Torso = true, Arms = true, UpperArms = true }
--- Like DOORS: the torso, shoulders and arms only appear when you look DOWN; looking ahead you see no body at all.
-Config.FIRST_PERSON_BODY_FADE_START = 35 -- degrees below level where the upper body starts to appear
-Config.FIRST_PERSON_BODY_FADE_RANGE = 0  -- 0 = appears straight away at that angle, like DOORS; higher = fades in over that many degrees
+-- Like DOORS: the whole body is always there, just below your view; tilt down and it comes into sight naturally.
+Config.FIRST_PERSON_NEAR_HIDE = 0.5 -- studs: body parts this close to the camera are hidden (they'd fill the screen); the rest is always shown and simply sits below your view
 Config.FIRST_PERSON_ARM_SWING = 0.3 -- arm swing in first person with Roblox's default animations (0 = still, 1 = full); ignored once our own animations are in
 Config.CAMERA_FORWARD_OFFSET = 1    -- moves your eyes forward (studs) so you don't look out from behind your head
 Config.CAMERA_SIDE_SHIFT = 0.6      -- stepping sideways slides your view this far (studs) toward that shoulder
@@ -162,6 +161,12 @@ Config.MOVEMENT_ANIMATIONS = {
 	OutOfBreath = 0,
 	LanternToggle = 0, -- plays once when the lantern is switched on or off
 }
+-- Lantern (decided): always hangs from the belt at the LEFT hip; switching it plays a reach-down animation
+Config.LANTERN_KEY = "F"            -- switches the lantern on/off
+Config.LANTERN_SWITCH_DELAY = 0.45  -- seconds after pressing until the light changes (when the hand turns the knob)
+Config.LANTERN_COOLDOWN = 1         -- seconds between switches (the animation is 0.9 s)
+Config.LANTERN_HIP_OFFSET = Vector3.new(-1.15, -0.2, 0) -- where it hangs, from the hips: X = left(-)/right(+), Y = up/down, Z = back(+)/front(-)
+Config.LANTERN_HIP_TURN = 0         -- turns the lantern on its hook (degrees)
 Config.ALLOW_JUMP = false           -- decided: no jumping
 -- While tweaking: in Studio, play the latest drafts from tools/MakeMovementAnimations.lua instead of the
 -- published IDs (no publishing needed). Only works in Studio; set false to check the published versions.

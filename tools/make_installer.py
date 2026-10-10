@@ -17,6 +17,8 @@ SCRIPTS = [
     ("StarterPlayerScripts/JournalUI.client.lua", "StarterPlayer.StarterPlayerScripts", "JournalUI", "LocalScript"),
     ("StarterPlayerScripts/Footsteps.client.lua", "StarterPlayer.StarterPlayerScripts", "Footsteps", "LocalScript"),
     ("StarterPlayerScripts/MovementAnimations.client.lua", "StarterPlayer.StarterPlayerScripts", "MovementAnimations", "LocalScript"),
+    ("StarterPlayerScripts/LanternControl.client.lua", "StarterPlayer.StarterPlayerScripts", "LanternControl", "LocalScript"),
+    ("ServerScriptService/LanternBelt.server.lua", "ServerScriptService", "LanternBelt", "Script"),
     ("ServerScriptService/Journal.lua", "ServerScriptService", "Journal", "ModuleScript"),
     ("ServerScriptService/JournalServer.server.lua", "ServerScriptService", "JournalServer", "Script"),
     ("ServerScriptService/AvatarRules.server.lua", "ServerScriptService", "AvatarRules", "Script"),

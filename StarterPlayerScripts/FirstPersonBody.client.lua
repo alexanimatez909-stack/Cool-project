@@ -2,7 +2,7 @@
 -- Lets you see your own body when you look down in first person.
 -- Every frame Roblox hides your whole character in first person; straight after that, this shows
 -- the body parts chosen in Config.FIRST_PERSON_BODY (legs / torso / arms) and anything worn on
--- them. The head always stays hidden, because the camera sits inside it.
+-- them, plus the lantern on your belt. The head always stays hidden, because the camera sits inside it.
 -- Your arms also swing less in first person (Config.FIRST_PERSON_ARM_SWING) so they stay low and
 -- close to your body instead of swinging into view. Only you see that; others see the full animation.
 -- Until there's a crouch animation (Config.MOVEMENT_ANIMATIONS.CrouchIdle), the body hides while you crouch,
@@ -42,6 +42,11 @@ end
 -- Returns the body part it belongs to (or nil if hidden).
 local function visibleBodyPart(part, shown)
 	if shown[part] then return part end
+	-- the lantern hangs on your belt, so it shows with your hips (LanternBelt)
+	local lantern = part:FindFirstAncestor("Lantern")
+	if lantern and lantern.Parent == player.Character then
+		return shown[player.Character:FindFirstChild("LowerTorso")] and part or nil
+	end
 	if not part:FindFirstAncestorOfClass("Accessory") then return nil end
 	for _, attachment in part:GetChildren() do
 		if attachment:IsA("Attachment") then
@@ -53,16 +58,15 @@ local function visibleBodyPart(part, shown)
 	return nil
 end
 
--- Like DOORS: your upper body (torso, shoulders, arms, hands) only appears when you look DOWN.
--- Looking ahead you see none of your body; it fades in between FIRST_PERSON_BODY_FADE_START degrees below
--- level and that plus FIRST_PERSON_BODY_FADE_RANGE. (Legs are below your view when you look ahead anyway.)
-local UPPER_BODY = {
-	UpperTorso = true, LeftUpperArm = true, RightUpperArm = true,
-	LeftLowerArm = true, RightLowerArm = true, LeftHand = true, RightHand = true,
-}
-local function upperBodyShown()
-	local lookingDown = -math.deg(math.asin(math.clamp(camera.CFrame.LookVector.Y, -1, 1)))
-	return math.clamp((lookingDown - Config.FIRST_PERSON_BODY_FADE_START) / Config.FIRST_PERSON_BODY_FADE_RANGE, 0, 1)
+-- Like DOORS: the body is ALWAYS there, it just sits below your view. Look straight ahead and you see none
+-- of it; tilt the camera down a little and the edge of a hand creeps in; look right down and you see your chest,
+-- arms and legs. Nothing pops in at a set angle. The only parts hidden are ones almost touching the camera
+-- (closer than Config.FIRST_PERSON_NEAR_HIDE studs), which would otherwise fill the screen.
+local function nearCamera(part)
+	local p = part.CFrame:PointToObjectSpace(camera.CFrame.Position)
+	local half = part.Size / 2
+	local closest = Vector3.new(math.clamp(p.X, -half.X, half.X), math.clamp(p.Y, -half.Y, half.Y), math.clamp(p.Z, -half.Z, half.Z))
+	return (p - closest).Magnitude < Config.FIRST_PERSON_NEAR_HIDE
 end
 
 local function isFirstPerson(head)
@@ -79,14 +83,11 @@ RunService:BindToRenderStep("FirstPersonBody", Enum.RenderPriority.Camera.Value 
 
 	local hideBody = State.crouching and (Config.MOVEMENT_ANIMATIONS.CrouchIdle or 0) == 0
 	local shown = shownParts(character)
-	local upperShown = upperBodyShown()
 	for _, part in character:GetDescendants() do
 		if part:IsA("BasePart") then
 			local bodyPart = not hideBody and visibleBodyPart(part, shown)
-			if not bodyPart then
+			if not bodyPart or nearCamera(part) then
 				part.LocalTransparencyModifier = 1
-			elseif UPPER_BODY[bodyPart.Name] then
-				part.LocalTransparencyModifier = 1 - upperShown
 			else
 				part.LocalTransparencyModifier = 0
 			end
