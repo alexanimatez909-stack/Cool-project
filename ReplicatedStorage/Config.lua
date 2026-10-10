@@ -163,6 +163,9 @@ Config.MOVEMENT_ANIMATIONS = {
 	LanternHold = 0,
 }
 Config.ALLOW_JUMP = false           -- decided: no jumping
+-- While tweaking: in Studio, play the latest drafts from tools/MakeMovementAnimations.lua instead of the
+-- published IDs (no publishing needed). Only works in Studio; set false to check the published versions.
+Config.USE_DRAFT_ANIMATIONS = true
 -- Moving sideways/diagonally turns the hips toward where you're going (chest stays forward), with a small lean
 Config.STRAFE_HIP_TURN = 40         -- most the hips turn (degrees)
 Config.STRAFE_LEAN = 6              -- sideways lean into the direction you're moving (degrees)

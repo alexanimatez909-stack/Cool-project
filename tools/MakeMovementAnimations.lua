@@ -283,4 +283,13 @@ for _, anim in ipairs(ANIMATIONS) do
 	saveForEditor(seq)
 end
 
-print("[MakeMovementAnimations] created " .. #ANIMATIONS .. " animations in ServerStorage.MovementAnimations")
+-- 3) Drafts the game can play straight away when you press Play in Studio (no publishing needed while
+-- you're tweaking): a copy in ReplicatedStorage, where the player's own scripts can reach it.
+local drafts = game:GetService("ReplicatedStorage"):FindFirstChild("MovementAnimationDrafts")
+if drafts then drafts:Destroy() end
+drafts = folder:Clone()
+drafts.Name = "MovementAnimationDrafts"
+drafts.Parent = game:GetService("ReplicatedStorage")
+
+print("[MakeMovementAnimations] created " .. #ANIMATIONS .. " animations in ServerStorage.MovementAnimations"
+	.. " (+ drafts in ReplicatedStorage for testing in Studio)")

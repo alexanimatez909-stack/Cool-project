@@ -5,6 +5,10 @@
 -- and speeds it up or slows it down to match how fast you're really moving, so your feet don't slide.
 -- Runs on your own computer: Roblox automatically shows your character's animations to everyone else.
 -- Until the Walk ID is filled in, it does nothing and Roblox's default animations keep playing.
+-- TESTING IN STUDIO: while Config.USE_DRAFT_ANIMATIONS is true, it plays the latest drafts made by
+-- tools/MakeMovementAnimations.lua (ReplicatedStorage.MovementAnimationDrafts) instead of the published IDs,
+-- so what you see on the Dummy is exactly what your character does - no publishing needed while tweaking.
+-- Drafts only work inside Studio; the real game always uses the published IDs.
 -- It also turns jumping off (Config.ALLOW_JUMP).
 -- Direction (like DOORS, the body changes shape with direction): walking backwards plays the walk in reverse,
 -- and moving sideways or diagonally turns the hips toward where you're going (the chest stays facing forward)
@@ -12,6 +16,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local KeyframeSequenceProvider = game:GetService("KeyframeSequenceProvider")
 
 local Config = require(ReplicatedStorage:WaitForChild("Config"))
 local State = require(script.Parent:WaitForChild("MovementState"))
@@ -23,14 +28,28 @@ local tracks = {}     -- name -> loaded animation
 local current = nil   -- the movement animation playing now
 local humanoid, root = nil, nil
 
+-- In Studio, a draft KeyframeSequence for this animation (or nil)
+local function draft(name)
+	if not (Config.USE_DRAFT_ANIMATIONS and RunService:IsStudio()) then return nil end
+	local folder = ReplicatedStorage:FindFirstChild("MovementAnimationDrafts")
+	return folder and folder:FindFirstChild(name)
+end
+
 local function load(animator, name)
 	local id = Config.MOVEMENT_ANIMATIONS[name]
-	if not id or id == 0 then return nil end
 	local animation = Instance.new("Animation")
-	animation.AnimationId = "rbxassetid://" .. id
+	local sequence = draft(name)
+	if sequence then
+		-- a temporary ID for an unpublished animation; only works in Studio
+		animation.AnimationId = KeyframeSequenceProvider:RegisterKeyframeSequence(sequence)
+	elseif id and id ~= 0 then
+		animation.AnimationId = "rbxassetid://" .. id
+	else
+		return nil
+	end
 	local ok, track = pcall(function() return animator:LoadAnimation(animation) end)
 	if not ok then
-		warn("[MovementAnimations] Couldn't load " .. name .. " (" .. id .. "): " .. tostring(track))
+		warn("[MovementAnimations] Couldn't load " .. name .. ": " .. tostring(track))
 		return nil
 	end
 	track.Looped = true
@@ -44,7 +63,9 @@ local function onCharacter(character)
 	if not Config.ALLOW_JUMP then
 		humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
 	end
-	if (Config.MOVEMENT_ANIMATIONS.Walk or 0) == 0 then return end -- not set up yet: keep Roblox's animations
+	if (Config.MOVEMENT_ANIMATIONS.Walk or 0) == 0 and not draft("Walk") then
+		return -- not set up yet: keep Roblox's animations
+	end
 
 	-- switch off Roblox's own Animate script and stop what it was playing
 	local animate = character:WaitForChild("Animate", 5)
