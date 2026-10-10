@@ -1,14 +1,16 @@
 -- Paste into Studio's Command Bar (View > Command Bar) and press Enter.
 -- Replaces the scripts below with the versions from the repo.
+-- Animation IDs already in your Config (MOVEMENT_ANIMATIONS) are kept; other Config edits are replaced.
 local done = {}
 do
 	local parent = game
 	for part in ("ReplicatedStorage"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("Config")
 	if s and s.ClassName ~= "ModuleScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("ModuleScript")
 	s.Name = "Config"
-	s.Source = [=[
+	local source = [=[
 -- Config (ModuleScript in ReplicatedStorage)
 -- The game's "settings sheet". Every tuning number lives here, so
 -- balancing the game means editing this one file.
@@ -339,6 +341,18 @@ Config.SAFETY_WALL_HEIGHT = 60          -- invisible, only a safety net behind t
 
 return Config
 ]=]
+	-- keep the animation IDs you already pasted into Config in Studio (the repo copy may still have 0s)
+	local oldBlock = oldSource:match("Config%.MOVEMENT_ANIMATIONS%s*=%s*(%b{})")
+	if oldBlock then
+		source = source:gsub("(Config%.MOVEMENT_ANIMATIONS%s*=%s*)(%b{})", function(head, block)
+			block = block:gsub("(\n%s*)(%w+)(%s*=%s*)0,", function(indent, key, eq)
+				local id = oldBlock:match("[^%w]" .. key .. "%s*=%s*(%d+)")
+				if id and id ~= "0" then return indent .. key .. eq .. id .. "," end
+			end)
+			return head .. block
+		end, 1)
+	end
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ReplicatedStorage.Config")
 end
@@ -347,9 +361,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("MovementState")
 	if s and s.ClassName ~= "ModuleScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("ModuleScript")
 	s.Name = "MovementState"
-	s.Source = [=[
+	local source = [=[
 -- MovementState (ModuleScript in StarterPlayer > StarterPlayerScripts)
 -- What the local player's body is doing right now. The Movement and CameraFeel scripts write it;
 -- the stamina bar and other effects only read it.
@@ -362,6 +377,7 @@ return {
 	reduceMotion = false, -- player setting: no head bob, tilt, shake or sprint FOV change
 }
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.MovementState")
 end
@@ -370,9 +386,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("Movement")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "Movement"
-	s.Source = [=[
+	local source = [=[
 -- Movement (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- The one script that decides how fast you move: walk, sprint while Shift is held, or crouch.
 -- Sprinting uses stamina; all the numbers are in ReplicatedStorage.Config.
@@ -481,6 +498,7 @@ RunService.Heartbeat:Connect(function(dt)
 	)
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.Movement")
 end
@@ -489,9 +507,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("CameraFeel")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "CameraFeel"
-	s.Source = [=[
+	local source = [=[
 -- CameraFeel (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- DOORS-style reactive first-person camera: head bob on every footstep, a lean when you
 -- turn or sidestep, a wider view while sprinting, breathing (faint when rested, heavy when
@@ -686,6 +705,7 @@ UserInputService.InputBegan:Connect(function(input, gameProcessed)
 	end
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.CameraFeel")
 end
@@ -694,9 +714,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("FirstPerson")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "FirstPerson"
-	s.Source = [=[
+	local source = [=[
 -- FirstPerson (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Locks the camera to first person. (Movement speed is handled by the Movement script.)
 -- Runs on each player's own computer, because the camera belongs to that player only.
@@ -713,6 +734,7 @@ end
 
 setFirstPerson(Config.FIRST_PERSON_AT_START)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.FirstPerson")
 end
@@ -721,9 +743,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("StaminaBar")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "StaminaBar"
-	s.Source = [=[
+	local source = [=[
 -- StaminaBar (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- The ornate Victorian stamina bar in the bottom-left corner: a brass frame with scrollwork and
 -- "Stamina" written above it (an uploaded image, Config.STAMINA_BAR_IMAGE_ID), with the stamina
@@ -839,6 +862,7 @@ RunService.RenderStepped:Connect(function(dt)
 	frame.ImageTransparency = hide
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.StaminaBar")
 end
@@ -847,9 +871,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("Breathing_Sound")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "Breathing_Sound"
-	s.Source = [=[
+	local source = [=[
 -- BreathingSound (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Your own breathing: silent until stamina is low, then louder and faster as it runs out.
 -- Only you hear it (it plays on your own computer, not out in the world).
@@ -888,6 +913,7 @@ RunService.Heartbeat:Connect(function(dt)
 	sound.PlaybackSpeed = lerp(Config.BREATH_SPEED_CALM, Config.BREATH_SPEED_TIRED, level)
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.Breathing_Sound")
 end
@@ -896,9 +922,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("FirstPersonBody")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "FirstPersonBody"
-	s.Source = [=[
+	local source = [=[
 -- FirstPersonBody (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Lets you see your own body when you look down in first person.
 -- Every frame Roblox hides your whole character in first person; straight after that, this shows
@@ -1014,6 +1041,7 @@ RunService.PreSimulation:Connect(function()
 	end
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.FirstPersonBody")
 end
@@ -1022,9 +1050,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("NightFog")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "NightFog"
-	s.Source = [=[
+	local source = [=[
 -- NightFog (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Fog that follows the night: light at dusk, thicker in deep night, and in the last hour it
 -- slowly starts lifting as dawn gets close. Changes roll in gradually, never instantly.
@@ -1071,6 +1100,7 @@ RunService.Heartbeat:Connect(function(dt)
 	atmosphere.Density += (target - atmosphere.Density) * (1 - math.exp(-Config.FOG_CHANGE_SPEED * dt))
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.NightFog")
 end
@@ -1079,9 +1109,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("NightClock")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "NightClock"
-	s.Source = [=[
+	local source = [=[
 -- NightClock (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- A small line at the top of the screen: which night it is, the stage, and the time left,
 -- e.g. "Night 2 · Deep night · 0:42". It reads the time from the NightCycle clock
@@ -1143,6 +1174,7 @@ RunService.RenderStepped:Connect(function()
 	label.Text = table.concat(parts, "  ·  ")
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.NightClock")
 end
@@ -1151,9 +1183,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("JournalUI")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "JournalUI"
-	s.Source = [=[
+	local source = [=[
 -- JournalUI (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Your journal: press J to open or close it. An open Victorian book covering most of the screen:
 --   left page, Clues: filled in automatically when you find something (night, stage, district).
@@ -1639,6 +1672,7 @@ closeButton.Activated:Connect(function()
 	setOpen(false)
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.JournalUI")
 end
@@ -1647,9 +1681,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("Footsteps")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "Footsteps"
-	s.Source = [=[
+	local source = [=[
 -- Footsteps (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- A footstep sound for every step, chosen by what's underfoot (cobbles, stone paving...).
 -- Sprinting is loud and carries far, walking is normal, crouching is barely audible.
@@ -1772,6 +1807,7 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.Footsteps")
 end
@@ -1780,9 +1816,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("MovementAnimations")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "MovementAnimations"
-	s.Source = [=[
+	local source = [=[
 -- MovementAnimations (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Plays OUR movement animations (Config.MOVEMENT_ANIMATIONS) instead of Roblox's default ones:
 -- idle, walk, sprint, crouch, crouch-walk, out of breath, and reaching down to switch the lantern on/off.
@@ -1961,6 +1998,7 @@ RunService.PreSimulation:Connect(function(dt)
 	end
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.MovementAnimations")
 end
@@ -1969,9 +2007,10 @@ do
 	for part in ("StarterPlayer.StarterPlayerScripts"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("LanternControl")
 	if s and s.ClassName ~= "LocalScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("LocalScript")
 	s.Name = "LanternControl"
-	s.Source = [=[
+	local source = [=[
 -- LanternControl (LocalScript in StarterPlayer > StarterPlayerScripts)
 -- Press the lantern key (Config.LANTERN_KEY) to switch the lantern on your belt on or off.
 -- It only asks the server (LanternBelt), which decides and switches it for everyone.
@@ -1988,6 +2027,7 @@ UserInputService.InputBegan:Connect(function(input, typing)
 	end
 end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "StarterPlayer.StarterPlayerScripts.LanternControl")
 end
@@ -1996,9 +2036,10 @@ do
 	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("LanternBelt")
 	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("Script")
 	s.Name = "LanternBelt"
-	s.Source = [=[
+	local source = [=[
 -- LanternBelt (Script in ServerScriptService)
 -- Everyone's lantern hangs from their belt at the LEFT hip, all the time (decided with Alexander).
 -- Pressing the lantern key (Config.LANTERN_KEY) asks this script to switch it on or off. The server decides,
@@ -2118,6 +2159,7 @@ for _, player in Players:GetPlayers() do
 end
 Players.PlayerRemoving:Connect(function(player) lastSwitch[player] = nil end)
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.LanternBelt")
 end
@@ -2126,9 +2168,10 @@ do
 	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("Journal")
 	if s and s.ClassName ~= "ModuleScript" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("ModuleScript")
 	s.Name = "Journal"
-	s.Source = [=[
+	local source = [=[
 -- Journal (ModuleScript in ServerScriptService)
 -- Keeps every player's journal on the server: the clues they've found and their own notes.
 -- Clues can only be added here, by the server (a player can't fake one), and journals are kept
@@ -2215,6 +2258,7 @@ end)
 
 return Journal
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.Journal")
 end
@@ -2223,9 +2267,10 @@ do
 	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("JournalServer")
 	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("Script")
 	s.Name = "JournalServer"
-	s.Source = [=[
+	local source = [=[
 -- JournalServer (Script in ServerScriptService)
 -- Starts the journal (the Journal module). For testing, while Config.JOURNAL_TEST_CLUES is on,
 -- every player gets a made-up clue at each bell so you can see clues arrive in the journal.
@@ -2252,6 +2297,7 @@ if Config.JOURNAL_TEST_CLUES then
 	end)
 end
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.JournalServer")
 end
@@ -2260,9 +2306,10 @@ do
 	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("AvatarRules")
 	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("Script")
 	s.Name = "AvatarRules"
-	s.Source = [=[
+	local source = [=[
 -- AvatarRules (Script in ServerScriptService)
 -- If StarterPlayer has a model named StarterCharacter, everyone spawns as that body (decided: the blocky R15
 -- "Block Avatar (2012)" from Rig Builder for now), and this script copies each player's own clothes, face and skin colour onto it
@@ -2382,6 +2429,7 @@ for _, player in Players:GetPlayers() do -- anyone who joined before this script
 	end
 end
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.AvatarRules")
 end
@@ -2390,9 +2438,10 @@ do
 	for part in ("ServerScriptService"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("NightCycle")
 	if s and s.ClassName ~= "Script" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("Script")
 	s.Name = "NightCycle"
-	s.Source = [=[
+	local source = [=[
 -- NightCycle (Script in ServerScriptService)
 -- The game's clock. Each night everyone is gathered in the Courthouse Square (at the part named
 -- "NightSpawn"), then the church bell starts each stage of the night (Dusk, Deep night,
@@ -2551,6 +2600,7 @@ while true do
 	task.wait(Config.DAY_PLACEHOLDER_LENGTH / speed)
 end
 ]=]
+	s.Source = source
 	s.Parent = parent
 	table.insert(done, "ServerScriptService.NightCycle")
 end

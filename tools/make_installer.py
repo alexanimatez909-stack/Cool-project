@@ -25,21 +25,38 @@ SCRIPTS = [
     ("ServerScriptService/NightCycle.server.lua", "ServerScriptService", "NightCycle", "Script"),
 ]
 
+KEEP_IDS = """	-- keep the animation IDs you already pasted into Config in Studio (the repo copy may still have 0s)
+	local oldBlock = oldSource:match("Config%.MOVEMENT_ANIMATIONS%s*=%s*(%b{})")
+	if oldBlock then
+		source = source:gsub("(Config%.MOVEMENT_ANIMATIONS%s*=%s*)(%b{})", function(head, block)
+			block = block:gsub("(\\n%s*)(%w+)(%s*=%s*)0,", function(indent, key, eq)
+				local id = oldBlock:match("[^%w]" .. key .. "%s*=%s*(%d+)")
+				if id and id ~= "0" then return indent .. key .. eq .. id .. "," end
+			end)
+			return head .. block
+		end, 1)
+	end
+"""
+
 out = ["-- Paste into Studio's Command Bar (View > Command Bar) and press Enter.",
        "-- Replaces the scripts below with the versions from the repo.",
+       "-- Animation IDs already in your Config (MOVEMENT_ANIMATIONS) are kept; other Config edits are replaced.",
        "local done = {}"]
 for path, parent, name, cls in SCRIPTS:
     src = open(path).read()
+    keep = KEEP_IDS if name == "Config" else ""
     assert "]=]" not in src, path
     out.append(f'''do
 	local parent = game
 	for part in ("{parent}"):gmatch("[^.]+") do parent = parent:WaitForChild(part) end
 	local s = parent:FindFirstChild("{name}")
 	if s and s.ClassName ~= "{cls}" then s:Destroy(); s = nil end
+	local oldSource = s and s.Source or ""
 	s = s or Instance.new("{cls}")
 	s.Name = "{name}"
-	s.Source = [=[
+	local source = [=[
 {src}]=]
+{keep}	s.Source = source
 	s.Parent = parent
 	table.insert(done, "{parent}.{name}")
 end''')
