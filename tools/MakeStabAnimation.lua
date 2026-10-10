@@ -3,16 +3,24 @@
 -- It creates ServerStorage.CutthroatStab, plus a copy the Animation Editor can load for a rig named "Dummy".
 -- Then open it in the Animation Editor to tweak, and publish it to get its animation ID.
 --
--- Decided with Alexander: the knife is drawn from the BACK (under the coat), then a quick FORWARD THRUST.
--- Timeline (about 1 second):
+-- Decided with Alexander: about 2.5 seconds and it must look good (custom kill animations could be sold later).
+-- The knife is drawn from the BACK (he turns his head and looks over his shoulder as if reaching for it; the
+-- first-person camera follows the head), then a FORWARD THRUST, the knife is pulled out (now with a little blood,
+-- not graphic) and put back behind the coat.
+-- Timeline:
 --   0.00 rest
---   0.15 right hand reaches behind the back          (marker "KnifeOut" at 0.20: show the knife in the hand)
---   0.30 knife drawn, arm pulled back at the side
---   0.42 thrust forward                              (marker "Hit" at 0.42: the victim goes down here)
---   0.55 hold
---   0.75 hand back behind the back                   (marker "KnifeAway" at 0.80: hide the knife)
---   0.95 rest
+--   0.35 looks over his right shoulder, hand reaches behind the back
+--   0.60 hand under the coat                       (marker "KnifeOut" at 0.65: show the knife in the hand)
+--   0.95 knife drawn, head turns back to the target
+--   1.15 wind-up
+--   1.30 thrust forward                             (marker "Hit" at 1.30: the victim goes down here)
+--   1.60 hold, small push
+--   1.80 pull the knife out                         (marker "Bloody" at 1.80: show the blood on the blade)
+--   2.05 glance down at the knife
+--   2.30 hand back behind the back                  (marker "KnifeAway" at 2.35: hide the knife)
+--   2.50 rest
 -- Angles are a first guess: adjust them in the Animation Editor until it looks right.
+-- Each keyframe's easing controls the movement FROM it to the next keyframe.
 
 local ServerStorage = game:GetService("ServerStorage")
 
@@ -21,56 +29,91 @@ local function rot(x, y, z)
 	return CFrame.Angles(rad(x or 0), rad(y or 0), rad(z or 0))
 end
 
+local Style, Dir = Enum.PoseEasingStyle, Enum.PoseEasingDirection
+
 -- Each pose: joint rotations in degrees. Missing joints stay at rest.
--- (Positive X on an arm swings it forward; negative swings it back. Positive Y on the waist turns left.)
+-- (Arms: positive X swings forward, negative back. Waist/Head: positive Y turns left, negative right;
+--  Head: negative X looks down.)
 local POSES = {
 	{ time = 0.00, joints = {} },
-	{ time = 0.15, joints = { -- reach behind the back
-		UpperTorso    = rot(0, -20, 0),
-		RightUpperArm = rot(-45, 0, -15),
-		RightLowerArm = rot(80, 0, 0),
-		RightHand     = rot(0, 0, 0),
-		Head          = rot(0, 15, 0),
+	{ time = 0.35, joints = { -- look over the right shoulder, reach behind the back
+		UpperTorso    = rot(0, -35, 0),
+		Head          = rot(-25, -45, 0),
+		RightUpperArm = rot(-50, 0, -20),
+		RightLowerArm = rot(90, 0, 0),
+		LeftUpperArm  = rot(10, 0, 0),
 	}},
-	{ time = 0.30, joints = { -- knife drawn, arm cocked back at the side
+	{ time = 0.60, joints = { -- hand under the coat, still looking
+		UpperTorso    = rot(0, -40, 0),
+		Head          = rot(-30, -50, 0),
+		RightUpperArm = rot(-55, 0, -15),
+		RightLowerArm = rot(95, 0, 0),
+		RightHand     = rot(-15, 0, 0),
+		LeftUpperArm  = rot(10, 0, 0),
+	}},
+	{ time = 0.95, joints = { -- knife drawn, eyes back on the target
 		UpperTorso    = rot(0, -25, 0),
-		RightUpperArm = rot(-20, 0, -10),
-		RightLowerArm = rot(100, 0, 0),
+		Head          = rot(0, 20, 0),
+		RightUpperArm = rot(-25, 0, -10),
+		RightLowerArm = rot(105, 0, 0),
 		RightHand     = rot(-20, 0, 0),
 		LeftUpperArm  = rot(20, 0, 0),
-		Head          = rot(0, 20, 0),
 	}},
-	{ time = 0.42, joints = { -- thrust forward
-		UpperTorso    = rot(-10, 25, 0),
+	{ time = 1.15, joints = { -- wind-up, then speed into the stab
+		UpperTorso    = rot(5, -30, 0),
+		Head          = rot(0, 25, 0),
+		RightUpperArm = rot(-30, 0, -10),
+		RightLowerArm = rot(110, 0, 0),
+		RightHand     = rot(-20, 0, 0),
+		LeftUpperArm  = rot(30, 0, 5),
+	}, style = Style.Quad, dir = Dir.In },
+	{ time = 1.30, joints = { -- thrust forward, left hand grabs
+		UpperTorso    = rot(-12, 25, 0),
+		Head          = rot(5, -20, 0),
 		RightUpperArm = rot(80, 0, 0),
 		RightLowerArm = rot(10, 0, 0),
 		RightHand     = rot(-10, 0, 0),
-		LeftUpperArm  = rot(45, 0, 10),
+		LeftUpperArm  = rot(50, 0, 10),
 		LeftLowerArm  = rot(40, 0, 0),
-		Head          = rot(5, -20, 0),
-	}, style = Enum.PoseEasingStyle.Linear },
-	{ time = 0.55, joints = { -- hold the stab for a moment
-		UpperTorso    = rot(-10, 25, 0),
-		RightUpperArm = rot(75, 0, 0),
-		RightLowerArm = rot(15, 0, 0),
+	}},
+	{ time = 1.60, joints = { -- hold, small push
+		UpperTorso    = rot(-15, 28, 0),
+		Head          = rot(5, -22, 0),
+		RightUpperArm = rot(85, 0, 0),
+		RightLowerArm = rot(5, 0, 0),
 		RightHand     = rot(-10, 0, 0),
-		LeftUpperArm  = rot(40, 0, 10),
+		LeftUpperArm  = rot(50, 0, 10),
 		LeftLowerArm  = rot(40, 0, 0),
-		Head          = rot(5, -20, 0),
+	}, style = Style.Quad, dir = Dir.Out },
+	{ time = 1.80, joints = { -- pull the knife out
+		UpperTorso    = rot(-5, 0, 0),
+		Head          = rot(0, 0, 0),
+		RightUpperArm = rot(30, 0, 0),
+		RightLowerArm = rot(70, 0, 0),
+		RightHand     = rot(-10, 0, 0),
+		LeftUpperArm  = rot(15, 0, 0),
 	}},
-	{ time = 0.75, joints = { -- put the knife away behind the back
-		UpperTorso    = rot(0, -15, 0),
-		RightUpperArm = rot(-45, 0, -15),
-		RightLowerArm = rot(80, 0, 0),
-		Head          = rot(0, 10, 0),
+	{ time = 2.05, joints = { -- glance down at the knife
+		UpperTorso    = rot(-5, -10, 0),
+		Head          = rot(-25, -10, 0),
+		RightUpperArm = rot(40, 0, 0),
+		RightLowerArm = rot(110, 0, 0),
+		RightHand     = rot(0, 0, 0),
 	}},
-	{ time = 0.95, joints = {} },
+	{ time = 2.30, joints = { -- put it back behind the coat
+		UpperTorso    = rot(0, -25, 0),
+		Head          = rot(-10, -30, 0),
+		RightUpperArm = rot(-50, 0, -20),
+		RightLowerArm = rot(90, 0, 0),
+	}},
+	{ time = 2.50, joints = {} },
 }
 
 local MARKERS = {
-	{ time = 0.20, name = "KnifeOut" },
-	{ time = 0.42, name = "Hit" },
-	{ time = 0.80, name = "KnifeAway" },
+	{ time = 0.65, name = "KnifeOut" },
+	{ time = 1.30, name = "Hit" },
+	{ time = 1.80, name = "Bloody" },
+	{ time = 2.35, name = "KnifeAway" },
 }
 
 -- The R15 joint tree: each part's pose sits inside its parent's pose.
@@ -84,16 +127,16 @@ local TREE = {
 	RightLowerArm = { "RightHand" },
 }
 
-local function addPose(parent, name, joints, style)
+local function addPose(parent, name, joints, style, dir)
 	local pose = Instance.new("Pose")
 	pose.Name = name
 	pose.CFrame = joints[name] or CFrame.new()
 	pose.Weight = 1
-	pose.EasingStyle = style or Enum.PoseEasingStyle.Cubic
-	pose.EasingDirection = Enum.PoseEasingDirection.Out
+	pose.EasingStyle = style or Style.Cubic
+	pose.EasingDirection = dir or Dir.InOut
 	pose.Parent = parent
 	for _, child in ipairs(TREE[name] or {}) do
-		addPose(pose, child, joints, style)
+		addPose(pose, child, joints, style, dir)
 	end
 end
 
@@ -105,7 +148,7 @@ seq.Priority = Enum.AnimationPriority.Action
 for _, p in ipairs(POSES) do
 	local kf = Instance.new("Keyframe")
 	kf.Time = p.time
-	addPose(kf, "HumanoidRootPart", p.joints, p.style)
+	addPose(kf, "HumanoidRootPart", p.joints, p.style, p.dir)
 	kf.Parent = seq
 end
 
@@ -142,4 +185,4 @@ local oldSave = rigSaves:FindFirstChild("CutthroatStab")
 if oldSave then oldSave:Destroy() end
 seq:Clone().Parent = rigSaves
 
-print("[MakeStabAnimation] CutthroatStab created in ServerStorage (" .. #POSES .. " poses, markers: KnifeOut, Hit, KnifeAway)")
+print("[MakeStabAnimation] CutthroatStab created in ServerStorage (" .. #POSES .. " poses, markers: KnifeOut, Hit, Bloody, KnifeAway)")
