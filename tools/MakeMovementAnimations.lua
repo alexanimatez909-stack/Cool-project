@@ -54,8 +54,8 @@ local function j(x, y, z) return { x = x or 0, y = y or 0, z = z or 0 } end
 -- until the hand's skin side faces straight forward; at the very front it lifts ever so slightly more, then
 -- drops back down to your side. t goes from -1 (arm back, by your side) to 1 (front, scooped up).
 -- Each pose: upper arm forward, upper arm out, elbow bend, forearm curve inward, hand turn.
-local ARM_BACK  = { up = -5, out = 3, elbow = 15,  curve = 0,  turn = 0 }
-local ARM_FRONT = { up = 12, out = 6, elbow = 105, curve = 10, turn = 1 }
+local ARM_BACK  = { up = -10, out = 3, elbow = 20, curve = 0, turn = 0 }
+local ARM_FRONT = { up = 14,  out = 5, elbow = 70, curve = 8, turn = 1 }
 -- How far the hand turns at the front so its skin side faces forward (degrees). If it turns the wrong
 -- way in the Animation Editor, make this negative.
 local HAND_TURN = 0 -- decided: no hand twist
@@ -273,7 +273,8 @@ for _, anim in ipairs(ANIMATIONS) do
 		-- and keeps moving through the middle (the even keys), like a pendulum, instead of pausing at every key.
 		local direction = nil
 		if anim.stepping then
-			direction = (i % 2 == 1) and Enum.PoseEasingDirection.In or Enum.PoseEasingDirection.Out
+			-- (Roblox animations use In/Out the opposite way round to tweens: "Out" here = slow start.)
+			direction = (i % 2 == 1) and Enum.PoseEasingDirection.Out or Enum.PoseEasingDirection.In
 		end
 		addPose(kf, "HumanoidRootPart", key[2], anim.partial, direction)
 		kf.Parent = seq
