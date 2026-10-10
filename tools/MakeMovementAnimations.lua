@@ -20,9 +20,9 @@ local ServerStorage = game:GetService("ServerStorage")
 
 -- STYLE (decided): blocky R15 body with FLUID movement, like DOORS (Alexander's reference): smooth blends,
 -- hands carried in front of the body (visible when you look down), arms swinging with the opposite leg.
--- How poses blend into each other: Cubic = smooth and fluid (default); Linear = stiffer, puppet-like;
+-- How poses blend into each other: Sine = smooth and fluid (default); Cubic = a bit snappier; Linear = stiffer;
 -- Constant = jumps from pose to pose like stop-motion. Change it, run the script again, and compare.
-local EASING_STYLE = Enum.PoseEasingStyle.Cubic
+local EASING_STYLE = Enum.PoseEasingStyle.Sine
 -- How much the shoulders and head twist with each step (lifelike body detail). 0 = none, 1 = full.
 local TWIST = 0.5
 -- How far the arms swing (1 = the full DOORS scoop below; 0.5 = half; 0 = arms still halfway).
@@ -58,7 +58,7 @@ local ARM_BACK  = { up = -5, out = 3, elbow = 15,  curve = 0,  turn = 0 }
 local ARM_FRONT = { up = 12, out = 6, elbow = 105, curve = 10, turn = 1 }
 -- How far the hand turns at the front so its skin side faces forward (degrees). If it turns the wrong
 -- way in the Animation Editor, make this negative.
-local HAND_TURN = 35
+local HAND_TURN = 0 -- decided: no hand twist
 local function arms(rightT, leftT, size)
 	-- size: 1 = walk; bigger for sprint. ARM_SWING scales everything around the middle of the swing.
 	local out = {}
@@ -173,15 +173,15 @@ end
 local ANIMATIONS = {
 	{ name = "Idle", priority = Enum.AnimationPriority.Idle, length = 4,
 		keys = { { 0, idlePose(0) }, { 2, idlePose(1) }, { 4, idlePose(0) } } },
-	{ name = "Walk", priority = Enum.AnimationPriority.Movement, length = 0.9,
+	{ name = "Walk", priority = Enum.AnimationPriority.Movement, length = 0.9, stepping = true,
 		keys = { { 0, walkContact }, { 0.225, walkPassing }, { 0.45, mirror(walkContact) },
 			{ 0.675, mirror(walkPassing) }, { 0.9, walkContact } } },
-	{ name = "Sprint", priority = Enum.AnimationPriority.Movement, length = 0.5,
+	{ name = "Sprint", priority = Enum.AnimationPriority.Movement, length = 0.5, stepping = true,
 		keys = { { 0, sprintContact }, { 0.125, sprintPassing }, { 0.25, mirror(sprintContact) },
 			{ 0.375, mirror(sprintPassing) }, { 0.5, sprintContact } } },
 	{ name = "CrouchIdle", priority = Enum.AnimationPriority.Movement, length = 3,
 		keys = { { 0, crouchBase(0) }, { 1.5, crouchBase(1) }, { 3, crouchBase(0) } } },
-	{ name = "CrouchWalk", priority = Enum.AnimationPriority.Movement, length = 1.2,
+	{ name = "CrouchWalk", priority = Enum.AnimationPriority.Movement, length = 1.2, stepping = true,
 		keys = { { 0, crouchContact }, { 0.3, crouchPassing }, { 0.6, mirror(crouchContact) },
 			{ 0.9, mirror(crouchPassing) }, { 1.2, crouchContact } } },
 	{ name = "OutOfBreath", priority = Enum.AnimationPriority.Movement, length = 0.8,
@@ -202,7 +202,7 @@ local TREE = {
 }
 
 local rad = math.rad
-local function addPose(parent, name, joints, partial)
+local function addPose(parent, name, joints, partial, direction)
 	local a = joints[name]
 	local pose = Instance.new("Pose")
 	pose.Name = name
@@ -212,10 +212,10 @@ local function addPose(parent, name, joints, partial)
 	-- the root never moves; in a partial animation, joints it doesn't mention are left alone (weight 0)
 	pose.Weight = (name == "HumanoidRootPart" or (partial and not a)) and 0 or 1
 	pose.EasingStyle = EASING_STYLE
-	pose.EasingDirection = Enum.PoseEasingDirection.InOut
+	pose.EasingDirection = direction or Enum.PoseEasingDirection.InOut
 	pose.Parent = parent
 	for _, child in ipairs(TREE[name] or {}) do
-		addPose(pose, child, joints, partial)
+		addPose(pose, child, joints, partial, direction)
 	end
 end
 
@@ -266,10 +266,16 @@ for _, anim in ipairs(ANIMATIONS) do
 	seq.Name = anim.name
 	seq.Loop = true
 	seq.Priority = anim.priority
-	for _, key in ipairs(anim.keys) do
+	for i, key in ipairs(anim.keys) do
 		local kf = Instance.new("Keyframe")
 		kf.Time = key[1]
-		addPose(kf, "HumanoidRootPart", key[2], anim.partial)
+		-- Smooth steps: in a stepping loop the body slows down only at the ends of each stride (the odd keys)
+		-- and keeps moving through the middle (the even keys), like a pendulum, instead of pausing at every key.
+		local direction = nil
+		if anim.stepping then
+			direction = (i % 2 == 1) and Enum.PoseEasingDirection.In or Enum.PoseEasingDirection.Out
+		end
+		addPose(kf, "HumanoidRootPart", key[2], anim.partial, direction)
 		kf.Parent = seq
 	end
 	seq.Parent = folder
