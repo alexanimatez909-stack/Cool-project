@@ -204,8 +204,29 @@ local rigSaves = saves:FindFirstChild("Dummy")
 if not rigSaves then
 	rigSaves = Instance.new("ObjectValue")
 	rigSaves.Name = "Dummy"
-	rigSaves.Value = workspace:FindFirstChild("Dummy")
 	rigSaves.Parent = saves
+end
+rigSaves.Value = workspace:FindFirstChild("Dummy")
+
+-- older place the Animation Editor also loads from: an "AnimSaves" folder inside the rig itself
+local dummy = workspace:FindFirstChild("Dummy")
+local rigFolder = nil
+if dummy then
+	rigFolder = dummy:FindFirstChild("AnimSaves")
+	if not rigFolder then
+		rigFolder = Instance.new("ObjectValue")
+		rigFolder.Name = "AnimSaves"
+		rigFolder.Parent = dummy
+	end
+else
+	warn("No model named Dummy in Workspace: make one with Rig Builder (R15, Block Avatar (2012)) and name it Dummy")
+end
+local function saveForEditor(seq)
+	for _, place in { rigSaves, rigFolder } do
+		local old = place and place:FindFirstChild(seq.Name)
+		if old then old:Destroy() end
+		if place then seq:Clone().Parent = place end
+	end
 end
 
 for _, anim in ipairs(ANIMATIONS) do
@@ -221,9 +242,7 @@ for _, anim in ipairs(ANIMATIONS) do
 	end
 	seq.Parent = folder
 
-	local old = rigSaves:FindFirstChild(anim.name)
-	if old then old:Destroy() end
-	seq:Clone().Parent = rigSaves
+	saveForEditor(seq)
 end
 
 print("[MakeMovementAnimations] created " .. #ANIMATIONS .. " animations in ServerStorage.MovementAnimations")
