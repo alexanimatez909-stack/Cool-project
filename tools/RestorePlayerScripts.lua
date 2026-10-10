@@ -202,6 +202,8 @@ Config.JOURNAL_TEST_CLUES = true    -- testing only: a made-up clue at each bell
 -- TEAMS: how many Good / Evil / Informants for each lobby size
 ---------------------------------------------------------------------
 Config.MIN_PLAYERS = 12             -- a match never starts with fewer players than this
+Config.MAX_PLAYERS = 20             -- the most players in one match
+Config.PUBLIC_START_COUNTDOWN = 30  -- seconds: public pool reaches MIN_PLAYERS -> countdown, then the game starts (more can join until MAX_PLAYERS)
 Config.LOBBY_SPLITS = {
 	[12] = { Good = 6, Evil = 4, Informants = 2 },
 	[16] = { Good = 8, Evil = 5, Informants = 3 },
