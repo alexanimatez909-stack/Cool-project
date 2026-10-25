@@ -13,11 +13,20 @@
 --     LanternToggle once: you reach down to your left side and turn the knob, then your arm goes back.
 --     It only moves the left arm (and a small lean/glance down), so it plays ON TOP of any movement animation.
 --   * No jumping, so there is no jump/fall animation.
--- Speeds: the loops are timed to the footstep rhythm in Config (walk 8 studs per step at 18, sprint 7 at 28),
--- so legs, head bob and footstep sounds land together. The game speeds them up/down to match how fast you move.
+-- Speeds: the walk/sprint loops are timed to the step rhythm in Config (WALK_STEPS_PER_SECOND 2,
+-- SPRINT_STEPS_PER_SECOND 2.8), so legs, head bob and footstep sounds land together; running fast
+-- means longer strides, not frantic steps (calm like DOORS). The game speeds them up/down to match how fast you move.
 -- Angles are a first guess: tweak them in the Animation Editor until they look right.
 
 local ServerStorage = game:GetService("ServerStorage")
+
+-- The step rhythm comes from Config (WALK_STEPS_PER_SECOND / SPRINT_STEPS_PER_SECOND), so the animations,
+-- head bob and footstep sounds always match. (A fresh copy is read, so recent Config edits count.)
+local configCopy = game:GetService("ReplicatedStorage"):WaitForChild("Config"):Clone()
+local Config = require(configCopy)
+configCopy:Destroy()
+local WALK_LOOP = 2 / Config.WALK_STEPS_PER_SECOND     -- one loop = 2 steps (left + right)
+local SPRINT_LOOP = 2 / Config.SPRINT_STEPS_PER_SECOND
 
 -- STYLE (decided): blocky R15 body with FLUID movement, like DOORS (Alexander's reference): smooth blends,
 -- hands carried in front of the body (visible when you look down), arms swinging with the opposite leg.
@@ -96,8 +105,8 @@ with(walkPassing, arms(0, 0, 0.35, 0.65, 1)) -- right arm coming forward, starti
 local sprintContact = with({
 	LowerTorso = { x = 0, py = -0.2 },
 	UpperTorso = j(-7, -6 * TWIST), Head = j(7, 6 * TWIST),
-	RightUpperLeg = j(50), RightLowerLeg = j(-20), RightFoot = j(-5),
-	LeftUpperLeg = j(-35), LeftLowerLeg = j(-50), LeftFoot = j(30),
+	RightUpperLeg = j(58), RightLowerLeg = j(-20), RightFoot = j(-5),   -- long stride: running fast = longer steps,
+	LeftUpperLeg = j(-42), LeftLowerLeg = j(-50), LeftFoot = j(30),     -- not quicker ones
 }, arms(-1, 1, 0.15, 1, 1.6))
 local sprintPassing = {
 	LowerTorso = { x = 0, py = 0.15 },
@@ -228,12 +237,12 @@ end
 local ANIMATIONS = {
 	{ name = "Idle", priority = Enum.AnimationPriority.Idle, length = 4,
 		keys = { { 0, idlePose(0) }, { 2, idlePose(1) }, { 4, idlePose(0) } } },
-	{ name = "Walk", priority = Enum.AnimationPriority.Movement, length = 0.9, stepping = true,
-		keys = { { 0, walkContact }, { 0.225, walkPassing }, { 0.45, mirror(walkContact) },
-			{ 0.675, mirror(walkPassing) }, { 0.9, walkContact } } },
-	{ name = "Sprint", priority = Enum.AnimationPriority.Movement, length = 0.5, stepping = true,
-		keys = { { 0, sprintContact }, { 0.125, sprintPassing }, { 0.25, mirror(sprintContact) },
-			{ 0.375, mirror(sprintPassing) }, { 0.5, sprintContact } } },
+	{ name = "Walk", priority = Enum.AnimationPriority.Movement, length = WALK_LOOP, stepping = true,
+		keys = { { 0, walkContact }, { WALK_LOOP * 0.25, walkPassing }, { WALK_LOOP * 0.5, mirror(walkContact) },
+			{ WALK_LOOP * 0.75, mirror(walkPassing) }, { WALK_LOOP, walkContact } } },
+	{ name = "Sprint", priority = Enum.AnimationPriority.Movement, length = SPRINT_LOOP, stepping = true,
+		keys = { { 0, sprintContact }, { SPRINT_LOOP * 0.25, sprintPassing }, { SPRINT_LOOP * 0.5, mirror(sprintContact) },
+			{ SPRINT_LOOP * 0.75, mirror(sprintPassing) }, { SPRINT_LOOP, sprintContact } } },
 	{ name = "CrouchIdle", priority = Enum.AnimationPriority.Movement, length = 3,
 		keys = { { 0, crouchBase(0) }, { 1.5, crouchBase(1) }, { 3, crouchBase(0) } } },
 	{ name = "CrouchWalk", priority = Enum.AnimationPriority.Movement, length = 1.2, stepping = true,

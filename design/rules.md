@@ -26,6 +26,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
   - Deep night 2:00 (2-3 random districts go dark, never the Square; main hunting time)
   - Last hour 0:45 (tense final push, fog lifts toward dawn)
 - **Dawn:** a bell tolls once per death; missing players are named, never where/when/how.
+- **Role reveal:** once everyone is in and the map has loaded, your screen shows your role and a short description.
 - **Day, third person:** (0:30 trial if someone was arrested), 1:00 discussion at the evidence board, then 0:30 anonymous vote. You can skip. The player with the most votes is out; a tie (or skip on top) means nobody is out.
 - **Alarm bell:** each player can ring it ONCE per match. It jumps the night to its last 15 seconds (early inquest). No "report body" button: finding a body doesn't end the night.
 
@@ -40,7 +41,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Kills don't stack: unused kills are lost at dawn.
 - **Friendly fire on:** evil can kill evil; killing a teammate gives a very long cooldown.
 - **Knife attack:** about 2.5 s. When the Cutthroat presses kill, the victim is grabbed and frozen until the stab, so it can't be escaped; the Cutthroat is stuck in place and visible to anyone watching.
-- **Downed:** an attacked player is downed for 2 minutes, then dies. The **Physician** can fully revive them. A player still downed at dawn dies.
+- **Downed:** an attacked player is downed for 2 minutes, then dies. While downed you can crawl slowly and call for help (proximity voice/chat). The **Physician** can fully revive them. A player still downed at dawn dies.
 - **Arrest -> trial:** the Watchman can arrest at night. The arrested player sits in the cells (safe from killers) until day, which opens with a quick trial (30 s): the town votes guilty (out) or not guilty (released; the Watchman gets a very long cooldown). Arresting an Informant counts as right.
 - Finding a body at night doesn't stop the night; the finder gets task charge and the body is a big clue for the board.
 - **Unfound bodies stay where they fell for the whole match** (only the Cleaner can move them). Once a body is **found**, it's removed (like reporting a body in Among Us), leaving a chalk outline. The dead player's journal stays on the ground there until someone picks it up. The clues a body gives fade over time: fresh = detailed, old = only the basics, but never nothing.
@@ -69,6 +70,7 @@ Detailed role tables: design/roles.md. Task list: design/tasks.md.
 - Everyone wears 3 random Victorian accessories: **headwear, neckwear and footwear**, each shared by 3-4 players. Accessory clues are obvious: they show or name the item ("red scarf wool", "hobnail boot prints"). Only the Inspector can analyse marks on them. Full list: design/accessories.md.
 - Only the Forger (evil head) can plant fake evidence.
 - **Journal (J):** clues are added automatically, plus a free notes page. It drops when you die. Anyone can read its notes page for free; its clues stay hidden until someone picks it up, which means taking all of them. If the Cleaner dumps the body in the river, the journal sinks and its clues are lost. How many clues each player holds is shown during the day.
+- **Courtroom:** everyone sits at a large table; a big evidence board in the corner updates live. While seated, click the evidence-board icon on screen, then click clues from your journal to pin them.
 - **Board:** at day, in the voting room, your journal opens and you choose which clues to pin, **at most 2 per day**. No automatic pinning. Pins show your **name**. To give an **alibi**, show a clue from your own journal (never one off the board); it's shown to everyone and then used up (max 1 alibi per day; doesn't use a pin). Pinned clues leave the board after **2 days** and go back into the pinner's journal.
 
 ## 8. Movement and the night

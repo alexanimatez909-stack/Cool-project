@@ -93,8 +93,14 @@ Config.SPRINT_FOV = 80              -- widens while sprinting
 Config.FOV_SMOOTHING = 6            -- how quickly the view widens/narrows (higher = snappier)
 
 -- Head bob: one dip per footstep. Step length decides how often you step.
-Config.BOB_STEP_LENGTH_WALK = 8     -- studs travelled per footstep while walking
-Config.BOB_STEP_LENGTH_SPRINT = 7      -- quick running rhythm (footstep sounds follow the same steps)
+-- STEP RHYTHM (decided: keep the calm of DOORS even when running fast): how many footsteps per second.
+-- Fewer steps = calmer. Running faster takes LONGER strides instead of quicker steps, so the animations,
+-- head bob and footstep sounds stay smooth and steady. After changing these, run
+-- tools/MakeMovementAnimations.lua again so the walk/sprint animations are rebuilt to the new rhythm.
+Config.WALK_STEPS_PER_SECOND = 2
+Config.SPRINT_STEPS_PER_SECOND = 2.8
+Config.BOB_STEP_LENGTH_WALK = Config.WALK_SPEED / Config.WALK_STEPS_PER_SECOND     -- studs per footstep (worked out)
+Config.BOB_STEP_LENGTH_SPRINT = Config.SPRINT_SPEED / Config.SPRINT_STEPS_PER_SECOND
 Config.BOB_HEIGHT_WALK = 0.15       -- how far the head dips each step (the main DOORS-style bob)
 Config.BOB_HEIGHT_SPRINT = 0.2     -- small, because running steps are quick
 Config.BOB_NOD_WALK = 0.35          -- the view nods down slightly as each foot lands
