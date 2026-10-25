@@ -2,6 +2,7 @@
 
 Full design doc: https://claude.ai/code/artifact/a9017426-87a6-45d5-be7d-77267b7fb338
 Clean rules summary: design/rules.md (keep it in sync whenever a rule changes).
+One-file export for Alexander to upload to Claude: design/full-design-summary.md (built from rules.md, roles.md, accessories.md, tasks-build-sheet.md plus build status, open items and movement decisions; regenerate when those change).
 (Read-only reference for Alexander. This file is the summary Claude should work from.)
 
 ## How to work with Alexander
